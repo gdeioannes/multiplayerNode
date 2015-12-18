@@ -1,5 +1,5 @@
 var app = require('../node_modules/express')();
-var http = require('../node_modules/http/package.json').Server(app);
+var http = require('../node_modules/http').Server(app);
 var io = require('../node_modules/socket.io')(http);
 
 app.get('/', function(req, res){
