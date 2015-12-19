@@ -4,32 +4,60 @@
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; background: black; color: white;}
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; width: 20%; background: black; color: white;}
+      body { font: 13px Helvetica, Arial; background: white; color: white; width:  100%; }
+      form { background: #000; padding: 3px;  width: 100%; bottom: 0px;}
+      form input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
+      form button { width: 19%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; background: black; color: white; overflow-y: auto; height: 85%}
       #messages li { padding: 5px 10px; }
         label{font-weight: 500;}
+        #chat-container{background: black; width: 20%; height: 400px; overflow-y: none;}
     </style>
   </head>
   <body>
+  <div id="chat-container">
     <label>User name: </label><input id="u-name" type="text" placeholder="user name">
     <ul id="messages">
-      <li>Chat Test</li>
-        <li><label>Person Name: </label>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-        <li>Chat Test</li>
-      </ul>
+    <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        <li>sadasdasdasd</li>  
+        
+    </ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+  <input id="m" autocomplete="off" /><button>Send</button>
+</form>
+  </div>
+
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -39,6 +67,7 @@
     if($('#u-name').val()==""){
         $('#u-name').val("User"+Math.round(Math.random()*1000));
     }
+$('#messages').scrollTop(100000000000000000000000000000000000000000);    
   $('form').submit(function(){
       
       var data={
