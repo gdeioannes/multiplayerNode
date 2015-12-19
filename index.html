@@ -89,8 +89,9 @@ var vel=10;
   });
     
   var receivedData 
-  socket.on('send dataPlayer', function(receivedDataChat){
-    receivedData=receivedDataChat;
+  socket.on('send dataPlayer', function(receivedDataPlayer){
+      console.log(receivedDataPlayer);
+    receivedData=receivedDataPlayer;
   });  
     
     //GAME
