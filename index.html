@@ -51,7 +51,7 @@
   });
   socket.on('chat message', function(data){
      
-    $('#messages').append($('<li><label>'+receiveData.name()+'</label>'+receiveData.message+'</li>'));
+    $('#messages').append($('<li><label>'+data.name()+'</label>'+data.message+'</li>'));
   });
 </script>
 </html>
