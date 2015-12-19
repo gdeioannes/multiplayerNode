@@ -7,9 +7,13 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  socket.on('send data', function(data){
+  socket.on('send dataChat', function(data){
       console.log(data);
-    io.emit('send data', data);
+    io.emit('send dataChat', data);
+  });
+  socket.on('send dataPlayer', function(data){
+      console.log(data);
+    io.emit('send dataPlayer', data);
   });
 });
 

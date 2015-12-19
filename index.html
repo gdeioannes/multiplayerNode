@@ -45,8 +45,6 @@
     }
 
     
-    
-    
 ///SEND DATA
 var flagLeft=false;
 var flagRight=false;
@@ -58,34 +56,42 @@ var vel=10;
     
 
     
-  var data={
+  var dataChat={
       "name":"",
       "message":"",
       "flagRight":false,
       "flagLeft":false,
       "flagUp":false,
       "flagDown":false
-  }    
+  }
+  
+  var dataPlayer={
+      "name":"",
+      "flagRight":false,
+      "flagLeft":false,
+      "flagUp":false,
+      "flagDown":false
+  } 
     
   $('form').submit(function(){
-    data.name=$('#u-name').val();
-    data.message=$('#m').val();
-    data.flagRight=flagRight;
-    data.flagLeft=flagLeft;
-    data.flagUp=flagUp;
-    data.flagDown=flagDown;
-    var dataString=JSON.stringify(data);
-    socket.emit('send data',data );
+    dataPlayer.name=$('#u-name').val();
+    dataChat.name=$('#u-name').val();
+    dataChat.message=$('#m').val();
+    var dataString=JSON.stringify(dataChat);
+    socket.emit('send dataChat',dataChat );
     $('#m').val('');
     return false;
   });
   
-    var receivedData;
-  socket.on('send data', function(rData){
-    receivedData=rData;
-    $('#messages').append($('<li><label>'+receivedData.name+': </label>'+receivedData.message+'</li>'));
+  socket.on('send dataChat', function(receivedDataChat){
+    $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
     $('#messages').scrollTop(100000000000000000000000000000000000000000);
   });
+    
+  var receivedData 
+  socket.on('send dataPlayer', function(receivedDataChat){
+    receivedData=receivedDataChat;
+  });  
     
     //GAME
     
@@ -100,7 +106,18 @@ $(window).keydown(function(e){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
+    dataPlayer.flagRight=flagRight;
+    dataPlayer.flagLeft=flagLeft;
+    dataPlayer.flagUp=flagUp;
+    dataPlayer.flagDown=flagDown;
+    var dataString=JSON.stringify(dataPlayer);
+    socket.emit('send dataPlayer',dataPlayer );
 });
+    
+  socket.on('receive dataChat', function(receivedDataChat){
+    $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
+    $('#messages').scrollTop(100000000000000000000000000000000000000000);
+  });
     
 function controlMove(key,state){
     if(key==37){
@@ -115,6 +132,8 @@ function controlMove(key,state){
     if(key==40){
         flagDown=state;
     }
+    
+    
 }
     
 var playersArray=[];
