@@ -51,6 +51,7 @@
   });
   socket.on('chat message', function(rData){
       console.log(rData);
+      console.log(rData.name);
      //var receivedData=JSON.parse(rData);
     //$('#messages').append($('<li><label>'+receivedData.name()+'</label>'+receivedData.message+'</li>'));
   });
