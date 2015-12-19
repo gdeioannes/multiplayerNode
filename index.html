@@ -45,7 +45,7 @@
       data.name="Name test 1";
       data.message="Chat Test 1";
       var dataString=JSON.stringify(data);
-    socket.emit('chat message', );
+    socket.emit('chat message',data );
     $('#m').val('');
     return false;
   });
