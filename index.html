@@ -37,7 +37,7 @@
   var socket = io();
     
     if($('#u-name').val()==""){
-        $('#u-name').val("User"+Math.random()*1000);
+        $('#u-name').val("User"+Math.round(Math.random()*1000));
     }
   $('form').submit(function(){
       
@@ -57,6 +57,7 @@
       console.log(rData);
       console.log(rData.name);
     $('#messages').append($('<li><label>'+rData.name+': </label>'+rData.message+'</li>'));
+      $('#messages').scrollTop(100000000000000000000000000000000000000000);
   });
 </script>
 </html>
