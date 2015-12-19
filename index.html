@@ -49,8 +49,8 @@
     $('#m').val('');
     return false;
   });
-  socket.on('chat message', function(data){
-     
+  socket.on('chat message', function(rData){
+     var receivedData=JSON.parse(rData);
     $('#messages').append($('<li><label>'+data.name()+'</label>'+data.message+'</li>'));
   });
 </script>
