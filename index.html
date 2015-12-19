@@ -35,6 +35,10 @@
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   var socket = io();
+    
+    if($('#u-name').val()==""){
+        $('#u-name').val("User"+Math.random()*1000);
+    }
   $('form').submit(function(){
       
       var data={
@@ -52,7 +56,7 @@
   socket.on('chat message', function(rData){
       console.log(rData);
       console.log(rData.name);
-    $('#messages').append($('<li><label>'+rData.name+'</label>'+rData.message+'</li>'));
+    $('#messages').append($('<li><label>'+rData.name+': </label>'+rData.message+'</li>'));
   });
 </script>
 </html>
