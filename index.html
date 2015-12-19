@@ -50,8 +50,8 @@
     return false;
   });
   socket.on('chat message', function(data){
-      
-    $('#messages').append($('<li><label>'+data.name()+'</label>'+data.message+'</li>'));
+      var receiveData=JSON.parse(data);
+    $('#messages').append($('<li><label>'+receiveData.name()+'</label>'+receiveData.message+'</li>'));
   });
 </script>
 </html>
