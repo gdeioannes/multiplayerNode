@@ -11,65 +11,40 @@
       #messages { list-style-type: none; margin: 0; padding: 0; background: black; color: white; overflow-y: auto; height: 85%}
       #messages li { padding: 5px 10px; }
         label{font-weight: 500;}
-        #chat-container{background: black; width: 20%; height: 400px; overflow-y: none;}
+        #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none;}
+        canvas{float: left; position: fixed; width: 100%; height: 100%; background: purple; z-index: -1;}
+        #chat-container #togle-btn{width: 100%; padding: 5px; z-index: 100;}
     </style>
   </head>
   <body>
-  <div id="chat-container">
-    <label>User name: </label><input id="u-name" type="text" placeholder="user name">
-    <ul id="messages">
-    <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        <li>sadasdasdasd</li>  
-        
-    </ul>
-    <form action="">
-  <input id="m" autocomplete="off" /><button>Send</button>
-</form>
-  </div>
-
+      
+      <canvas style="background:purple;"></canvas>
+      <button id="toggle-btn">Totggle Chat</button>
+      <div id="chat-container">
+        <label>User name: </label><input id="u-name" type="text" placeholder="user name">
+        <ul id="messages">
+        </ul>
+        <form action="">
+            <input id="m" autocomplete="off"/><button>Send</button>
+        </form>
+      </div>
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
+    $('#messages').scrollTop(100000000000000000000000000000000000000000);    
+    $('#toggle-btn').click(function(){
+        console.log("text")
+        $('#chat-container').toggle();
+    });
+    
   var socket = io();
     
     if($('#u-name').val()==""){
         $('#u-name').val("User"+Math.round(Math.random()*1000));
     }
-$('#messages').scrollTop(100000000000000000000000000000000000000000);    
+
   $('form').submit(function(){
-      
       var data={
           "name":"",
           "message":""
