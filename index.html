@@ -3,18 +3,18 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font: 13px Helvetica, Arial; background: white; color: white; width:  100%; }
-form { background: #000; padding: 3px;  width: 100%; bottom: 0px;}
-form input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
-form button { width: 19%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-#messages { list-style-type: none; margin: 0; padding: 0; background: black; color: white; overflow-y: auto; height: 85%}
-#messages li { padding: 5px 10px; }
-label{font-weight: 500;}
-#chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none;}
-canvas{float: left; position: fixed; width: 100%; height: 100%; background: purple; z-index: -1;}
-#chat-container #togle-btn{width: 100%; padding: 5px; z-index: 100;}
-      </style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 13px Helvetica, Arial; background: white; color: white; width:  100%; }
+    form { background: #000; padding: 3px;  width: 100%; bottom: 0px;}
+    form input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
+    form button { width: 19%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+    #messages { list-style-type: none; margin: 0; padding: 0; background: black; color: white; overflow-y: auto; height: 85%}
+    #messages li { padding: 5px 10px; }
+    label{font-weight: 500;}
+    #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none;}
+    canvas{float: left; position: fixed; width: 100%; height: 100%; background: purple; z-index: -1;}
+    #chat-container #togle-btn{width: 100%; padding: 5px; z-index: 100;}
+    </style>
   </head>
   <body>
       <canvas id="myCanvas" style="background:purple;"></canvas>
@@ -30,24 +30,136 @@ canvas{float: left; position: fixed; width: 100%; height: 100%; background: purp
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-<script src="http://45.55.234.198:3000/chat.js"></script>
+
 <script>
-      var socket = io();
+/////CHAT
+    
+    $('#messages').scrollTop(100000000000000000000000000000000000000000);    
+    $('#toggle-btn').click(function(){
+        console.log("text")
+        $('#chat-container').toggle();
+    });  
+
+    if($('#u-name').val()==""){
+        $('#u-name').val("User"+Math.round(Math.random()*1000));
+    }
+
+    
+    
+    
+///SEND DATA
+var flagLeft=false;
+var flagRight=false;
+var flagUp=false;
+var flagDown=false;
+var vel=10;
+    
+  var socket = io();
+    
+
+    
+  var data={
+      "name":"",
+      "message":"",
+      "flagRight":false,
+      "flagLeft":false,
+      "flagUp":false,
+      "flagDown":false
+  }    
     
   $('form').submit(function(){
-      var data={
-          "name":"",
-          "message":""
-      }
-      
-      data.name=$('#u-name').val();
-      data.message=$('#m').val();
-      var dataString=JSON.stringify(data);
+    data.name=$('#u-name').val();
+    data.message=$('#m').val();
+    data.flagRight=flagRight;
+    data.flagLeft=flagLeft;
+    data.flagUp=flagUp;
+    data.flagDown=flagDown;
+    var dataString=JSON.stringify(data);
     socket.emit('send data',data );
     $('#m').val('');
     return false;
   });
   
+    var receivedData;
+  socket.on('send data', function(rData){
+    receivedData=rData;
+    $('#messages').append($('<li><label>'+receivedData.name+': </label>'+receivedData.message+'</li>'));
+    $('#messages').scrollTop(100000000000000000000000000000000000000000);
+  });
+    
+    //GAME
+    
+
+
+    
+$(window).keydown(function(e){
+   var key=e.which;
+    controlMove(key,true)
+});
+    
+$(window).keyup(function(e){
+   var key=e.which;
+    controlMove(key,false)
+});
+    
+function controlMove(key,state){
+    if(key==37){
+        flagLeft=state;
+    }
+    if(key==39){
+        flagRight=state;
+    }
+    if(key==38){
+        flagUp=state;
+    }
+    if(key==40){
+        flagDown=state;
+    }
+}
+    
+var playersArray=[];
+
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+context.canvas.width  = window.innerWidth;
+context.canvas.height = window.innerHeight;
+
+var centerX = canvas.width / 2;
+var centerY = canvas.height / 2;
+var radius = 10;
+
+setInterval(mainLoop,30);
+
+function mainLoop(){
+  drawCircle(centerX,centerY,radius);  
+    
+      if(receivedData!=null){    
+      if(receivedData.flagDown){
+          centerY+=vel;
+      }
+      if(receivedData.flagUp){ 
+          centerY-=vel;
+      }
+      if(receivedData.flagLeft){ 
+          centerX-=vel;
+      }
+      if(receivedData.flagRight){ 
+          centerX+=vel;
+      }  
+    }
+    
+
+}
+
+function drawCircle(centerX,centerY,radius){
+  context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = 'green';
+    context.fill();
+    context.stroke();  
+}
+    
+    
 </script>
-        <script src="http://45.55.234.198:3000/clientGame.js"></script>
+
 </html>
