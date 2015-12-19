@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <label>User name: </label><label>Name</label>
+    <label>User name: </label><input id="u-name" type="text" placeholder="user name">
     <ul id="messages">
       <li>Chat Test</li>
         <li><label>Person Name: </label>Chat Test</li>
@@ -42,8 +42,8 @@
           "message":""
       }
       
-      data.name="Name test 1";
-      data.message="Chat Test 1";
+      data.name=$('#u-name').val();
+      data.message=$('#m').val();
       var dataString=JSON.stringify(data);
     socket.emit('chat message',data );
     $('#m').val('');
@@ -52,8 +52,7 @@
   socket.on('chat message', function(rData){
       console.log(rData);
       console.log(rData.name);
-     //var receivedData=JSON.parse(rData);
-    //$('#messages').append($('<li><label>'+receivedData.name()+'</label>'+receivedData.message+'</li>'));
+    $('#messages').append($('<li><label>'+rData.name()+'</label>'+rData.message+'</li>'));
   });
 </script>
 </html>
