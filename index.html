@@ -52,7 +52,7 @@
   socket.on('chat message', function(rData){
       console.log(rData);
       console.log(rData.name);
-    $('#messages').append($('<li><label>'+rData.name()+'</label>'+rData.message+'</li>'));
+    $('#messages').append($('<li><label>'+rData.name+'</label>'+rData.message+'</li>'));
   });
 </script>
 </html>
