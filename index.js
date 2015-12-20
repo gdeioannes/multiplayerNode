@@ -16,10 +16,11 @@ io.on('connection', function(socket){
     });
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
-            console.log(myData);
-            console.log(myData.id);
-            console.log(typeof myData)
-            setPlayersData(myData);
+            var json=JSON.stringify(myData);
+            console.log(json);
+            console.log(json.id);
+            console.log(typeof json)
+            setPlayersData(json);
         }
     });
     socket.join('sendAllData');
