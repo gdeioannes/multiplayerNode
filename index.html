@@ -172,8 +172,9 @@ setInterval(mainLoop,30);
 function mainLoop(){
     context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
+        
     }
     
 }
@@ -185,9 +186,9 @@ function drawCircle(centerX,centerY,radius,color){
     context.fill(); 
 }
 
-function drawText(text,x,y){
-    context.font = "30px Arial";
-    context.fillText(text,x,y);
+function drawText(text,px,py){
+    context.font = "20px Arial";
+    context.fillText(text,px,py);
 }
     
     
