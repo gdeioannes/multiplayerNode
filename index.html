@@ -99,7 +99,7 @@ $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true);
     
-    socket.emit('send dataPlayer',"hola");
+    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
 function setDataForSending(){
@@ -114,7 +114,7 @@ function setDataForSending(){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-    socket.emit('send dataPlayer',setDataForSending() );
+    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );
 });
     
   socket.on('receive dataChat', function(receivedDataChat){

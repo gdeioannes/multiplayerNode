@@ -17,6 +17,7 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
             console.log(myData);
+            console.log(myData.id);
             setPlayersData(myData);
         }
     });
