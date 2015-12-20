@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var vel=10;
+var vel=30;
 var debug=false;
 
 
@@ -58,6 +58,7 @@ function setPlayersData(myData){
         playersServer.name=myData.name;
         playersServer.push(playerServer);
         console.log(playersServer.length);
+        console.log(myData.name);
         if(debug){
             console.log(playersServer.length);
             console.log("Player Server");
