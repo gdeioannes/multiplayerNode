@@ -131,7 +131,6 @@ function setDataForSending(){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-    console.log(playersFromServer);
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );
 });
     
@@ -142,7 +141,6 @@ $(window).keyup(function(e){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
-      console.log(playersFromServer);
   });
     
 function controlMove(key,state){
@@ -174,6 +172,7 @@ function mainLoop(){
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
+        console.log(playersFromServer[i].name);
     }
 }
     
