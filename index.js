@@ -35,6 +35,7 @@ function setPlayersData(data){
             console.log("Data Exist");
             console.log(data);
             exist=true;
+            return;
         }
     }
     
@@ -47,7 +48,7 @@ function setPlayersData(data){
     }
 }
 
-setInterval(mainLoop,450);
+setInterval(mainLoop,1500);
 
 function mainLoop(){
 
