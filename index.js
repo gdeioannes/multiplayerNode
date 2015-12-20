@@ -55,11 +55,10 @@ function setPlayersData(myData){
         playerServer.posx=0;
         playerServer.posy=0;
         playerServer.color=myData.color;
-        playersServer.name=myData.name;
+        playerServer.name=myData.name;
         playersServer.push(playerServer);
         console.log(playersServer.length);
-        console.log(playersServer.name);
-        console.log(playersServer);
+
     }
 }
 
