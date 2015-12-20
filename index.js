@@ -51,6 +51,8 @@ function setPlayersData(myData){
     }else{
         playersClient.push(myData);
         playerServer.id=myData.id;
+        console.log("Player id");
+        console.log(myData.id);
         playerServer.posx=0;
         playerServer.posy=0;
         playerServer.color=myData.color;
