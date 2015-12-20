@@ -110,20 +110,8 @@ function setDataForSending(){
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
-    setPositions();
-    dataPlayer.posx=posx;
-    dataPlayer.posy=posy;
     return dataPlayer;
 }
-
-    function setPositions(){
-        for(var i=0;i<players.length;i++){
-        if(players[i].id==id){
-            posx=players[i].posx;
-            posy=players[i].posy;
-        }
-    }
-    }
     
 $(window).keyup(function(e){
    var key=e.which;
@@ -163,7 +151,7 @@ var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
 context.canvas.height = window.innerHeight;
 
-setInterval(mainLoop,80);
+setInterval(mainLoop,30);
 
 function mainLoop(){
     for(var i=0;i<players.length;i++){

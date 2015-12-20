@@ -17,8 +17,6 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
-            console.log(json);
-            console.log(json.id);
             setPlayersData(json);
         }
     });
@@ -44,15 +42,20 @@ function setPlayersData(myData){
     }else{
         players.push(myData);
     }
-    console.log(myData);
 }
 
-setInterval(mainLoop,80);
+setInterval(mainLoop,30);
 
 function mainLoop(){
 
     for(var i=0;i<players.length;i++){
-        if(players[i]!=null){    
+        if(players[i]!=null){ 
+            if(players[i].posy==null || players[i].posy == undefined){
+                players[i].posy=0;
+            }
+            if(players[i].posx==null || players[i].posx == undefined){
+                players[i].posx=0;
+            }
           if(players[i].flagDown){
               players[i].posy+=vel;
           }
