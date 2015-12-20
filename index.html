@@ -34,7 +34,7 @@
 <script>
 /////CHAT
 var id;
-var players=[];
+var playersFromServer=[];
 var radius = 10;
 
 if(id==null){
@@ -114,7 +114,7 @@ function setDataForSending(){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-    console.log(players);
+    console.log(playersFromServer);
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );
 });
     
@@ -124,7 +124,7 @@ $(window).keyup(function(e){
   });
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
-    players=allDataOfPLayer;
+    playersFromServer=allDataOfPLayer;
   });
     
 function controlMove(key,state){
@@ -152,8 +152,8 @@ context.canvas.height = window.innerHeight;
 setInterval(mainLoop,30);
 
 function mainLoop(){
-    for(var i=0;i<players.length;i++){
-        drawCircle(players[i].posx,players[i].posy,radius);
+    for(var i=0;i<playersFromServer.length;i++){
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius);
     }
 
 }
