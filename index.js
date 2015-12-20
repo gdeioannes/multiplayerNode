@@ -38,7 +38,9 @@ function setPlayersData(data){
         }
     }
     
-    if(!exist){
+    if(exist){
+        return;
+    }else{
         players.push(data);
         console.log("Data Push");
         console.log(data);
