@@ -36,7 +36,7 @@ http.listen(3000, function(){
 
 function setPlayersData(myData){
     var exist=false;
-    for(var i=0;i<players.length;i++){
+    for(var i=0;i<playersClient.length;i++){
         if(myData.id===playersClient[i].id){
             playersClient[i]=myData;
             exist=true;
