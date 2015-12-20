@@ -31,7 +31,12 @@ function setPlayersData(myData){
     var exist=false;
     for(var i=0;i<players.length;i++){
         if(myData.id===players[i].id){
+            posx=players[i].posx;
+            posy=players[i].posy;
+            
             players[i]=myData;
+            players[i].posX=posx;
+            players[i].posY=posy;
             exist=true;
             return;
         }
