@@ -68,6 +68,7 @@ function mainLoop(){
         }
     }
     if(players!=null){
+        console.log(players);
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
     }
 }
