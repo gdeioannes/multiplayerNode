@@ -12,12 +12,13 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     socket.on('send dataChat', function(data){
         console.log(data);
+        console.log(data.message);
         io.emit('send dataChat', data);
     });
     socket.on('send dataPlayer', function(data){
         if(data!=null){
             console.log(data.id);
-            setPlayersData(data);
+            setPlayersDatasetPlayersData(data);
         }
     });
     socket.join('sendAllData');
@@ -28,7 +29,6 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(myData){
-    console.log(myData);
     var exist=false;
     for(var i=0;i<players.length;i++){
         if(myData.id===players[i].id){
