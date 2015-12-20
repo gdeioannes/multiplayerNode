@@ -15,12 +15,12 @@
     #messages li { padding: 5px 10px; }
     label{font-weight: 500;}
     #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none; opacity: 0.7;}
-    canvas{float: left; position: fixed; width: 100%; height: 100%; background: purple; z-index: -1;}
+    canvas{float: left; position: fixed; width: 100%; height: 100%; background: white; z-index: -1;}
     #toggle-btn{padding: 5px; width: 20%; font-family: 'Lato', sans-serif;}
     </style>
   </head>
   <body>
-      <canvas id="myCanvas" style="background:purple;"></canvas>
+      <canvas id="myCanvas"></canvas>
       <button id="toggle-btn">Totggle Chat</button>
       <div id="chat-container">
         <label>User name: </label><input id="u-name" type="text" placeholder="user name">
@@ -186,9 +186,10 @@ function drawCircle(centerX,centerY,radius,color){
 }
 
 function drawText(text,px,py){
-    context.font = "20px Arial";
+    var fontsize=10;
+    context.font = fontsize+"px Arial";
     context.fillStyle = "#000";
-    context.fillText(text,px,py);
+    context.fillText(text,px-text.length*fontsize,py);
 }
     
     
