@@ -47,7 +47,7 @@ function setPlayersData(myData){
     }
 }
 
-setInterval(mainLoop,1500);
+setInterval(mainLoop,80);
 
 function mainLoop(){
 
@@ -68,7 +68,6 @@ function mainLoop(){
         }
     }
     if(players!=null){
-        console.log(players);
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
     }
 }
