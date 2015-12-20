@@ -70,7 +70,9 @@ var vel=10;
       "flagRight":false,
       "flagLeft":false,
       "flagUp":false,
-      "flagDown":false
+      "flagDown":false,
+      "posx":0,
+      "posy":0
   } 
     
   $('form').submit(function(){
@@ -114,7 +116,7 @@ $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
 
-        dataPlayer.flagRight=flagRight;
+    dataPlayer.flagRight=flagRight;
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
