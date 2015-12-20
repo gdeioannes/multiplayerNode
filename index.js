@@ -26,7 +26,8 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-function setPlayersData(data){
+function setPlayersData(myData){
+    console.log(myData.id);
     var exist=false;
     for(var i=0;i<players.length;i++){
         console.log("Sended Data:"+data.id+"  |  Received Data:"+players[i].id);
@@ -69,8 +70,8 @@ function mainLoop(){
         }
     }
     if(players!=null){
-        console.log("Sended Data");
-        console.log(players);
+        //console.log("Sended Data");
+        //console.log(players);
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
     }
 }
