@@ -34,6 +34,7 @@ function setPlayersData(data){
             players[i]=data;
             console.log("Data Exist");
             console.log(data);
+            exist=true;
         }
         if(!exist){
             players.push(data);
@@ -41,6 +42,7 @@ function setPlayersData(data){
             console.log(data);
         }
     }
+    console.log("Data Player Final");
     console.log(players);
 }
 
