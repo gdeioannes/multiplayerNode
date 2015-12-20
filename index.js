@@ -35,7 +35,6 @@ function setPlayersData(myData){
     for(var i=0;i<playersClient.length;i++){
         if(myData.id===playersClient[i].id){
             playersClient[i]=myData;
-            playerServer[i].name=myData.name;
             exist=true;
             return;
         }
