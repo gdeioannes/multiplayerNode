@@ -16,7 +16,7 @@ io.on('connection', function(socket){
   });
     socket.on('send dataPlayer', function(data){
      setPlayersData(data);
-     io.emit('send dataPlayer', players);
+     //io.emit('send dataPlayer', players);
 });
 
 });
