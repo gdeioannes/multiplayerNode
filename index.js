@@ -30,7 +30,8 @@ http.listen(3000, function(){
 function setPlayersData(data){
     var exist=false;
     for(var i=0;i<players.length;i++){
-        if(data.id==players[i].id){
+        console.log("Sended Data:"data.id+"  |  Received Data:"+players[i].id);
+        if(data.id===players[i].id){
             players[i]=data;
             console.log("Data Exist");
             console.log(data);
