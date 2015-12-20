@@ -45,7 +45,7 @@ function setPlayersData(data){
     }
 }
 
-setInterval(mainLoop,150);
+setInterval(mainLoop,450);
 
 function mainLoop(){
 
