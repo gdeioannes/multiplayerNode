@@ -27,14 +27,14 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(myData){
-    console.log(myData.id);
+    console.log(myData);
     var exist=false;
     for(var i=0;i<players.length;i++){
-        console.log("Sended Data:"+data.id+"  |  Received Data:"+players[i].id);
-        if(data.id===players[i].id){
-            players[i]=data;
+        console.log("Sended Data:"+myData.id+"  |  Received Data:"+players[i].id);
+        if(myData.id===players[i].id){
+            players[i]=myData;
             console.log("Data Exist");
-            console.log(data);
+            console.log(myData);
             exist=true;
             return;
         }
@@ -43,9 +43,9 @@ function setPlayersData(myData){
     if(exist){
         return;
     }else{
-        players.push(data);
+        players.push(myData);
         console.log("Data Push");
-        console.log(data);
+        console.log(myData);
     }
 }
 
