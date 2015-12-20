@@ -57,6 +57,8 @@ var flagRight=false;
 var flagUp=false;
 var flagDown=false;
 var vel=10;
+var posx=0;
+var posy=0;
     
   var socket = io();
     
@@ -108,8 +110,11 @@ function setDataForSending(){
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
+    dataPlayer.posx=posx;
+    dataPlayer.posy=posy;
     return dataPlayer;
 }
+    
     
 $(window).keyup(function(e){
    var key=e.which;
@@ -154,7 +159,11 @@ setInterval(mainLoop,80);
 function mainLoop(){
     for(var i=0;i<players.length;i++){
         console.log(players[i].posx);
-        drawCircle(players[i].posx,players[i].posx,radius); 
+        drawCircle(players[i].posx,players[i].posx,radius);
+        if(players[i].id==id){
+            posx=players[i].posx;
+            posy=players[i].posy;
+        }
     }
 
 }
