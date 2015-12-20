@@ -149,10 +149,11 @@ var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
 context.canvas.height = window.innerHeight;
 
-setInterval(mainLoop,30);
+setInterval(mainLoop,80);
 
 function mainLoop(){
     for(var i=0;i<players.length;i++){
+        console.log(players[i].posx);
         drawCircle(players[i].posx,players[i].posx,radius); 
     }
 
