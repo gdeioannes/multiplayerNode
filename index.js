@@ -58,14 +58,8 @@ function setPlayersData(myData){
         playersServer.name=myData.name;
         playersServer.push(playerServer);
         console.log(playersServer.length);
-        console.log(myData.name);
-        if(debug){
-            console.log(playersServer.length);
-            console.log("Player Server");
-            console.log(playersServer);
-            console.log("Player Array");
-            console.log(playersClient);
-        }
+        console.log(playersServer.name);
+        console.log(playersServer);
     }
 }
 
