@@ -63,7 +63,7 @@ function mainLoop(){
               players[i].posx-=vel;
           }
           if(players[i].flagRight){ 
-              players[i].posx=vel;
+              players[i].posx+=vel;
           }  
         }
     }
