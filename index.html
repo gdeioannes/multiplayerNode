@@ -40,7 +40,6 @@
     
     $('#messages').scrollTop(100000000000000000000000000000000000000000);    
     $('#toggle-btn').click(function(){
-        console.log("text")
     $('#chat-container').toggle();
     });  
 
@@ -88,11 +87,7 @@ var vel=10;
     $('#messages').scrollTop(100000000000000000000000000000000000000000);
   });
     
-  var receivedData 
-  socket.on('send dataPlayer', function(receivedDataPlayers){
-    console.log(receivedDataPlayers);
-    //eceivedData=receivedDataPlayers;
-  });  
+
     
     //GAME
     
@@ -102,23 +97,34 @@ var vel=10;
 $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true);
+    
+    socket.emit('send dataPlayer',setDataForSending );
+});
+    
+function setDataForSending(){
     dataPlayer.id=id;
     dataPlayer.flagRight=flagRight;
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
     var dataString=JSON.stringify(dataPlayer);
-    socket.emit('send dataPlayer',dataPlayer );
-});
+    return dataString;
+}
     
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
+    socket.emit('send dataPlayer',setDataForSending );
 });
     
   socket.on('receive dataChat', function(receivedDataChat){
     $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
     $('#messages').scrollTop(100000000000000000000000000000000000000000);
+  });
+    
+  socket.on('send allDataOfPLayer', function(allDataOfPLayer){
+    players=allDataOfPLayer;
+      console.log(players);
   });
     
 function controlMove(key,state){
@@ -134,8 +140,6 @@ function controlMove(key,state){
     if(key==40){
         flagDown=state;
     }
-    
-    
 }
     
 var playersArray=[];
@@ -152,7 +156,9 @@ var radius = 10;
 setInterval(mainLoop,30);
 
 function mainLoop(){
-  drawCircle(centerX,centerY,radius);  
+    for(var i=0;i<players.length;i++){
+        drawCircle(player[i].posx,player[i].posx,radius); 
+    }
 
 }
 
