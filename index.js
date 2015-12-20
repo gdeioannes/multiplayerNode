@@ -36,11 +36,13 @@ function setPlayersData(data){
             console.log(data);
             exist=true;
         }
-        if(!exist){
-            players.push(data);
-            console.log("Data Push");
-            console.log(data);
-        }
+    }
+    
+    if(!exist){
+        players.push(data);
+        console.log("Data Push");
+        console.log(data);
+    
     }
     console.log("Data Player Final");
     console.log(players);
