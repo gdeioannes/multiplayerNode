@@ -73,7 +73,7 @@ function mainLoop(){
               playersServer[i].posx+=vel;
           }  
     }
-    if(players!=null){
+    if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
     }
 }
