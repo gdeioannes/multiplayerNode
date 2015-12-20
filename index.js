@@ -10,7 +10,7 @@ var playerServer={
     "id":0,
     "posx":0,
     "posy":0,
-    "color":
+    "color":""
 }
 
 app.get('/', function(req, res){
