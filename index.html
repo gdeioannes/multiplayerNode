@@ -35,7 +35,8 @@
 /////CHAT
 var id;
 var playersFromServer=[];
-var radius = 10;
+var radius = 30;
+    var color=getRandomColor();
 
 if(id==null){
     id=Math.round(Math.random()*100000000000);
@@ -50,6 +51,15 @@ if($('#u-name').val()==""){
     $('#u-name').val("User"+Math.round(Math.random()*1000));
 }
 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
     
 ///SEND DATA
 var flagLeft=false;
@@ -75,6 +85,7 @@ var posy=0;
       "flagLeft":false,
       "flagUp":false,
       "flagDown":false,
+      "color":""
   } 
     
   $('form').submit(function(){
@@ -108,6 +119,7 @@ function setDataForSending(){
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
+    dataPlayer.color=color;
     return dataPlayer;
 }
     
@@ -152,18 +164,18 @@ context.canvas.height = window.innerHeight;
 setInterval(mainLoop,30);
 
 function mainLoop(){
+    context.clearRect(0, 0, canvas.width, canvas.height);
     for(var i=0;i<playersFromServer.length;i++){
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius);
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
     }
-
+    
 }
 
-function drawCircle(centerX,centerY,radius){
+function drawCircle(centerX,centerY,radius,color){
   context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = 'green';
-    context.fill();
-    context.stroke();  
+    context.fillStyle = color;
+    context.fill(); 
 }
     
     

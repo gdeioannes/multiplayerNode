@@ -9,7 +9,8 @@ var vel=10;
 var playerServer={
     "id":0,
     "posx":0,
-    "posy":0
+    "posy":0,
+    "color":
 }
 
 app.get('/', function(req, res){
@@ -51,6 +52,7 @@ function setPlayersData(myData){
         playerServer.id=myData.id;
         playerServer.posx=0;
         playerServer.posy=0;
+        playerServer.color=myData.color;
         playersServer.push(playerServer);
     }
 }
