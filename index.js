@@ -59,7 +59,7 @@ setInterval(mainLoop,30);
 
 function mainLoop(){
 
-    for(var i=0;i<players.length;i++){
+    for(var i=0;i<playersClient.length;i++){
           if(playersClient[i].flagDown){
               playersServer[i].posy+=vel;
           }
