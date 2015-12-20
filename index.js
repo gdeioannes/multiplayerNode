@@ -15,8 +15,10 @@ io.on('connection', function(socket){
     io.emit('send dataChat', data);
   });
     socket.on('send dataPlayer', function(data){
-     setPlayersData(data);
-     //io.emit('send dataPlayer', players);
+    if(data!=null){
+        setPlayersData(data);
+    }
+    io.emit('send dataPlayer', players);
 });
 
 });
@@ -26,11 +28,11 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    /*if(players[data.id]==null){
+    f(players[data.id]==null){
         players[data.id][data];
     }
     console.log("Data:"+data);
-    console.log("Players:"+players);*/
+    //console.log("Players:"+players);
 }
 
 setInterval(mainLoop,30);
