@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var vel=30;
+var vel=15;
 var debug=false;
 
 
@@ -35,6 +35,7 @@ function setPlayersData(myData){
     for(var i=0;i<playersClient.length;i++){
         if(myData.id===playersClient[i].id){
             playersClient[i]=myData;
+            playerServer[i].name=myData.name;
             exist=true;
             return;
         }
