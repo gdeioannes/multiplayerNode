@@ -28,11 +28,10 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    console.log(data);
-    if(players[data.id]){
+    if(players[data.id]==null || players[data.id]==undefined ){
      players[data.id][data]   
     }
-    console.log(players);
+    console.log(players[data.id]);
 }
 
 setInterval(mainLoop,30);
