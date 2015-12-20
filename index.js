@@ -56,7 +56,11 @@ function setPlayersData(myData){
         playerServer.color=myData.color;
         playersServer.push(playerServer);
         console.log(playersServer.length);
+        console.log("Player Server");
         console.log(playersServer);
+        console.log("Player Array");
+        console.log(playersClient);
+        
     }
 }
 
