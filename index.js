@@ -12,12 +12,11 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
   socket.on('send dataChat', function(data){
     console.log(data);
-    setPlayers(data);
     io.emit('send dataChat', data);
   });
     socket.on('send dataPlayer', function(data){
-      console.log(data);
-    io.emit('send dataPlayer', players);
+     setPlayersData(data);
+     io.emit('send dataPlayer', players);
 });
 
 });
@@ -26,8 +25,12 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-function setPlayers(data){
-    players.push(data);
+function setPlayersData(data){
+    if(players[data.id]==null){
+        players[data.id][data];
+    }
+    console.log("Data:"+data);
+    console.log("Players:"+players);
 }
 
 setInterval(mainLoop,30);

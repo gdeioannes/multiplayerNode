@@ -33,11 +33,15 @@
 
 <script>
 /////CHAT
+    var id;
+    if(id==null){
+        id=Math.round(Math.random()*100000000000);
+    }
     
     $('#messages').scrollTop(100000000000000000000000000000000000000000);    
     $('#toggle-btn').click(function(){
         console.log("text")
-        $('#chat-container').toggle();
+    $('#chat-container').toggle();
     });  
 
     if($('#u-name').val()==""){
@@ -58,15 +62,10 @@ var vel=10;
     
   var dataChat={
       "name":"",
-      "message":"",
-      "flagRight":false,
-      "flagLeft":false,
-      "flagUp":false,
-      "flagDown":false
+      "message":""
   }
   
   var dataPlayer={
-      "name":"",
       "flagRight":false,
       "flagLeft":false,
       "flagUp":false,
@@ -76,7 +75,6 @@ var vel=10;
   } 
     
   $('form').submit(function(){
-    dataPlayer.name=$('#u-name').val();
     dataChat.name=$('#u-name').val();
     dataChat.message=$('#m').val();
     var dataString=JSON.stringify(dataChat);
@@ -91,8 +89,8 @@ var vel=10;
   });
     
   var receivedData 
-  socket.on('send dataPlayer', function(receivedDataPlayer){
-      console.log(receivedDataPlayer);
+  socket.on('send dataPlayer', function(receivedDataPlayers){
+    console.log(receivedDataPlayers);
     receivedData=receivedDataPlayer;
   });  
     
@@ -103,7 +101,8 @@ var vel=10;
     
 $(window).keydown(function(e){
    var key=e.which;
-    controlMove(key,true)
+    controlMove(key,true);
+    dataPlayer.id=id;
     dataPlayer.flagRight=flagRight;
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
@@ -161,22 +160,6 @@ setInterval(mainLoop,30);
 
 function mainLoop(){
   drawCircle(centerX,centerY,radius);  
-    
-      if(receivedData!=null){    
-      if(receivedData.flagDown){
-          centerY+=vel;
-      }
-      if(receivedData.flagUp){ 
-          centerY-=vel;
-      }
-      if(receivedData.flagLeft){ 
-          centerX-=vel;
-      }
-      if(receivedData.flagRight){ 
-          centerX+=vel;
-      }  
-    }
-    
 
 }
 
