@@ -28,10 +28,16 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    if(players[data.id]==null || players[data.id]==undefined ){
-     players[data.id][data]   
+    var exist=false;
+    for(var i=0;i<players.length;i++){
+        if(data.id==players[i].id){
+            players[i]=data;
+        }
+        if(!exist){
+            players.push(data);
+        }
     }
-    console.log(players[data.id]);
+    console.log(players);
 }
 
 setInterval(mainLoop,30);
