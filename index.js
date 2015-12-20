@@ -29,8 +29,10 @@ http.listen(3000, function(){
 
 function setPlayersData(data){
     console.log(data);
-    players.push[data];
-    console.log(players[0]);
+    if(players[data.id]){
+     players[data.id][data]   
+    }
+    console.log(players);
 }
 
 setInterval(mainLoop,30);
