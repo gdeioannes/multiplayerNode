@@ -42,8 +42,8 @@ function setPlayersData(data){
         players.push(data);
         console.log("Data Push");
         console.log(data);
+    }
     
-}
     console.log("Data Player Final");
     console.log(players);
 }
@@ -68,6 +68,8 @@ function mainLoop(){
           }  
         }
     }
-    io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
+    if(players!=null)
+        io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
+    }
 }
     
