@@ -84,6 +84,7 @@ var posy=0;
   
   var dataPlayer={
       "id":0,
+      "name":"",
       "flagRight":false,
       "flagLeft":false,
       "flagUp":false,
@@ -123,6 +124,7 @@ function setDataForSending(){
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
     dataPlayer.color=color;
+    dataPlayer.name=$('#u-name').val();
     return dataPlayer;
 }
     
@@ -171,6 +173,7 @@ function mainLoop(){
     context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
+        drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
     
 }
@@ -180,6 +183,11 @@ function drawCircle(centerX,centerY,radius,color){
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = color;
     context.fill(); 
+}
+
+function drawText(text,x,y){
+    ctx.font = "30px Arial";
+    ctx.fillText(text,x,y);
 }
     
     

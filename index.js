@@ -47,13 +47,15 @@ function setPlayersData(myData){
             "id":0,
             "posx":200,
             "posy":200,
-            "color":""
+            "color":"",
+            "name":""
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
         playerServer.posx=0;
         playerServer.posy=0;
         playerServer.color=myData.color;
+        playersServer.name=myData.name;
         playersServer.push(playerServer);
         
         if(debug){
