@@ -34,6 +34,8 @@
 <script>
 /////CHAT
     var id;
+    var players=[];
+    
     if(id==null){
         id=Math.round(Math.random()*100000000000);
     }
@@ -142,7 +144,7 @@ function controlMove(key,state){
     }
 }
     
-var playersArray=[];
+
 
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
