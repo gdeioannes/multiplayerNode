@@ -35,7 +35,7 @@ function setPlayersData(myData){
             players[i]=myData;
             console.log("Data Exist");
             console.log(myData);
-            console.log(myData.id);
+            console.log(myData.id());
             exist=true;
             return;
         }
