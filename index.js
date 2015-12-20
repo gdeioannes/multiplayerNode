@@ -29,7 +29,7 @@ http.listen(3000, function(){
 
 function setPlayersData(data){
     var exist=false;
-    var clientData=JSON.parse(data);
+    var clientData=JSON.stringify(data);
     for(var i=0;i<players.length;i++){
         console.log("Sended Data:"+clientData.id+"  |  Received Data:"+players[i].id);
         if(clientData.id===players[i].id){
