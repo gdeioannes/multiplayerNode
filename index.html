@@ -98,7 +98,7 @@ $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true);
     
-    socket.emit('send dataPlayer',setDataForSending );
+    socket.emit('send dataPlayer',setDataForSending() );
 });
     
 function setDataForSending(){
