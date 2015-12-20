@@ -114,13 +114,6 @@ $(window).keydown(function(e){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-
-    dataPlayer.flagRight=flagRight;
-    dataPlayer.flagLeft=flagLeft;
-    dataPlayer.flagUp=flagUp;
-    dataPlayer.flagDown=flagDown;
-    var dataString=JSON.stringify(dataPlayer);
-    socket.emit('send dataPlayer',dataPlayer );
 });
     
   socket.on('receive dataChat', function(receivedDataChat){
