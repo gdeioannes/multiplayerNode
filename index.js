@@ -33,26 +33,23 @@ function setPlayers(data){
 setInterval(mainLoop,30);
 
 function mainLoop(){
-  drawCircle(centerX,centerY,radius);  
+
     for(var i=0;i<players.length;i++){
-      if(players[i]!=null){    
-      if(players[i].flagDown){
-          players[i].posy+=vel;
-      }
-      if(players[i].flagUp){ 
-          players[i].posy-=vel;
-      }
-      if(players[i].flagLeft){ 
-          players[i].posx-=vel;
-      }
-      if(players[i].flagRight){ 
-          players[i].posx=vel;
-      }  
-    }
+        if(players[i]!=null){    
+          if(players[i].flagDown){
+              players[i].posy+=vel;
+          }
+          if(players[i].flagUp){ 
+              players[i].posy-=vel;
+          }
+          if(players[i].flagLeft){ 
+              players[i].posx-=vel;
+          }
+          if(players[i].flagRight){ 
+              players[i].posx=vel;
+          }  
+        }
     }
     
-    io.on('connection', function(socket){
-        io.emit('send dataPlayer', players);
-    });
-
 }
+    
