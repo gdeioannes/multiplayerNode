@@ -26,11 +26,11 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    if(players[data.id]==null){
+    /*if(players[data.id]==null){
         players[data.id][data];
     }
     console.log("Data:"+data);
-    console.log("Players:"+players);
+    console.log("Players:"+players);*/
 }
 
 setInterval(mainLoop,30);
