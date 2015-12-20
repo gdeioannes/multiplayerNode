@@ -55,5 +55,4 @@ function mainLoop(){
         io.emit('send dataPlayer', players);
     });
 
-  });
 }
