@@ -68,7 +68,7 @@ function mainLoop(){
           }  
         }
     }
-    if(players!=null)
+    if(players!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
     }
 }
