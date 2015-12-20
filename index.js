@@ -2,8 +2,15 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var receivedData;
-var players=[];
+var playersClient=[];
+var playersServer=[];
 var vel=10;
+
+var playerServer={
+    "id":0,
+    "posx":0,
+    "posy":0
+}
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -30,14 +37,8 @@ http.listen(3000, function(){
 function setPlayersData(myData){
     var exist=false;
     for(var i=0;i<players.length;i++){
-        if(myData.id===players[i].id){
-            posx=players[i].posx;
-            posy=players[i].posy;
-            
-            players[i]=myData;
-            players[i].posX=posx;
-            players[i].posY=posy;
-            console.log(players[i].posX);
+        if(myData.id===playersClient[i].id){
+            playersClient[i]=myData;
             exist=true;
             return;
         }
@@ -46,7 +47,11 @@ function setPlayersData(myData){
     if(exist){
         return;
     }else{
-        players.push(myData);
+        playersClient.push(myData);
+        playerServer.id=myData.id;
+        playerServer.posx=0;
+        playerServer.posy=0;
+        playersServer.push(playerServer);
     }
 }
 
@@ -55,21 +60,21 @@ setInterval(mainLoop,30);
 function mainLoop(){
 
     for(var i=0;i<players.length;i++){
-          if(players[i].flagDown){
-              players[i].posy+=vel;
+          if(playersClient[i].flagDown){
+              playersServer[i].posy+=vel;
           }
-          if(players[i].flagUp){ 
-              players[i].posy-=vel;
+          if(playersClient[i].flagUp){ 
+              playersServer[i].posy-=vel;
           }
-          if(players[i].flagLeft){ 
-              players[i].posx-=vel;
+          if(playersClient[i].flagLeft){ 
+              playersServer[i].posx-=vel;
           }
-          if(players[i].flagRight){ 
-              players[i].posx+=vel;
+          if(playersClient[i].flagRight){ 
+              playersServer[i].posx+=vel;
           }  
     }
     if(players!=null){
-        io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
+        io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
     }
 }
     
