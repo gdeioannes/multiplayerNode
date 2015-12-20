@@ -12,8 +12,6 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     socket.on('send dataChat', function(data){
         console.log(data);
-        console.log(data.message);
-        var myData=(JSON.parse(data))
         io.emit('send dataChat', data);
     });
     socket.on('send dataPlayer', function(data){
