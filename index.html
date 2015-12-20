@@ -172,13 +172,13 @@ setInterval(mainLoop,30);
 function mainLoop(){
     context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
-        drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
-        
+        drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
-    
 }
+    
 
+    
 function drawCircle(centerX,centerY,radius,color){
   context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
