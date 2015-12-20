@@ -32,6 +32,8 @@ function setPlayersData(data){
     for(var i=0;i<players.length;i++){
         if(data.id==players[i].id){
             players[i]=data;
+            console.log("Data");
+            console.log(data);
         }
         if(!exist){
             players.push(data);
