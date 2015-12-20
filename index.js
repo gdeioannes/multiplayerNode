@@ -24,32 +24,6 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-///GAME
-
 function setPlayers(data){
     players.push(data);
 }
-
-setInterval(mainLoop,30);
-
-function mainLoop(){
-
-    for(var i=0;i<players.length;i++){
-        if(players[i]!=null){    
-          if(players[i].flagDown){
-              players[i].posy+=vel;
-          }
-          if(players[i].flagUp){ 
-              players[i].posy-=vel;
-          }
-          if(players[i].flagLeft){ 
-              players[i].posx-=vel;
-          }
-          if(players[i].flagRight){ 
-              players[i].posx=vel;
-          }  
-        }
-    }
-    
-}
-    
