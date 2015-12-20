@@ -11,7 +11,7 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
     socket.on('send dataChat', function(data){
-        console.log("Chat:"+data);
+        console.log(data);
         io.emit('send dataChat', data);
     });
     socket.on('send dataPlayer', function(data){
@@ -28,8 +28,7 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    console.log("Data:"+data);
-    //console.log("Players:"+players);
+    console.log(data);
 }
 
 setInterval(mainLoop,30);
