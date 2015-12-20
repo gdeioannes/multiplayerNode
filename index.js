@@ -28,7 +28,7 @@ http.listen(3000, function(){
 });
 
 function setPlayersData(data){
-    f(players[data.id]==null){
+    if(players[data.id]==null){
         players[data.id][data];
     }
     console.log("Data:"+data);
