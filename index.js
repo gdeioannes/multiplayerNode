@@ -29,12 +29,13 @@ http.listen(3000, function(){
 
 function setPlayersData(data){
     var exist=false;
+    var clientData=JSON.parse(data);
     for(var i=0;i<players.length;i++){
-        console.log("Sended Data:"+data.id+"  |  Received Data:"+players[i].id);
-        if(data.id===players[i].id){
-            players[i]=data;
+        console.log("Sended Data:"+clientData.id+"  |  Received Data:"+players[i].id);
+        if(clientData.id===players[i].id){
+            players[i]=clientData;
             console.log("Data Exist");
-            console.log(data);
+            console.log(clientData);
             exist=true;
             return;
         }
@@ -43,9 +44,9 @@ function setPlayersData(data){
     if(exist){
         return;
     }else{
-        players.push(data);
+        players.push(clientData);
         console.log("Data Push");
-        console.log(data);
+        console.log(clientData);
     }
 }
 
