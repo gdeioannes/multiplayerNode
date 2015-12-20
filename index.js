@@ -46,6 +46,7 @@ function setPlayersData(myData){
         players.push(myData);
         console.log("Data Push");
         console.log(myData);
+        console.log(myData.id);
     }
 }
 
