@@ -16,6 +16,7 @@ io.on('connection', function(socket){
     });
     socket.on('send dataPlayer', function(data){
         if(data!=null){
+            console.log(data.id);
             setPlayersData(data);
         }
     });
@@ -30,12 +31,8 @@ function setPlayersData(myData){
     console.log(myData);
     var exist=false;
     for(var i=0;i<players.length;i++){
-        console.log("Sended Data:"+myData.id+"  |  Received Data:"+players[i].id);
         if(myData.id===players[i].id){
             players[i]=myData;
-            console.log("Data Exist");
-            console.log(myData);
-            console.log(myData.id());
             exist=true;
             return;
         }
@@ -45,9 +42,6 @@ function setPlayersData(myData){
         return;
     }else{
         players.push(myData);
-        console.log("Data Push");
-        console.log(myData);
-        console.log(myData.id);
     }
 }
 
@@ -72,8 +66,6 @@ function mainLoop(){
         }
     }
     if(players!=null){
-        //console.log("Sended Data");
-        //console.log(players);
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
     }
 }
