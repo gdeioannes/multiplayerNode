@@ -165,7 +165,7 @@ context.canvas.height = window.innerHeight;
 setInterval(mainLoop,30);
 
 function mainLoop(){
-    
+    context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
     }
