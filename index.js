@@ -6,12 +6,7 @@ var playersClient=[];
 var playersServer=[];
 var vel=10;
 
-var playerServer={
-    "id":0,
-    "posx":0,
-    "posy":0,
-    "color":""
-}
+
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -49,10 +44,14 @@ function setPlayersData(myData){
     if(exist){
         return;
     }else{
+        var playerServer={
+            "id":0,
+            "posx":0,
+            "posy":0,
+            "color":""
+        }
         playersClient.push(myData);
         playerServer.id=myData.id;
-        console.log("Player id");
-        console.log(myData.id);
         playerServer.posx=0;
         playerServer.posy=0;
         playerServer.color=myData.color;
