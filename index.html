@@ -186,10 +186,10 @@ function drawCircle(centerX,centerY,radius,color){
 }
 
 function drawText(text,px,py){
-    var fontsize=10;
+    var fontsize=15;
     context.font = fontsize+"px Arial";
     context.fillStyle = "#000";
-    context.fillText(text,px-text.length*fontsize,py);
+    context.fillText(text,px-text.length-radio/2,py);
 }
     
     
