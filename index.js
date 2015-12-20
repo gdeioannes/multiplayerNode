@@ -45,8 +45,8 @@ function setPlayersData(myData){
     }else{
         var playerServer={
             "id":0,
-            "posx":0,
-            "posy":0,
+            "posx":200,
+            "posy":200,
             "color":""
         }
         playersClient.push(myData);
