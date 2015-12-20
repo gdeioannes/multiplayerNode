@@ -54,6 +54,7 @@ function setPlayersData(myData){
         playerServer.posy=0;
         playerServer.color=myData.color;
         playersServer.push(playerServer);
+        console.log(playersServer.length);
     }
 }
 

@@ -137,6 +137,7 @@ $(window).keyup(function(e){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
+      console.log(playersFromServer);
   });
     
 function controlMove(key,state){
