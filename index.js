@@ -37,6 +37,7 @@ function setPlayersData(myData){
             players[i]=myData;
             players[i].posX=posx;
             players[i].posY=posy;
+            console.log(players[i].posX);
             exist=true;
             return;
         }
@@ -54,13 +55,6 @@ setInterval(mainLoop,30);
 function mainLoop(){
 
     for(var i=0;i<players.length;i++){
-        if(players[i]!=null){ 
-            if(players[i].posy==null || players[i].posy == undefined){
-                players[i].posy=0;
-            }
-            if(players[i].posx==null || players[i].posx == undefined){
-                players[i].posx=0;
-            }
           if(players[i].flagDown){
               players[i].posy+=vel;
           }
@@ -73,7 +67,6 @@ function mainLoop(){
           if(players[i].flagRight){ 
               players[i].posx+=vel;
           }  
-        }
     }
     if(players!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", players); 
