@@ -16,7 +16,7 @@ io.on('connection', function(socket){
     });
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
-            var json=JSON.stringify(myData);
+            var json=JSON.parse(myData.toString());
             console.log(json);
             console.log(json.id);
             console.log(typeof json)
