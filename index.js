@@ -18,7 +18,7 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(data){
         if(data!=null){
             console.log(data.id);
-            setPlayersDatasetPlayersData(data);
+            setPlayersData(data);
         }
     });
     socket.join('sendAllData');
