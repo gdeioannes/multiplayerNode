@@ -18,6 +18,7 @@ io.on('connection', function(socket){
         if(myData!=null){
             console.log(myData);
             console.log(myData.id);
+            console.log(typeof myData)
             setPlayersData(myData);
         }
     });
