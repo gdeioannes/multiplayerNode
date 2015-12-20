@@ -19,7 +19,6 @@ io.on('connection', function(socket){
             var json=JSON.parse(myData.toString());
             console.log(json);
             console.log(json.id);
-            console.log(typeof json)
             setPlayersData(json);
         }
     });
@@ -45,6 +44,7 @@ function setPlayersData(myData){
     }else{
         players.push(myData);
     }
+    console.log(myData);
 }
 
 setInterval(mainLoop,80);

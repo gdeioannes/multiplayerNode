@@ -114,6 +114,7 @@ function setDataForSending(){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
+    console.log(players);
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );
 });
     
@@ -124,7 +125,6 @@ $(window).keyup(function(e){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     players=allDataOfPLayer;
-    console.log(players);
   });
     
 function controlMove(key,state){
