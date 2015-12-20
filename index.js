@@ -14,10 +14,10 @@ io.on('connection', function(socket){
         console.log(data);
         io.emit('send dataChat', data);
     });
-    socket.on('send dataPlayer', function(data){
-        if(data!=null){
-            console.log(data.id);
-            setPlayersData(data);
+    socket.on('send dataPlayer', function(myData){
+        if(myData!=null){
+            console.log(myData.id);
+            setPlayersData(myData);
         }
     });
     socket.join('sendAllData');
