@@ -18,7 +18,6 @@ io.on('connection', function(socket){
         if(data!=null){
             setPlayersData(data);
         }
-        io.emit('send dataPlayer', players);
     });
     socket.join('sendAllData');
 });
@@ -29,13 +28,12 @@ http.listen(3000, function(){
 
 function setPlayersData(data){
     var exist=false;
-    console.data=id;
     for(var i=0;i<players.length;i++){
-        console.log("Sended Data:"+clientData.id+"  |  Received Data:"+players[i].id);
-        if(clientData.id===players[i].id){
-            players[i]=clientData;
+        console.log("Sended Data:"+data.id+"  |  Received Data:"+players[i].id);
+        if(data.id===players[i].id){
+            players[i]=data;
             console.log("Data Exist");
-            console.log(clientData);
+            console.log(data);
             exist=true;
             return;
         }
@@ -44,9 +42,9 @@ function setPlayersData(data){
     if(exist){
         return;
     }else{
-        players.push(clientData);
+        players.push(data);
         console.log("Data Push");
-        console.log(clientData);
+        console.log(data);
     }
 }
 
