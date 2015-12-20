@@ -164,11 +164,11 @@ context.canvas.height = window.innerHeight;
 setInterval(mainLoop,30);
 
 function mainLoop(){
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
     }
-    
+    context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawCircle(centerX,centerY,radius,color){
