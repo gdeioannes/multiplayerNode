@@ -33,21 +33,22 @@
 
 <script>
 /////CHAT
-    var id;
-    var players=[];
-    
-    if(id==null){
-        id=Math.round(Math.random()*100000000000);
-    }
-    
-    $('#messages').scrollTop(100000000000000000000000000000000000000000);    
-    $('#toggle-btn').click(function(){
-    $('#chat-container').toggle();
-    });  
+var id;
+var players=[];
+var radius = 10;
 
-    if($('#u-name').val()==""){
-        $('#u-name').val("User"+Math.round(Math.random()*1000));
-    }
+if(id==null){
+    id=Math.round(Math.random()*100000000000);
+}
+
+$('#messages').scrollTop(100000000000000000000000000000000000000000);    
+$('#toggle-btn').click(function(){
+$('#chat-container').toggle();
+});  
+
+if($('#u-name').val()==""){
+    $('#u-name').val("User"+Math.round(Math.random()*1000));
+}
 
     
 ///SEND DATA
@@ -116,7 +117,7 @@ function setDataForSending(){
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-    socket.emit('send dataPlayer',setDataForSending );
+    socket.emit('send dataPlayer',setDataForSending() );
 });
     
   socket.on('receive dataChat', function(receivedDataChat){
@@ -150,10 +151,6 @@ var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
 context.canvas.height = window.innerHeight;
-
-var centerX = canvas.width / 2;
-var centerY = canvas.height / 2;
-var radius = 10;
 
 setInterval(mainLoop,30);
 
