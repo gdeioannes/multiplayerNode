@@ -23,6 +23,9 @@ io.on('connection', function(socket){
             setPlayersData(json);
         }
     });
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
     socket.join('sendAllData');
 });
 

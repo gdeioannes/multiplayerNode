@@ -56,7 +56,8 @@ if($('#u-name').val()==""){
 
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
+    //var letters = '0123456789ABCDEF'.split('');
+    var letters = '456789ABCDEF'.split('');
     var color = '#';
     for (var i = 0; i < 6; i++ ) {
         color += letters[Math.floor(Math.random() * 16)];
@@ -114,7 +115,13 @@ $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true);
     
-    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+    if(controlMove(key,false)){socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));}
+});
+    
+$(window).keyup(function(e){
+   var key=e.which;
+    controlMove(key,false)
+    if(controlMove(key,false)){socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );}
 });
     
 function setDataForSending(){
@@ -128,11 +135,7 @@ function setDataForSending(){
     return dataPlayer;
 }
     
-$(window).keyup(function(e){
-   var key=e.which;
-    controlMove(key,false)
-    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );
-});
+
     
   socket.on('receive dataChat', function(receivedDataChat){
     $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
@@ -146,15 +149,19 @@ $(window).keyup(function(e){
 function controlMove(key,state){
     if(key==37){
         flagLeft=state;
+        return true;
     }
     if(key==39){
         flagRight=state;
+        return true;
     }
     if(key==38){
         flagUp=state;
+        return true;
     }
     if(key==40){
         flagDown=state;
+        return true;
     }
 }
     
