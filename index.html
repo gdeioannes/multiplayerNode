@@ -174,7 +174,7 @@ function controlMove(key,state){
         flagDown=state;
     }
     
-    if(key==32){
+    if(key==32 && !shootFlag){
         shootFlag=true;
     }
 }
