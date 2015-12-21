@@ -7,6 +7,7 @@ var playersServer=[];
 var vel=8;
 var velShoot=6;
 var velcharge=0.8;
+var minRadius=30;
 var debug=false;
 
 app.get('/', function(req, res){
@@ -60,8 +61,8 @@ function setPlayersData(myData,socketID){
             "color":"",
             "name":"",
             "socketID":"",
-            "shootRadius":0,
-            "chargeRadius":0,
+            "shootRadius":minRadius,
+            "chargeRadius":minRadius,
             "maxShootRadius":150,
             "shootFlag":false
         }
@@ -118,8 +119,8 @@ function mainLoop(){
         if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
             playersServer[i].shootRadius+=velShoot;
             if(playersServer[i].shootRadius>playersServer[i].chargeRadius){
-                playersServer[i].shootRadius=0;
-                playersServer[i].chargeRadius=0;
+                playersServer[i].shootRadius=minRadius;
+                playersServer[i].chargeRadius=minRadius;
                 playersServer[i].shootFlag=false;
                 console.log("Shoot End");
                 console.log(playersServer[i].id);
