@@ -26,6 +26,7 @@ io.on('connection', function(socket){
     socket.on('disconnect', function(){
         console.log('user disconnected');
         console.log(socket.id);
+        deletePlayer(socket.id);
     });
     socket.join('sendAllData');
 });
