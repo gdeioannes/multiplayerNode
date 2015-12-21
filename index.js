@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var vel=15;
+var vel=5;
 var debug=false;
 
 
