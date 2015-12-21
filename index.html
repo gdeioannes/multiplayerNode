@@ -130,6 +130,8 @@ $(window).keyup(function(e){
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
+    
+//SEND DATA TO SERVER    
 function setDataForSending(){
     dataPlayer.id=id;
     dataPlayer.flagRight=flagRight;
@@ -151,13 +153,6 @@ function setDataForSending(){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
-      if(shootFlag){
-          for(var i=0;i<playersFromServer.length;i++){
-              if(playersFromServer[i].id==id){
-                  shootFlag=playersFromServer[i].shootFlag
-              }
-          }
-      }
   });
     
 function controlMove(key,state){
@@ -174,14 +169,14 @@ function controlMove(key,state){
         flagDown=state;
     }
     
-    if(key==32 && !shootFlag){
+    if(key==32){
         shootFlag=true;
     }
 }
     
 
 var alphaCharge=0.15;
-var alphaShoot=0.5;
+var alphaShoot=0.7;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
