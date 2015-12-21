@@ -19,7 +19,6 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
-            console.log(json);
             setPlayersData(json,socket.id);
         }
     });
@@ -117,6 +116,8 @@ function mainLoop(){
                 playersServer[i].shootRadius=0;
                 playersServer[i].chargeRadius=0;
                 playersServer[i].shootFlag=false;
+                console.log("Shoot End");
+                console.log(playersServer[i].id);
             }
         }
         
