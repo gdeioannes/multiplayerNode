@@ -115,13 +115,13 @@ $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true);
     
-    if(controlMove(key,false)){socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));}
+    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
 $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
-    if(controlMove(key,false)){socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ) );}
+    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
 function setDataForSending(){
@@ -149,19 +149,15 @@ function setDataForSending(){
 function controlMove(key,state){
     if(key==37){
         flagLeft=state;
-        return true;
     }
     if(key==39){
         flagRight=state;
-        return true;
     }
     if(key==38){
         flagUp=state;
-        return true;
     }
     if(key==40){
         flagDown=state;
-        return true;
     }
 }
     
