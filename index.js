@@ -57,7 +57,8 @@ function setPlayersData(myData,socketID){
             "socketID":"",
             "shootRadius":0,
             "chargeRadius":0,
-            "maxShootRadius":150
+            "maxShootRadius":150,
+            "shootFlag":false
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
@@ -107,6 +108,16 @@ function mainLoop(){
         if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
             playersServer[i].chargeRadius+=0.5;
         }
+        
+        if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
+            playersServer[i].shootRadius+=3;
+            if(playersServer[i].shootRadius>playersServer[i].chargeRadius){
+                playersServer[i].shootRadius=0;
+                playersServer[i].chargeRadius=0;
+                playersServer[i].shootFlag=false;
+            }
+        }
+        
     }
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 

@@ -71,6 +71,7 @@ var flagLeft=false;
 var flagRight=false;
 var flagUp=false;
 var flagDown=false;
+var shootFlag=false;
 var vel=10;
 var posx=0;
 var posy=0;
@@ -91,6 +92,7 @@ var posy=0;
       "flagLeft":false,
       "flagUp":false,
       "flagDown":false,
+      "shootFlag":false,
       "color":""
   } 
     
@@ -134,6 +136,7 @@ function setDataForSending(){
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
+    dataPlayer.shootFlag=shootFlag;
     dataPlayer.color=color;
     dataPlayer.name=$('#u-name').val();
     return dataPlayer;
@@ -148,6 +151,13 @@ function setDataForSending(){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
+      for(shootFlag){
+          for(var i=0;i<playersFromServer.length;i++){
+              if(playersFromServer[i].id==id){
+                  shootFlag=playersFromServer[i].shootFlag
+              }
+          }
+      }
   });
     
 function controlMove(key,state){
@@ -163,10 +173,15 @@ function controlMove(key,state){
     if(key==40){
         flagDown=state;
     }
+    
+    if(key==32){
+        shootFlag=true;
+    }
 }
     
 
-
+var alphaCharge=0.15;
+var alphaShoot=0.5;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
@@ -178,7 +193,8 @@ function mainLoop(){
     context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,1);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,0.5);
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
         console.log(playersFromServer[i]);
     }
