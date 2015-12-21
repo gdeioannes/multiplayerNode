@@ -194,7 +194,7 @@ function mainLoop(){
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
         
         //SHOOT LOGIC
-        if(playersServer[i].id==id && playersFromServer[i].shootRadius==0){
+        if(playersFromServer[i].id==id && playersFromServer[i].shootRadius==0){
             shootFlag=false;
         }
     }
