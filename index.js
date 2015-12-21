@@ -118,7 +118,7 @@ function mainLoop(){
         
         if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
             playersServer[i].shootRadius+=velShoot;
-            if(playersServer[i].shootRadius>playersServer[i].chargeRadius){
+            if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
                 playersServer[i].shootRadius=minRadius;
                 playersServer[i].chargeRadius=minRadius;
                 playersServer[i].shootFlag=false;
