@@ -41,6 +41,7 @@ function setPlayersData(myData,socketID){
         if(myData.id===playersClient[i].id){
             playersClient[i]=myData;
             playersServer[i].name=myData.name;
+            playersServer[i].shootFlag=myData.shootFlag;
             exist=true;
             return;
         }
