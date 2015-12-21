@@ -177,8 +177,8 @@ setInterval(mainLoop,30);
 function mainLoop(){
     context.canvas.width=context.canvas.width;
     for(var i=0;i<playersFromServer.length;i++){
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color);
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,1);
+        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,0.5);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
         console.log(playersFromServer[i]);
     }
@@ -186,10 +186,10 @@ function mainLoop(){
     
 
     
-function drawCircle(centerX,centerY,radius,color){
+function drawCircle(centerX,centerY,radius,color,alpha){
   context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = color;
+    context.fillStyle = hexToRgbA(color,alpha);
     context.fill(); 
 }
 
@@ -198,6 +198,19 @@ function drawText(text,px,py){
     context.font = fontsize+"px Arial";
     context.fillStyle = "#000";
     context.fillText(text,px-text.length-radius/2,py);
+}
+
+function hexToRgbA(hex,alpha){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+alpha+')';
+    }
+    throw new Error('Bad Hex');
 }
     
     
