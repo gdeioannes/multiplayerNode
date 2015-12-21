@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var vel=5;
+var vel=8;
 var debug=false;
 
 
@@ -110,6 +110,6 @@ function mainLoop(){
 }
 
 var calcSpeed = function(del, speed) {
-    return (speed * del) * (60 / 1000);
+    return (speed * del) * (30 / 1000);
 }
     
