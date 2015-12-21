@@ -7,7 +7,6 @@ var playersServer=[];
 var vel=8;
 var debug=false;
 
-
 app.get('/', function(req, res){
   res.sendfile('index.html');
 });
@@ -55,7 +54,10 @@ function setPlayersData(myData,socketID){
             "posy":500,
             "color":"",
             "name":"",
-            "socketID":""
+            "socketID":"",
+            "shootRadius":0,
+            "chargeRadius":0,
+            "maxShootRadius":150
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
@@ -101,7 +103,10 @@ function mainLoop(){
           }
           if(playersClient[i].flagRight){ 
               playersServer[i].posx+=calcSpeed(delta, vel);
-          }  
+          } 
+        if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
+            playersServer[i].chargeRadius+=0.5;
+        }
     }
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
@@ -110,6 +115,6 @@ function mainLoop(){
 }
 
 var calcSpeed = function(del, speed) {
-    return (speed * del) * (30 / 1000);
+    return (speed * del) * (60 / 1000);
 }
     
