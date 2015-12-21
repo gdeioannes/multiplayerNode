@@ -119,8 +119,7 @@ socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 
 $(window).keydown(function(e){
    var key=e.which;
-    controlMove(key,true);
-    
+    controlMove(key,true); 
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
@@ -128,6 +127,7 @@ $(window).keyup(function(e){
    var key=e.which;
     controlMove(key,false)
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+    shootFlag=false;
 });
     
 function setDataForSending(){
@@ -151,13 +151,6 @@ function setDataForSending(){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
-      if(shootFlag){
-          for(var i=0;i<playersFromServer.length;i++){
-              if(playersFromServer[i].id==id){
-                  shootFlag=playersFromServer[i].shootFlag
-              }
-          }
-      }
   });
     
 function controlMove(key,state){

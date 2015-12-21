@@ -5,6 +5,8 @@ var receivedData;
 var playersClient=[];
 var playersServer=[];
 var vel=8;
+var velShoot=6;
+var velcharge=0.8;
 var debug=false;
 
 app.get('/', function(req, res){
@@ -40,7 +42,9 @@ function setPlayersData(myData,socketID){
         if(myData.id===playersClient[i].id){
             playersClient[i]=myData;
             playersServer[i].name=myData.name;
-            playersServer[i].shootFlag=myData.shootFlag;
+            if(!playersServer[i].shootFlag){
+                playersServer[i].shootFlag=myData.shootFlag;
+            }
             exist=true;
             return;
         }
@@ -105,13 +109,14 @@ function mainLoop(){
           }
           if(playersClient[i].flagRight){ 
               playersServer[i].posx+=calcSpeed(delta, vel);
-          } 
+          }
+        
         if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
-            playersServer[i].chargeRadius+=0.5;
+            playersServer[i].chargeRadius+=velcharge;
         }
         
         if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
-            playersServer[i].shootRadius+=3;
+            playersServer[i].shootRadius+=velShoot;
             if(playersServer[i].shootRadius>playersServer[i].chargeRadius){
                 playersServer[i].shootRadius=0;
                 playersServer[i].chargeRadius=0;
