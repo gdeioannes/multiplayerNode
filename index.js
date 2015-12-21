@@ -82,24 +82,34 @@ function deletePlayer(socketID){
 
 setInterval(mainLoop,30);
 
+var now, delta;
+var then = new Date().getTime();
+
 function mainLoop(){
+    now=new Date().getTime();
+    delta=now-then;
 
     for(var i=0;i<playersClient.length;i++){
           if(playersClient[i].flagDown){
-              playersServer[i].posy+=vel;
+              playersServer[i].posy+=calcSpeed(delta, vel);
           }
           if(playersClient[i].flagUp){ 
-              playersServer[i].posy-=vel;
+              playersServer[i].posy-=calcSpeed(delta, vel);;
           }
           if(playersClient[i].flagLeft){ 
-              playersServer[i].posx-=vel;
+              playersServer[i].posx-=calcSpeed(delta, vel);
           }
           if(playersClient[i].flagRight){ 
-              playersServer[i].posx+=vel;
+              playersServer[i].posx+=calcSpeed(delta, vel);
           }  
     }
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
     }
+    then = now;
+}
+
+var calcSpeed = function(del, speed) {
+    return (speed * del) * (60 / 1000);
 }
     
