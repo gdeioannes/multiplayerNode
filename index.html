@@ -151,7 +151,7 @@ function setDataForSending(){
     $('#messages').scrollTop(100000000000000000000000000000000000000000);
   });
     
-  socket.on('send allDataOfPLayer', function(allDataOfPLayer){
+  socket.on('send allDataOfPlayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
   });
     
@@ -169,7 +169,7 @@ function controlMove(key,state){
         flagDown=state;
     }
     
-    if(key==32){
+    if(key==32 && !shootFlag){
         shootFlag=true;
     }
 }
@@ -191,6 +191,11 @@ function mainLoop(){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
+        
+        //SHOOT LOGIC
+        if(playersServer[i].id==id && playersFromServer[i].shootRadius==0){
+            shootFlag=false;
+        }
     }
 }
     
