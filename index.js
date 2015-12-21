@@ -20,12 +20,12 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
-            console.log(json);
-            setPlayersData(json);
+            setPlayersData(json,socket.id);
         }
     });
     socket.on('disconnect', function(){
         console.log('user disconnected');
+        console.log(socket.id);
     });
     socket.join('sendAllData');
 });
@@ -34,7 +34,7 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-function setPlayersData(myData){
+function setPlayersData(myData,socketID){
     var exist=false;
     for(var i=0;i<playersClient.length;i++){
         if(myData.id===playersClient[i].id){
@@ -53,7 +53,8 @@ function setPlayersData(myData){
             "posx":200,
             "posy":200,
             "color":"",
-            "name":""
+            "name":"",
+            "socketID":""
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
@@ -61,10 +62,21 @@ function setPlayersData(myData){
         playerServer.posy=0;
         playerServer.color=myData.color;
         playerServer.name=myData.name;
+        playerServer.socketID=socketID;
         playersServer.push(playerServer);
         console.log(playersServer.length);
 
     }
+}
+
+function deletePlayer(socketID){
+    for(var i=0;i<playersServer.length;i++){
+        if(socketID===playersServer[i].socketID){
+            playersServer.splice(i,1);  
+            playersClient.splice(i,1);  
+        }
+    }
+    console.log("Number of Players: "+playersServer.length);
 }
 
 setInterval(mainLoop,30);
