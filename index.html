@@ -170,7 +170,7 @@ function controlMove(key,state){
         flagDown=state;
     }
     
-    if(key==32 && !shootFlag){
+    if(key==32){
         shootFlag=true;
     }
 }
@@ -192,11 +192,6 @@ function mainLoop(){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
-        
-        //SHOOT LOGIC
-        if(playersFromServer[i].id==id && playersFromServer[i].shootRadius==0){
-            shootFlag=false;
-        }
     }
 }
     
