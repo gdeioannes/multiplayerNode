@@ -4,9 +4,9 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var vel=8;
-var velShoot=6;
-var velcharge=0.8;
+var vel=7;
+var velShoot=8;
+var velcharge=1;
 var minRadius=30;
 var debug=false;
 
@@ -56,8 +56,8 @@ function setPlayersData(myData,socketID){
     }else{
         var playerServer={
             "id":0,
-            "posx":500,
-            "posy":500,
+            "posx":0,
+            "posy":0,
             "color":"",
             "name":"",
             "socketID":"",
@@ -68,8 +68,8 @@ function setPlayersData(myData,socketID){
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
-        playerServer.posx=500;
-        playerServer.posy=500;
+        playerServer.posx=100+Math.round(Math.random()*600);
+        playerServer.posy=100+Math.round(Math.random()*500);
         playerServer.color=myData.color;
         playerServer.name=myData.name;
         playerServer.socketID=socketID;
