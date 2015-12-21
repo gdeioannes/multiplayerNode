@@ -111,6 +111,9 @@ var posy=0;
 
     
 //GAME
+    
+//CREATE PLAYER    
+socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 
 $(window).keydown(function(e){
    var key=e.which;
