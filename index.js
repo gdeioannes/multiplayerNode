@@ -20,6 +20,7 @@ io.on('connection', function(socket){
     socket.on('send dataPlayer', function(myData){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
+            console.log(json);
             setPlayersData(json);
         }
     });
