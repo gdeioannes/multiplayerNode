@@ -51,16 +51,16 @@ function setPlayersData(myData,socketID){
     }else{
         var playerServer={
             "id":0,
-            "posx":200,
-            "posy":200,
+            "posx":500,
+            "posy":500,
             "color":"",
             "name":"",
             "socketID":""
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
-        playerServer.posx=0;
-        playerServer.posy=0;
+        playerServer.posx=500;
+        playerServer.posy=500;
         playerServer.color=myData.color;
         playerServer.name=myData.name;
         playerServer.socketID=socketID;
