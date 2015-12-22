@@ -115,6 +115,7 @@ function mainLoop(){
         for(var ii=0;ii<playersClient.length;ii++){
                 if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})-minRadius<playersServer[i].shootRadius && i!=ii){
                         playersServer[i].points++;
+                        playersServer[ii].points--;
                         playersServer[ii].posx=100+Math.round(Math.random()*600);
                         playersServer[ii].posy=100+Math.round(Math.random()*500);
                         console.log("POINTS!!"+playersServer[i].name );
