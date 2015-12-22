@@ -103,18 +103,17 @@ function mainLoop(){
         playersServer[i].posx-=((playersClient[i].mousePosx-playersServer[i].posx)/10)*delta;
         playersServer[i].posy-=((playersClient[i].mousePosy-playersServer[i].posy)/10)*delta;
     }
-         
-        
-        if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
-            playersServer[i].shootRadius+=velShoot;
-            if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
-                playersServer[i].shootRadius=minRadius;
-                playersServer[i].chargeRadius=minRadius;
-                playersServer[i].shootFlag=false;
-                console.log("Shoot End");
-                console.log(playersServer[i].id);
-            }
+
+    if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
+        playersServer[i].shootRadius+=velShoot;
+        if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
+            playersServer[i].shootRadius=minRadius;
+            playersServer[i].chargeRadius=minRadius;
+            playersServer[i].shootFlag=false;
+            console.log("Shoot End");
+            console.log(playersServer[i].id);
         }
+    }
         
     }
     if(playersServer!=null){
