@@ -17,6 +17,7 @@
     #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none; opacity: 0.7;}
     canvas{float: left; position: fixed; width: 100%; height: 100%; background: white; z-index: -1;}
     #toggle-btn{padding: 5px; width: 20%; font-family: 'Lato', sans-serif;}
+    #player-list{color:gray; width: 100px; float: right; list-style: none;}
     </style>
   </head>
   <body>
@@ -32,6 +33,9 @@
             <input id="m" autocomplete="off"/><button>Send</button>
         </form>
       </div>
+      <lu id="player-list">
+          <li>User999: 10 </li>
+      </lu>
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -160,6 +164,7 @@ function setDataForSending(){
     
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
+    setPlayersScores();
   });
     
 function controlMove(key,state){
@@ -254,6 +259,13 @@ function getMousePos(canvas, evt) {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top
     };
+}
+    
+function setPlayersScores(){
+    $("#player-list").html("");
+    for(var i=0;i<playersFromServer.length;i++){
+        $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
+    }
 }
     
 </script>
