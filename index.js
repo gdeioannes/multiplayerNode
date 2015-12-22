@@ -111,18 +111,21 @@ function mainLoop(){
 
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
         playersServer[i].shootRadius+=velShoot;
+        
+        for(var ii=0;ii<playersClient.length;ii++){
+                if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})<playersServer[i].shootRadius && i!=ii){
+                        playersServer[i].points++;
+                        console.log("POINTS!!"+playersServer[i].name );
+                   }
+            }
+        
         if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
             playersServer[i].shootRadius=minRadius;
             playersServer[i].chargeRadius=minRadius;
             playersServer[i].shootFlag=false;
             console.log("Shoot End");
             console.log(playersServer[i].id);
-            for(var ii=0;ii<playersClient.length;ii++){
-                if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})<playersServer[i].shootRadius && i!=ii){
-                        playersServer[i].points++;
-                        console.log("POINTS!!"+playersServer[i].name );
-                   }
-            }
+            
         }
     }
         }
