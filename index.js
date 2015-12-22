@@ -115,7 +115,7 @@ function mainLoop(){
         }
     }
         
-    }
+    
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
     }
