@@ -102,7 +102,7 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         playersServer[i].posx-=((playersClient[i].mousePosx-playersServer[i].posx)/10)*delta;
         playersServer[i].posy-=((playersClient[i].mousePosy-playersServer[i].posy)/10)*delta;
-    }
+    
 
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
         playersServer[i].shootRadius+=velShoot;
@@ -114,7 +114,7 @@ function mainLoop(){
             console.log(playersServer[i].id);
         }
     }
-        
+        }
     
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
