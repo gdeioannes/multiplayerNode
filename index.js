@@ -100,22 +100,10 @@ function mainLoop(){
     delta=now-then;
 
     for(var i=0;i<playersClient.length;i++){
-          if(playersClient[i].flagDown){
-              playersServer[i].posy+=calcSpeed(delta, vel);
-          }
-          if(playersClient[i].flagUp){ 
-              playersServer[i].posy-=calcSpeed(delta, vel);;
-          }
-          if(playersClient[i].flagLeft){ 
-              playersServer[i].posx-=calcSpeed(delta, vel);
-          }
-          if(playersClient[i].flagRight){ 
-              playersServer[i].posx+=calcSpeed(delta, vel);
-          }
-        
-        if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
-            playersServer[i].chargeRadius+=velcharge;
-        }
+        playersServer[i].posx-=((playersClient[i].mousePosx-playersServer[i].posx)/10)*delta;
+        playersServer[i].posy-=((playersClient[i].mousePosy-playersServer[i].posy)/10)*delta;
+    }
+         
         
         if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
             playersServer[i].shootRadius+=velShoot;
