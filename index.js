@@ -118,7 +118,7 @@ function mainLoop(){
             console.log("Shoot End");
             console.log(playersServer[i].id);
             for(var ii=0;ii<playersClient.length;ii++){
-                if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})<playersServer[i].shootRadius){
+                if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})<playersServer[i].shootRadius && i!=ii){
                         playersServer[i].points++;
                         console.log("POINTS!!"+playersServer[i].name );
                    }
