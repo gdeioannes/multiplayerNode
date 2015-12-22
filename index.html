@@ -168,8 +168,7 @@ function controlMove(key,state){
     if(key==40){
         flagDown=state;
     }
-    
-    
+ 
 }
     
 $("#chat-container").mouseenter(function(){
@@ -182,8 +181,7 @@ $("#chat-container").mouseout(function(){
 });     
     
  $(window).click(function(){
-     if(!shootFlag && !chatOverFlag){
-         alert("Test");
+     if(!chatOverFlag){
         shootFlag=true;
          socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
     }
