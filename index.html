@@ -17,7 +17,8 @@
     #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none; opacity: 0.7;}
     canvas{float: left; position: fixed; width: 100%; height: 100%; background: white; z-index: -1;}
     #toggle-btn{padding: 5px; width: 20%; font-family: 'Lato', sans-serif;}
-    #player-list{color:gray; width: 100px; float: right; list-style: none;}
+    #player-list{color:gray; width: 300px; float: right; list-style: none; text-align: right; padding: 10px;}
+    #player-list li{padding: 4px;}
     </style>
   </head>
   <body>
@@ -34,7 +35,8 @@
         </form>
       </div>
       <lu id="player-list">
-          <li>User999: 10 </li>
+          <li>Points</li>
+          <li>Gabriel De Ioannes Becker: 10 </li>
       </lu>
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
@@ -263,6 +265,7 @@ function getMousePos(canvas, evt) {
     
 function setPlayersScores(){
     $("#player-list").html("");
+    $("#player-list").append("<li>Points</li>");
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
