@@ -168,11 +168,14 @@ function controlMove(key,state){
         flagDown=state;
     }
     
-    if(key==32 && !shootFlag){
-        shootFlag=true;
-    }
-}
     
+}
+ $(canvas).click(function(){
+     if(!shootFlag){
+        shootFlag=true;
+         socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+    }
+ }); 
 
 var alphaCharge=0.15;
 var alphaShoot=0.5;
