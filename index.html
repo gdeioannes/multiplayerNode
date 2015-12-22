@@ -76,6 +76,7 @@ var shootFlag=false;
 var vel=10;
 var posx=0;
 var posy=0;
+var chatOverFlag=false;
     
   var socket = io();
     
@@ -170,8 +171,19 @@ function controlMove(key,state){
     
     
 }
- $(canvas).click(function(){
-     if(!shootFlag){
+    
+$("#chat-container").mouseenter(function(){
+    chatOverFlag=true;
+    console.log("in");
+}); 
+
+$("#chat-container").mouseout(function(){
+    chatOverFlag=false;
+});     
+    
+ $(window).click(function(){
+     if(!shootFlag && !chatOverFlag){
+         alert("Test");
         shootFlag=true;
          socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
     }
