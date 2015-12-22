@@ -5,8 +5,8 @@ var receivedData;
 var playersClient=[];
 var playersServer=[];
 var vel=7;
-var velShoot=12;
-var velcharge=2;
+var velShoot=20;
+var velcharge=2.5;
 var minRadius=30;
 var debug=false;
 
