@@ -23,6 +23,7 @@ io.on('connection', function(socket){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
             setPlayersData(json,socket.id);
+            console.log(json);
         }
     });
     socket.on('disconnect', function(){

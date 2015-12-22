@@ -77,6 +77,8 @@ var vel=10;
 var posx=0;
 var posy=0;
 var chatOverFlag=false;
+var mousePosx=0;
+var mousePosy=0;
     
   var socket = io();
     
@@ -95,6 +97,9 @@ var chatOverFlag=false;
       "flagUp":false,
       "flagDown":false,
       "shootFlag":false,
+      "shootFlag":false,
+      "mousePosx":0,
+      "mousePosy":0,
       "color":""
   } 
     
@@ -139,6 +144,8 @@ function setDataForSending(){
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
     dataPlayer.shootFlag=shootFlag;
+    dataPlayer.mousePosx=mousePosx;
+    dataPlayer.mousePosy=mousePosy;
     dataPlayer.color=color;
     dataPlayer.name=$('#u-name').val();
     return dataPlayer;
@@ -203,10 +210,15 @@ function mainLoop(){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
-    }
+    } 
 }
     
-
+$(window).mousemove(function(e){
+    pos=getMousePos(canvas,e)
+    mousePosx=pos.x;
+    mousePosy=pos.y;
+    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+});
     
 function drawCircle(centerX,centerY,radius,color,alpha){
   context.beginPath();
@@ -234,7 +246,14 @@ function hexToRgbA(hex,alpha){
     }
     throw new Error('Bad Hex');
 }
-    
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+}
     
 </script>
 
