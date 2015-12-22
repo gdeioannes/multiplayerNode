@@ -102,7 +102,10 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/1000)*delta;
         playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/1000)*delta;
-    
+        
+     if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
+            playersServer[i].chargeRadius+=velcharge;
+        }
 
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
         playersServer[i].shootRadius+=velShoot;
