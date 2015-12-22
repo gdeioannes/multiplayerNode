@@ -23,7 +23,6 @@ io.on('connection', function(socket){
         if(myData!=null){
             var json=JSON.parse(myData.toString());
             setPlayersData(json,socket.id);
-            console.log(json);
         }
     });
     socket.on('disconnect', function(){
@@ -65,7 +64,8 @@ function setPlayersData(myData,socketID){
             "shootRadius":minRadius,
             "chargeRadius":minRadius,
             "maxShootRadius":150,
-            "shootFlag":false
+            "shootFlag":false,
+            "points":0
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
@@ -100,12 +100,14 @@ function mainLoop(){
     delta=now-then;
 
     for(var i=0;i<playersClient.length;i++){
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/500)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/500)*delta;
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/700)*delta;
         
      if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
             playersServer[i].chargeRadius+=velcharge;
         }
+        
+
 
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
         playersServer[i].shootRadius+=velShoot;
@@ -115,6 +117,12 @@ function mainLoop(){
             playersServer[i].shootFlag=false;
             console.log("Shoot End");
             console.log(playersServer[i].id);
+            for(var ii=0;ii<playersClient.length;ii++){
+                if(lineDistance({playersServer[i].posx,playersServer[i].posy},{playersServer[ii].posx,playersServer[ii].posy})<shootRadius){
+                        playersServer[i].points++;
+                        console.log("POINTS!!"+playersServer[i].name );
+                   }
+            }
         }
     }
         }
@@ -127,5 +135,19 @@ function mainLoop(){
 
 var calcSpeed = function(del, speed) {
     return (speed * del) * (60 / 1000);
+}
+
+function lineDistance( point1, point2 )
+{
+  var xs = 0;
+  var ys = 0;
+ 
+  xs = point2.x - point1.x;
+  xs = xs * xs;
+ 
+  ys = point2.y - point1.y;
+  ys = ys * ys;
+ 
+  return Math.sqrt( xs + ys );
 }
     
