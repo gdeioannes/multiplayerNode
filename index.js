@@ -100,8 +100,8 @@ function mainLoop(){
     delta=now-then;
 
     for(var i=0;i<playersClient.length;i++){
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/1000)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/1000)*delta;
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/500)*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/500)*delta;
         
      if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
             playersServer[i].chargeRadius+=velcharge;
