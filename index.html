@@ -191,6 +191,7 @@ $("#chat-container").mouseout(function(){
      if(!chatOverFlag){
         shootFlag=true;
          socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+         shootFlag=false;
     }
  }); 
 
