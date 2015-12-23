@@ -61,7 +61,7 @@ function setLigthPointData(){
 
 function createLigthsPoints(){
     for(var i=0;i<maxLigthPoints;i++){
-        createLigthsPoints();
+        setLigthPointData();
     }
 }
 //////
