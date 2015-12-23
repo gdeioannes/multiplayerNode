@@ -11,7 +11,7 @@ var velcharge=2;
 var minRadius=20;
 var debug=false;
 var ligthPoints=[];
-
+var maxShootRadius=100;
 
 process.env.PWD = process.cwd()
 // Then
@@ -52,7 +52,7 @@ var maxLigthPoints=15;
 function setLigthPointData(){
     
     var ligthPoint={
-        "posx":Math.round(Math.random()*1000),
+        "posx":Math.round(Math.random()*2000),
         "posy":Math.round(Math.random()*1000),
         "radius":10+Math.round(Math.random()*10)
     }
@@ -99,7 +99,7 @@ function setPlayersData(myData,socketID){
             "socketID":"",
             "shootRadius":0,
             "chargeRadius":minRadius,
-            "maxShootRadius":100,
+            "maxShootRadius":maxShootRadius,
             "shootFlag":false,
             "points":0
         }
@@ -157,6 +157,7 @@ function mainLoop(){
                 if(lineDistance({"x":playersServer[i].posx2,"y":playersServer[i].posy2},{"x":playersServer[ii].posx2,"y":playersServer[ii].posy2})-minRadius<playersServer[i].shootRadius && i!=ii){
                         playersServer[i].points++;
                         playersServer[ii].points--;
+                        playersServer[ii].maxShootRadius=maxShootRadius;
                         playersServer[ii].posx=100+Math.round(Math.random()*600);
                         playersServer[ii].posy=100+Math.round(Math.random()*500);
                         playersServer[ii].posx2=playersServer[ii].posx;
@@ -174,7 +175,13 @@ function mainLoop(){
             
         }
     }
-        }
+    for(var iii=0;iii<ligthPoints.length;iii++){
+        if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<playersServer[i].shootRadius){
+    }
+      playersServer[i].maxShootRadius+=ligthPoints[iii].radius;
+      ligthPoints.splice(iii,1);
+      setLigthPointData();
+    }
     
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
