@@ -47,6 +47,7 @@
 /////CHAT
 var id;
 var playersFromServer=[];
+var ligthPointsFromServer=[];
 var radius = 10;
     var color=getRandomColor();
 
@@ -169,6 +170,11 @@ function setDataForSending(){
   socket.on('send allDataOfPLayer', function(allDataOfPLayer){
     playersFromServer=allDataOfPLayer;
     setPlayersScores();
+  });
+    
+  socket.on('send allDataOfStage', function(allDataOfStage){
+    ligthPointsFromServer=allDataOfStage;
+      console.log(allDataOfStage);
   });
     
 function controlMove(key,state){

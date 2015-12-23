@@ -10,6 +10,7 @@ var velShoot=10;
 var velcharge=2;
 var minRadius=20;
 var debug=false;
+var ligthPoints=[];
 
 
 process.env.PWD = process.cwd()
@@ -42,6 +43,28 @@ io.on('connection', function(socket){
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+
+//LIGTH POINTS
+createLigthsPoints();
+var maxLigthPoints=15;
+
+function setLigthPointData(){
+    
+    var ligthPoint={
+        "posx":Math.round(Math.random()*1000),
+        "posy":Math.round(Math.random()*1000),
+        "radius":10+Math.round(Math.random()*10);
+    }
+    ligthPoints.push(ligthPoint);
+}
+
+function createLigthsPoints(){
+    for(var i=0;i<maxLigthPoints;i++){
+        createLigthsPoints();
+    }
+}
+//////
 
 function setPlayersData(myData,socketID){
     var exist=false;
@@ -150,6 +173,7 @@ function mainLoop(){
     
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
+        io.sockets.in('sendAllData').emit("send allDataOfPLayer", ligthPoints); 
     }
     then = now;
 }
