@@ -6,7 +6,7 @@ var receivedData;
 var playersClient=[];
 var playersServer=[];
 var vel=4;
-var velShoot=10;
+var velShoot=15;
 var velcharge=2;
 var minRadius=20;
 var debug=false;
@@ -170,6 +170,7 @@ function mainLoop(){
             playersServer[i].shootRadius=0;
             playersServer[i].chargeRadius=minRadius;
             playersServer[i].shootFlag=false;
+            playersServer[i].maxShootRadius=maxShootRadius;
             console.log("Shoot End");
             console.log(playersServer[i].id);
             
