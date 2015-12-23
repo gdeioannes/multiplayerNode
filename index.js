@@ -62,7 +62,7 @@ function setLigthPointData(){
 
 function createLigthsPoints(){
     console.log("Create Ligth Point");
-    for(var a=0;a<maxLigthPoints;a++){
+    for(var a=0;a<10;a++){
         console.log("Create Ligth Point " +a);
         setLigthPointData();
         
