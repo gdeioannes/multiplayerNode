@@ -222,6 +222,7 @@ function mainLoop(){
         drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius*0.7,playersFromServer[i].color,0.9);
         drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
         drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
+        drawShadow(playersFromServer[i].posx,playersFromServer[i].posy);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
     vfxCounter+=0.1;
@@ -296,6 +297,12 @@ function drawPattern(){
     var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
     context.fillStyle = ptrn;
     context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+}
+
+imgShadow = new Image();
+imgShadow.src = 'shadow.png';   
+function drawShadow(x,y){
+    context.drawImage(imgShadow,x,y+radius*1.5);
 }
     
 </script>
