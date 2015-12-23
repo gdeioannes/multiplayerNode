@@ -13,7 +13,7 @@ var debug=false;
 
 process.env.PWD = process.cwd()
 // Then
-app.use(express.static(process.env.PWD + '/public'));
+app.use(express.static(process.env.PWD + '/'));
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
