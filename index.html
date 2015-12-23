@@ -223,7 +223,7 @@ function mainLoop(){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
-    vfxCounter++
+    vfxCounter+=0.1;
     if(vfxCounter>1000){
         vfxCounter=0;
     }
@@ -244,7 +244,7 @@ function drawCircle(centerX,centerY,radius,color,alpha){
 }
 
 function drawCircleVFX(centerX,centerY,radius,color,alpha){
-    var multi=0.5+Math.abs(Math.cos(vfxCounter));
+    var multi=0.8+Math.abs(Math.cos(vfxCounter));
     context.beginPath();
     context.arc(centerX, centerY, radius*multi, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
