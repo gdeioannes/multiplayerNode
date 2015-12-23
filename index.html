@@ -216,6 +216,7 @@ setInterval(mainLoop,30);
 function mainLoop(){
     context.canvas.width=context.canvas.width;
     drawPattern();
+    
     for(var i=0;i<playersFromServer.length;i++){
         drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,1);
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
@@ -243,7 +244,7 @@ function drawCircle(centerX,centerY,radius,color,alpha){
 }
 
 function drawCircleVFX(centerX,centerY,radius,color,alpha){
-    var multi=0.5+Math.cos(vfxCounter);
+    var multi=0.5+Math.abs(Math.cos(vfxCounter));
     context.beginPath();
     context.arc(centerX, centerY, radius*multi, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
