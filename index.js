@@ -177,7 +177,7 @@ function mainLoop(){
         }
     }
     for(var iii=0;iii<ligthPoints.length;iii++){
-        if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<playersServer[i].shootRadius){
+        if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<radius){
             
             playersServer[i].maxShootRadius+=ligthPoints[iii].radius;
             ligthPoints.splice(iii,1);
