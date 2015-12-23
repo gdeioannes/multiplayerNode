@@ -54,7 +54,7 @@ function setLigthPointData(){
     var ligthPoint={
         "posx":Math.round(Math.random()*1000),
         "posy":Math.round(Math.random()*1000),
-        "radius":10+Math.round(Math.random()*10);
+        "radius":10+Math.round(Math.random()*10)
     }
     ligthPoints.push(ligthPoint);
 }
@@ -173,7 +173,7 @@ function mainLoop(){
     
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
-        io.sockets.in('sendAllData').emit("send allDataOfPLayer", ligthPoints); 
+        io.sockets.in('sendAllData').emit("send allDataOfStage", ligthPoints); 
     }
     then = now;
 }
