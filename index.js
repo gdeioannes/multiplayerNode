@@ -6,7 +6,7 @@ var receivedData;
 var playersClient=[];
 var playersServer=[];
 var vel=7;
-var velShoot=20;
+var velShoot=10;
 var velcharge=2.5;
 var minRadius=20;
 var debug=false;
@@ -69,7 +69,7 @@ function setPlayersData(myData,socketID){
             "color":"",
             "name":"",
             "socketID":"",
-            "shootRadius":minRadius,
+            "shootRadius":0,
             "chargeRadius":minRadius,
             "maxShootRadius":150,
             "shootFlag":false,
@@ -126,17 +126,19 @@ function mainLoop(){
         playersServer[i].shootRadius+=velShoot;
         
         for(var ii=0;ii<playersClient.length;ii++){
-                if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":playersServer[ii].posx,"y":playersServer[ii].posy})-minRadius<playersServer[i].shootRadius && i!=ii){
+                if(lineDistance({"x":playersServer[i].posx2,"y":playersServer[i].posy2},{"x":playersServer[ii].posx2,"y":playersServer[ii].posy2})-minRadius<playersServer[i].shootRadius && i!=ii){
                         playersServer[i].points++;
                         playersServer[ii].points--;
                         playersServer[ii].posx=100+Math.round(Math.random()*600);
                         playersServer[ii].posy=100+Math.round(Math.random()*500);
+                        playersServer[ii].posx2=playersServer[ii].posx;
+                        playersServer[ii].posy2=playersServer[ii].posy;
                         console.log("POINTS!!"+playersServer[i].name );
                    }
             }
         
         if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
-            playersServer[i].shootRadius=minRadius;
+            playersServer[i].shootRadius=0;
             playersServer[i].chargeRadius=minRadius;
             playersServer[i].shootFlag=false;
             console.log("Shoot End");
