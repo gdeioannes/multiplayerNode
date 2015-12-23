@@ -7,7 +7,7 @@ var playersServer=[];
 var vel=7;
 var velShoot=20;
 var velcharge=2.5;
-var minRadius=30;
+var minRadius=20;
 var debug=false;
 
 app.get('/', function(req, res){

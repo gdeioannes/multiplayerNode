@@ -47,7 +47,7 @@
 /////CHAT
 var id;
 var playersFromServer=[];
-var radius = 30;
+var radius = 20;
     var color=getRandomColor();
 
 if(id==null){
@@ -214,6 +214,7 @@ setInterval(mainLoop,30);
 
 function mainLoop(){
     context.canvas.width=context.canvas.width;
+    drawPattern();
     for(var i=0;i<playersFromServer.length;i++){
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,1);
         drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
@@ -271,6 +272,15 @@ function setPlayersScores(){
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
+}
+    
+img = new Image();
+img.src = 'background_game.jpg';   
+function drawPattern(){
+    // create pattern
+    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    context.fillStyle = ptrn;
+    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
 }
     
 </script>
