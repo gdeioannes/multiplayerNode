@@ -57,17 +57,17 @@ function setLigthPointData(){
         "radius":10+Math.round(Math.random()*10)
     }
     ligthPoints.push(ligthPoint);
-    console.log("Create Ligth Point " +ligthPoints.length);
+    //console.log("Create Ligth Point " +ligthPoints.length);
 }
 
 function createLigthsPoints(){
-    console.log("Create Ligth Point");
+    //console.log("Create Ligth Point");
     for(var a=0;a<10;a++){
-        console.log("Create Ligth Point " +a);
+        //console.log("Create Ligth Point " +a);
         setLigthPointData();
         
     }
-    console.log(ligthPoints);
+    //console.log(ligthPoints);
 }
 //////
 

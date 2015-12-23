@@ -176,7 +176,6 @@ function setDataForSending(){
     
   socket.on('send allDataOfStage', function(allDataOfStage){
     ligthPointsFromServer=allDataOfStage;
-      console.log(allDataOfStage);
   });
     
 function controlMove(key,state){
@@ -197,7 +196,6 @@ function controlMove(key,state){
     
 $("#chat-container").mouseenter(function(){
     chatOverFlag=true;
-    console.log("in");
 }); 
 
 $("#chat-container").mouseout(function(){
