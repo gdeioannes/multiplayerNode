@@ -52,8 +52,8 @@ var maxLigthPoints=15;
 function setLigthPointData(){
     
     var ligthPoint={
-        "posx":Math.round(Math.random()*2000),
-        "posy":Math.round(Math.random()*1000),
+        "posx":200+Math.round(Math.random()*1200),
+        "posy":100+Math.round(Math.random()*800),
         "radius":10+Math.round(Math.random()*10)
     }
     ligthPoints.push(ligthPoint);
