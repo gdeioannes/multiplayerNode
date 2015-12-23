@@ -231,6 +231,12 @@ function mainLoop(){
         drawShadow(playersFromServer[i].posx,playersFromServer[i].posy);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
+    
+    for(var ii=0;ii<ligthPointsFromServer.length;ii++){
+        drawCircleVFX(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9);
+         drawCircleVFX(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65);  
+    }
+    
     vfxCounter+=0.1;
     if(vfxCounter>1000){
         vfxCounter=0;
