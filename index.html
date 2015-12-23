@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>DOTUTUUUUUU!!!</title>
     <link href='https://fonts.googleapis.com/css?family=Lato:400italic,100,700,400' rel='stylesheet' type='text/css'>
     <style>
         
@@ -28,8 +28,9 @@
         <label>User name: </label><input id="u-name" type="text" placeholder="user name" maxlength ="15">
         <ul id="messages">
             <li>MOVE THE CIRCLE WITH THE MOUSE</li>
-            <li>SHOOT OTHERS CLICKING</li>
+            <li>SHOOT CLICKING</li>
             <li>THAT THE BEST CLICKER WINS!!!</li>
+            <li>EAT THE LIGTH TO GROW YOUR RANGE!!!</li>
         </ul>
         <form action="">
             <input id="m" autocomplete="off"/><button>Send</button>
@@ -211,7 +212,7 @@ $("#chat-container").mouseout(function(){
  }); 
 
 var alphaCharge=0.15;
-var alphaShoot=0.9;
+var alphaShoot=0.85;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
@@ -226,7 +227,7 @@ function mainLoop(){
     for(var i=0;i<playersFromServer.length;i++){
         drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,0.85);
         drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius*0.7,playersFromServer[i].color,0.9);
-        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
+        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaShoot);
         drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawShadow(playersFromServer[i].posx,playersFromServer[i].posy);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
