@@ -11,6 +11,7 @@ var velcharge=2.5;
 var minRadius=20;
 var debug=false;
 
+
 process.env.PWD = process.cwd()
 // Then
 app.use(express.static(process.env.PWD + '/'));
