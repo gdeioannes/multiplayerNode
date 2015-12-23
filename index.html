@@ -219,8 +219,8 @@ function mainLoop(){
     
     for(var i=0;i<playersFromServer.length;i++){
         drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,0.85);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
+        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
+        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
     }
     vfxCounter+=0.1;

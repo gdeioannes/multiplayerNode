@@ -64,6 +64,8 @@ function setPlayersData(myData,socketID){
             "id":0,
             "posx":0,
             "posy":0,
+            "posx2":0,
+            "posy2":0,
             "color":"",
             "name":"",
             "socketID":"",
@@ -77,6 +79,8 @@ function setPlayersData(myData,socketID){
         playerServer.id=myData.id;
         playerServer.posx=100+Math.round(Math.random()*600);
         playerServer.posy=100+Math.round(Math.random()*500);
+        playerServer.posx2=playerServer.posx;
+        playerServer.posy2=playerServer.posy;
         playerServer.color=myData.color;
         playerServer.name=myData.name;
         playerServer.socketID=socketID;
@@ -108,6 +112,9 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
         playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/700)*delta;
+        
+        playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/1000)*delta;
+        playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/1000)*delta;
         
      if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
             playersServer[i].chargeRadius+=velcharge;
