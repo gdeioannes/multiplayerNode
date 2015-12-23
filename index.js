@@ -63,6 +63,7 @@ function createLigthsPoints(){
     for(var i=0;i<maxLigthPoints;i++){
         setLigthPointData();
     }
+    console.log(ligthPoints);
 }
 //////
 
