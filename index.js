@@ -6,8 +6,8 @@ var receivedData;
 var playersClient=[];
 var playersServer=[];
 var vel=7;
-var velShoot=10;
-var velcharge=2.5;
+var velShoot=13;
+var velcharge=2;
 var minRadius=20;
 var debug=false;
 
@@ -71,7 +71,7 @@ function setPlayersData(myData,socketID){
             "socketID":"",
             "shootRadius":0,
             "chargeRadius":minRadius,
-            "maxShootRadius":150,
+            "maxShootRadius":100,
             "shootFlag":false,
             "points":0
         }
