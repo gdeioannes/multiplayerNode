@@ -260,6 +260,21 @@ function drawText(text,px,py){
     context.textAlign="center";
     context.fillText(text,px,py+(fontsize*1.2)+radius);
 }
+    
+img = new Image();
+img.src = 'background_game.jpg';   
+function drawPattern(){
+    // create pattern
+    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    context.fillStyle = ptrn;
+    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+}
+
+imgShadow = new Image();
+imgShadow.src = 'shadow.png';   
+function drawShadow(x,y){
+    context.drawImage(imgShadow,x-imgShadow.width/2,y+radius*1.05);
+}
 
 function hexToRgbA(hex,alpha){
     var c;
@@ -290,20 +305,7 @@ function setPlayersScores(){
     }
 }
     
-img = new Image();
-img.src = 'background_game.jpg';   
-function drawPattern(){
-    // create pattern
-    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-    context.fillStyle = ptrn;
-    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
-}
 
-imgShadow = new Image();
-imgShadow.src = 'shadow.png';   
-function drawShadow(x,y){
-    context.drawImage(imgShadow,x,y+radius*1.5);
-}
     
 </script>
 
