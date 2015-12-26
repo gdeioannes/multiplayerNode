@@ -49,6 +49,18 @@ http.listen(3000, function(){
 createLigthsPoints();
 var maxLigthPoints=15;
 
+function createBullet(posx,posy,life,velx,vely){
+    var bullet={
+        "posx":posx,
+        "posy":posy,
+        "velx":velx,
+        "vely":vely,
+        "radius":10,
+        "life":life
+    }
+    return (bullet);
+}
+
 function setLigthPointData(){
     
     var ligthPoint={
@@ -62,7 +74,7 @@ function setLigthPointData(){
 
 function createLigthsPoints(){
     //console.log("Create Ligth Point");
-    for(var a=0;a<500;a++){
+    for(var a=0;a<10;a++){
         //console.log("Create Ligth Point " +a);
         setLigthPointData();
         
@@ -101,7 +113,8 @@ function setPlayersData(myData,socketID){
             "chargeRadius":minRadius,
             "maxShootRadius":maxShootRadius,
             "shootFlag":false,
-            "points":0
+            "points":0,
+            "bullets":[]
         }
         playersClient.push(myData);
         playerServer.id=myData.id;
@@ -137,34 +150,39 @@ function mainLoop(){
     now=new Date().getTime();
     delta=now-then;
 
+    //CHECK PLAYERS STATES
     for(var i=0;i<playersClient.length;i++){
+        
+        //MOVEMENT CHARACTER
         playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
         playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
         
+        //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/100)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/100)*delta;
         
-     if(playersServer[i].chargeRadius<playersServer[i].maxShootRadius){
-            playersServer[i].chargeRadius+=velcharge;
-        }
-        
-
-
+    
+    //SHOOT LOGIC
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
-        playersServer[i].shootRadius+=velShoot;
         
-        for(var ii=0;ii<playersClient.length;ii++){
-                if(lineDistance({"x":playersServer[i].posx2,"y":playersServer[i].posy2},{"x":playersServer[ii].posx2,"y":playersServer[ii].posy2})-minRadius<playersServer[i].shootRadius && i!=ii){
-                        playersServer[i].points++;
-                        playersServer[ii].points--;
-                        playersServer[ii].maxShootRadius=maxShootRadius;
-                        playersServer[ii].posx=100+Math.round(Math.random()*600);
-                        playersServer[ii].posy=100+Math.round(Math.random()*500);
-                        playersServer[ii].posx2=playersServer[ii].posx;
-                        playersServer[ii].posy2=playersServer[ii].posy;
-                        console.log("POINTS!!"+playersServer[i].name );
-                   }
-            }
+        //playersServer[i].shootRadius+=velShoot;
+        var velx=(playersClient[i].mousePosx-playersServer[i].posx)/10;
+        var vely=(playersClient[i].mousePosy-playersServer[i].posy)/10;
+        playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,playersServer[i].chargeRadius,velx,vely));
+        console.log("PUSH BULLET");
+        playersServer[i].shootFlag=false;
+        /*for(var ii=0;ii<playersClient.length;ii++){
+            if(lineDistance({"x":playersServer[i].posx2,"y":playersServer[i].posy2},{"x":playersServer[ii].posx2,"y":playersServer[ii].posy2})-minRadius<playersServer[i].shootRadius && i!=ii){
+                playersServer[i].points++;
+                playersServer[ii].points--;
+                playersServer[ii].maxShootRadius=maxShootRadius;
+                playersServer[ii].posx=100+Math.round(Math.random()*600);
+                playersServer[ii].posy=100+Math.round(Math.random()*500);
+                playersServer[ii].posx2=playersServer[ii].posx;
+                playersServer[ii].posy2=playersServer[ii].posy;
+                console.log("POINTS!!"+playersServer[i].name );
+           }
+        }
         
         if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
             playersServer[i].shootRadius=0;
@@ -172,21 +190,45 @@ function mainLoop(){
             playersServer[i].shootFlag=false;
             playersServer[i].maxShootRadius=maxShootRadius;
             console.log("Shoot End");
-            console.log(playersServer[i].id);
-            
+            console.log(playersServer[i].id);     
+        }
+    }*/
+        
+       
+    }
+    //BULLET LOGIC
+    for(var bulletNum=0;bulletNum<playersServer[i].bullets.length;bulletNum++){
+        var bullet=playersServer[i].bullets[bulletNum];
+           bullet.posx+=bullet.velx;
+           bullet.posy+=bullet.vely;
+           bullet.life--;
+           if(bullet.life<0){
+               playersServer[i].bullets.splice(bulletNum,1);
+           }
+        for(var ii=0;ii<playersServer.length;ii++){
+            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.radius && ii!=i){
+                playersServer[i].points++;
+                playersServer[ii].points--;
+                playersServer[ii].posx=100+Math.round(Math.random()*600);
+                playersServer[ii].posy=100+Math.round(Math.random()*500);
+                playersServer[ii].posx2=playersServer[ii].posx;
+                playersServer[ii].posy2=playersServer[ii].posy;
+                console.log("POINTS!!"+playersServer[i].name );    
+            }
         }
     }
+
+    //LIGTH POINTS LOGIC
     for(var iii=0;iii<ligthPoints.length;iii++){
         if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<minRadius){
-            
-            playersServer[i].maxShootRadius+=ligthPoints[iii].radius;
+            playersServer[i].chargeRadius++;
             ligthPoints.splice(iii,1);
             setLigthPointData();
         }       
-     
+
     }
     }
-    
+    //SEND DATA TO CLIENT
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
         io.sockets.in('sendAllData').emit("send allDataOfStage", ligthPoints); 

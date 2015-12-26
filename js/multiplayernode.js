@@ -9,7 +9,7 @@ if(id==null){
     id=Math.round(Math.random()*100000000000);
 }
 
-$('#messages').scrollTop(100000000000000000000000000000000000000000);    
+$('#messages').scrollTop(1000000000000000000000000000000000000000000000000000000000000000);    
 $('#toggle-btn').click(function(){
 $('#chat-container').slideToggle();
 });  
@@ -20,7 +20,6 @@ if($('#u-name').val()==""){
 
 
 function getRandomColor() {
-    //var letters = '0123456789ABCDEF'.split('');
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
     for (var i = 0; i < 6; i++ ) {
@@ -182,11 +181,17 @@ function mainLoop(){
         drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
         drawShadow(playersFromServer[i].posx,playersFromServer[i].posy);
         drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
+        for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
+            var playerBullet=playersFromServer[i].bullets[bulletNum];
+            drawCircle(playerBullet.posx,playerBullet.posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
+            drawCircle(playerBullet.posx,playerBullet.posy,radius,playersFromServer[i].color,1);
+        }
+        
     }
     
     for(var ii=0;ii<ligthPointsFromServer.length;ii++){
         drawCircleVFX(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9);
-         drawCircleVFX(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65);
+        drawCircleVFX(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65);
         drawShadow(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy);
     }
     
