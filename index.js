@@ -166,8 +166,8 @@ function mainLoop(){
     if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
         
         //playersServer[i].shootRadius+=velShoot;
-        var velx=(playersClient[i].mousePosx-playersServer[i].posx)/30;
-        var vely=(playersClient[i].mousePosy-playersServer[i].posy)/30;
+        var velx=(playersClient[i].mousePosx-playersServer[i].posx)/15;
+        var vely=(playersClient[i].mousePosy-playersServer[i].posy)/15;
         playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,playersServer[i].chargeRadius,velx,vely));
         console.log("PUSH BULLET");
         playersServer[i].shootFlag=false;
