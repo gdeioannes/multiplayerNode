@@ -5,6 +5,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
+var playersAi=[];
 var vel=4;
 var velShoot=15;
 var velcharge=2;
@@ -47,7 +48,6 @@ http.listen(3000, function(){
 
 //LIGTH POINTS
 createLigthsPoints();
-var maxLigthPoints=15;
 
 function createBullet(posx,posy,life,velx,vely){
     var bullet={
@@ -101,14 +101,14 @@ function setPlayersData(myData,socketID){
         return;
     }else{
         var playerServer={
-            "id":0,
-            "posx":0,
-            "posy":0,
-            "posx2":0,
-            "posy2":0,
-            "color":"",
-            "name":"",
-            "socketID":"",
+            "id":myData.id,
+            "posx":100+Math.round(Math.random()*600),
+            "posy":100+Math.round(Math.random()*500),
+            "posx2":100+Math.round(Math.random()*500),
+            "posy2":100+Math.round(Math.random()*500),
+            "color":myData.color,
+            "name":myData.name,
+            "socketID":socketID,
             "shootRadius":0,
             "chargeRadius":minRadius,
             "maxShootRadius":maxShootRadius,
@@ -117,17 +117,45 @@ function setPlayersData(myData,socketID){
             "bullets":[]
         }
         playersClient.push(myData);
-        playerServer.id=myData.id;
-        playerServer.posx=100+Math.round(Math.random()*600);
-        playerServer.posy=100+Math.round(Math.random()*500);
-        playerServer.posx2=playerServer.posx;
-        playerServer.posy2=playerServer.posy;
-        playerServer.color=myData.color;
-        playerServer.name=myData.name;
-        playerServer.socketID=socketID;
         playersServer.push(playerServer);
         console.log(playersServer.length);
 
+    }
+}
+
+
+// AI PLAYERS
+createAiPlayers();
+
+function setAiPLayer(a){
+    if(a==null){
+        a="new";
+    }
+    var xnum=100+Math.round(Math.random()*1000);
+    var ynum=100+Math.round(Math.random()*600);
+    var aiPlayer={
+        "id":"AI",
+        "posx":xnum,
+        "posy":ynum,
+        "posx2":xnum,
+        "posy2":ynum,
+        "color":getRandomColor(),
+        "name":"AI Player "+a,
+        "movePosx":100+Math.round(Math.random()*1000),
+        "movePosy":100+Math.round(Math.random()*600),
+        "shootRadius":0,
+        "chargeRadius":minRadius,
+        "maxShootRadius":maxShootRadius,
+        "bullets":[],
+        "shootFlag":false,
+        "chargeRadius":minRadius
+    }
+    playersAi.push(aiPlayer);
+}
+
+function createAiPlayers(){
+    for(var a=0;a<5;a++){
+        setAiPLayer(a);
     }
 }
 
@@ -149,13 +177,26 @@ var then = new Date().getTime();
 function mainLoop(){
     now=new Date().getTime();
     delta=now-then;
-
+    
+    //MOVE AI
+    for(var numAI=0;numAI<playersAi.length;numAI++){
+        var playerAI=playersAi[numAI];
+        playerAI.posx+=((playerAI.movePosx-playerAI.posx)/850)*delta;
+        playerAI.posy+=((playerAI.movePosy-playerAI.posy)/850)*delta;
+        
+        //MOVEMENT ENERGY BALL
+        playerAI.posx2+=((playerAI.posx-playerAI.posx2)/100)*delta;
+        playerAI.posy2+=((playerAI.posy-playerAI.posy2)/100)*delta;
+    }
+    
     //CHECK PLAYERS STATES
     for(var i=0;i<playersClient.length;i++){
         
-        //MOVEMENT CHARACTER
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
+        //MOVEMENT CHARACTER 
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/(20*playersServer[i].chargeRadius))*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/(20*playersServer[i].chargeRadius))*delta;
+        
+        
         
         //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/100)*delta;
@@ -163,57 +204,49 @@ function mainLoop(){
         
     
     //SHOOT LOGIC
-    if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius){
+    if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius && playersServer[i].chargeRadius>0){
         
         //playersServer[i].shootRadius+=velShoot;
-        var velx=(playersClient[i].mousePosx-playersServer[i].posx)/11;
-        var vely=(playersClient[i].mousePosy-playersServer[i].posy)/11;
+        var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosx,playersClient[i].mousePosy,playersServer[i].posx,playersServer[i].posy,0.8);
+        var velx=(circlePoint.cpx-playersServer[i].posx);
+        var vely=(circlePoint.cpy-playersServer[i].posy);
+        playersServer[i].chargeRadius-=1;
         playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,playersServer[i].chargeRadius,velx,vely));
         console.log("PUSH BULLET");
+        
         playersServer[i].shootFlag=false;
-        /*for(var ii=0;ii<playersClient.length;ii++){
-            if(lineDistance({"x":playersServer[i].posx2,"y":playersServer[i].posy2},{"x":playersServer[ii].posx2,"y":playersServer[ii].posy2})-minRadius<playersServer[i].shootRadius && i!=ii){
-                playersServer[i].points++;
-                playersServer[ii].points--;
-                playersServer[ii].maxShootRadius=maxShootRadius;
-                playersServer[ii].posx=100+Math.round(Math.random()*600);
-                playersServer[ii].posy=100+Math.round(Math.random()*500);
-                playersServer[ii].posx2=playersServer[ii].posx;
-                playersServer[ii].posy2=playersServer[ii].posy;
-                console.log("POINTS!!"+playersServer[i].name );
-           }
-        }
-        
-        if(playersServer[i].shootRadius>=playersServer[i].chargeRadius){
-            playersServer[i].shootRadius=0;
-            playersServer[i].chargeRadius=minRadius;
-            playersServer[i].shootFlag=false;
-            playersServer[i].maxShootRadius=maxShootRadius;
-            console.log("Shoot End");
-            console.log(playersServer[i].id);     
-        }
-    }*/
-        
-       
+ 
     }
+        
     //BULLET LOGIC
     for(var bulletNum=0;bulletNum<playersServer[i].bullets.length;bulletNum++){
         var bullet=playersServer[i].bullets[bulletNum];
-           bullet.posx+=bullet.velx;
-           bullet.posy+=bullet.vely;
+           bullet.posx+=bullet.velx*delta;
+           bullet.posy+=bullet.vely*delta;
            bullet.life--;
            if(bullet.life<0){
                playersServer[i].bullets.splice(bulletNum,1);
            }
         for(var ii=0;ii<playersServer.length;ii++){
-            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.radius && ii!=i){
+            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life && ii!=i){
                 playersServer[i].points++;
-                playersServer[ii].points--;
                 playersServer[ii].posx=100+Math.round(Math.random()*600);
                 playersServer[ii].posy=100+Math.round(Math.random()*500);
                 playersServer[ii].posx2=playersServer[ii].posx;
                 playersServer[ii].posy2=playersServer[ii].posy;
-                console.log("POINTS!!"+playersServer[i].name );    
+                playersServer[i].bullets.splice(bulletNum,1);
+                console.log("Kill!!"+playersServer[i].name );
+                
+            }
+        }
+        for(var iii=0;iii<playersAi.length;iii++){
+            var playerAI=playersAi[iii];
+            if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life){
+                playersServer[i].points++;
+                playersAi.splice(iii,1);
+                playersServer[i].bullets.splice(bulletNum,1);
+                setAiPLayer();
+                break;
             }
         }
     }
@@ -232,6 +265,10 @@ function mainLoop(){
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
         io.sockets.in('sendAllData').emit("send allDataOfStage", ligthPoints); 
+        
+    }
+    if(playersAi!=null){
+         io.sockets.in('sendAllData').emit("send allDataOfAi", playersAi); 
     }
     then = now;
 }
@@ -254,3 +291,25 @@ function lineDistance( point1, point2 )
   return Math.sqrt( xs + ys );
 }
     
+function calculatePointOfCircunference(x,y,cx,cy,velrad){
+    var angle=Math.atan((y-cy)/(x-cx));
+    var mult=1;
+    if(x-cx>0){
+        mult=1;
+    }else{
+        mult=-1;
+    }
+    console.log("ANGLE:"+angle);
+    cpx = cx + velrad * Math.cos(angle)*mult;
+    cpy = cy + velrad * Math.sin(angle)*mult;
+    return {"cpx":cpx,"cpy":cpy};
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}

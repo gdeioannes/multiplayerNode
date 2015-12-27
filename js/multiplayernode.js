@@ -2,6 +2,7 @@
 var id;
 var playersFromServer=[];
 var ligthPointsFromServer=[];
+var aiPlayers=[];
 var radius = 10;
     var color=getRandomColor();
 
@@ -34,6 +35,7 @@ var flagRight=false;
 var flagUp=false;
 var flagDown=false;
 var shootFlag=false;
+var moveFlag=false;
 var vel=10;
 var posx=0;
 var posy=0;
@@ -59,7 +61,7 @@ var vfxCounter=0;
       "flagUp":false,
       "flagDown":false,
       "shootFlag":false,
-      "shootFlag":false,
+      "moveFlag":false,
       "mousePosx":0,
       "mousePosy":0,
       "color":""
@@ -106,6 +108,7 @@ function setDataForSending(){
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
     dataPlayer.shootFlag=shootFlag;
+    dataPlayer.moveFlag=moveFlag;
     dataPlayer.mousePosx=mousePosx;
     dataPlayer.mousePosy=mousePosy;
     dataPlayer.color=color;
@@ -128,6 +131,11 @@ function setDataForSending(){
   socket.on('send allDataOfStage', function(allDataOfStage){
     ligthPointsFromServer=allDataOfStage;
   });
+
+  socket.on('send allDataOfAi', function(allDataOfAiPlayers){
+    aiPlayers=allDataOfAiPlayers;
+    console.log(aiPlayers);
+  });
     
 function controlMove(key,state){
     if(key==37){
@@ -142,7 +150,6 @@ function controlMove(key,state){
     if(key==40){
         flagDown=state;
     }
- 
 }
     
 $("#chat-container").mouseenter(function(){
@@ -152,16 +159,22 @@ $("#chat-container").mouseenter(function(){
 $("#chat-container").mouseout(function(){
     chatOverFlag=false;
 });     
-    
- $(window).click(function(){
+
+$(window).click(function(e){
      if(!chatOverFlag){
+         pos=getMousePos(canvas,e);
         shootFlag=true;
          socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
          shootFlag=false;
     }
  }); 
 
-var alphaCharge=0.15;
+function setOffSet(){
+    var offset=
+        canvas.width;
+}
+
+var alphaCharge=0.35;
 var alphaShoot=0.85;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
@@ -175,16 +188,11 @@ function mainLoop(){
     drawPattern();
     
     for(var i=0;i<playersFromServer.length;i++){
-        drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,0.85);
-        drawCircleVFX(playersFromServer[i].posx,playersFromServer[i].posy,radius*0.7,playersFromServer[i].color,0.9);
-        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaShoot);
-        drawCircle(playersFromServer[i].posx2,playersFromServer[i].posy2,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
-        drawShadow(playersFromServer[i].posx,playersFromServer[i].posy);
-        drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
+        drawEntityPlayer(playersFromServer[i]);
         for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
             var playerBullet=playersFromServer[i].bullets[bulletNum];
-            drawCircle(playerBullet.posx,playerBullet.posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
-            drawCircle(playerBullet.posx,playerBullet.posy,radius,playersFromServer[i].color,1);
+            drawCircle(playerBullet.posx,playerBullet.posy,playerBullet.life,playersFromServer[i].color,alphaCharge);
+            drawCircle(playerBullet.posx,playerBullet.posy,6,playersFromServer[i].color,1);
         }
         
     }
@@ -195,6 +203,14 @@ function mainLoop(){
         drawShadow(ligthPointsFromServer[ii].posx,ligthPointsFromServer[ii].posy);
     }
     
+    
+    for(var aiNum=0;aiNum<aiPlayers.length;aiNum++){
+        var aiPlayer=aiPlayers[aiNum];
+        drawEntityPlayer(aiPlayer);
+        console.log(aiPlayer);
+        
+    }
+    
     vfxCounter+=0.1;
     if(vfxCounter>1000){
         vfxCounter=0;
@@ -202,7 +218,7 @@ function mainLoop(){
 }
     
 $(window).mousemove(function(e){
-    pos=getMousePos(canvas,e)
+    pos=getMousePos(canvas,e);
     mousePosx=pos.x;
     mousePosy=pos.y;
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
@@ -274,4 +290,12 @@ function setPlayersScores(){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
 }
-    
+
+function drawEntityPlayer(player){
+    drawCircleVFX(player.posx,player.posy,radius,player.color,0.85);
+    drawCircleVFX(player.posx,player.posy,radius*0.7,player.color,0.9);
+    drawCircle(player.posx2,player.posy2,player.shootRadius,player.color,alphaShoot);
+    drawCircle(player.posx2,player.posy2,player.chargeRadius,player.color,alphaCharge);
+    drawShadow(player.posx,player.posy);
+    drawText(player.name,player.posx,player.posy)
+}
