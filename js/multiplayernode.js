@@ -353,7 +353,7 @@ function setPlayersScores(){
     $("#player-list").append("<li>Points</li>");
     var newArray=$.merge(playersFromServer,aiPlayers);
     newArray.sort(function(a,b){
-        return parseFloat(a.points) - parseFloat(b.points);
+        return parseFloat(b.points) - parseFloat(a.points);
     });
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+newArray[i].name+":"+newArray[i].points+"</li>");
