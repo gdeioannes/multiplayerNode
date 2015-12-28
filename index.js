@@ -158,7 +158,7 @@ function setAiPLayer(a){
 }
 
 function createAiPlayers(){
-    for(var a=0;a<10;a++){
+    for(var a=0;a<5;a++){
         setAiPLayer(a);
     }
 }
