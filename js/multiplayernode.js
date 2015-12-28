@@ -352,11 +352,12 @@ function setPlayersScores(){
     $("#player-list").html("");
     $("#player-list").append("<li>Points</li>");
 
-    for(var ii=0;ii<aiPlayers.length;ii++){
-        $("#player-list").append("<li>"+aiPlayers[ii].name+":"+aiPlayers[ii].points+"</li>");
-    }
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
+    }
+    
+    for(var ii=0;ii<aiPlayers.length;ii++){
+        $("#player-list").append("<li>"+aiPlayers[ii].name+":"+aiPlayers[ii].points+"</li>");
     }
 }
 
