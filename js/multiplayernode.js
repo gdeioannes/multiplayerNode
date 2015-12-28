@@ -351,14 +351,14 @@ function getMousePos(canvas, evt) {
 function setPlayersScores(){
     $("#player-list").html("");
     $("#player-list").append("<li>Points</li>");
-    var newArray=$.merge(playersFromServer,aiPlayers);
-    newArray.sort(function(a,b){
-        return parseFloat(a.points) + parseFloat(b.points);
-    });
+    
     for(var i=0;i<playersFromServer.length;i++){
-        $("#player-list").append("<li>"+newArray[i].name+":"+newArray[i].points+"</li>");
+        $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
     
+    for(var ii=0;ii<aiPlayers.length;ii++){
+        $("#player-list").append("<li>"+aiPlayers[ii].name+":"+aiPlayers[ii].points+"</li>");
+    }
 }
 
 $(window).resize(function(){

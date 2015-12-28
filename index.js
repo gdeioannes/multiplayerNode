@@ -140,7 +140,7 @@ function setAiPLayer(a){
         "posx2":xnum,
         "posy2":ynum,
         "color":getRandomColor(),
-        "name":"User"+(1000+Math.round(Math.random()*999)),
+        "name":"USer"+(Math.round(Math.random()*999)),
         "movePosx":generateRandomPosition().w,
         "movePosy":generateRandomPosition().h,
         "shootRadius":0,
