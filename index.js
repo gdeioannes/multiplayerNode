@@ -140,7 +140,7 @@ function setAiPLayer(a){
         "posx2":xnum,
         "posy2":ynum,
         "color":getRandomColor(),
-        "name":"AI Player "+a,
+        "name":"User"+(1000+Math.round(Math.random()*999)),
         "movePosx":generateRandomPosition().w,
         "movePosy":generateRandomPosition().h,
         "shootRadius":0,
@@ -149,13 +149,15 @@ function setAiPLayer(a){
         "bullets":[],
         "shootFlag":false,
         "avoidBulletID":"false",
-        "chargeRadius":minRadius
+        "chargeRadius":minRadius,
+        "moveCounter":0,
+        "maxMoveCounter":100+Math.random()*200
     }
     playersAi.push(aiPlayer);
 }
 
 function createAiPlayers(){
-    for(var a=0;a<5;a++){
+    for(var a=0;a<10;a++){
         setAiPLayer(a);
     }
 }
@@ -188,14 +190,24 @@ function mainLoop(){
         //MOVEMENT ENERGY BALL
         playerAI.posx2+=((playerAI.posx-playerAI.posx2)/100)*delta;
         playerAI.posy2+=((playerAI.posy-playerAI.posy2)/100)*delta;
+        playerAI.moveCounter++
+        if(playerAI.moveCounter>playerAI.maxMoveCounter){
+            playerAI.movePosx=generateRandomPosition().w;
+            playerAI.movePosy=generateRandomPosition().h;
+            playerAI.maxMoveCounter=100+Math.random()*200;
+            playerAI.moveCounter=0;
+        }
+        if(playerAI.avoidBullet){
+            playerAI.moveCounter=0;
+        }
     }
     
     //CHECK PLAYERS STATES
     for(var i=0;i<playersClient.length;i++){
         
         //MOVEMENT CHARACTER 
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/(20*playersServer[i].chargeRadius))*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/(20*playersServer[i].chargeRadius))*delta;
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/(15*playersServer[i].chargeRadius))*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/(15*playersServer[i].chargeRadius))*delta;
         
         
         
@@ -239,6 +251,8 @@ function mainLoop(){
                 
             }
         }
+        
+        //AI SCAPE LOGIC
         for(var iii=0;iii<playersAi.length;iii++){
             var playerAI=playersAi[iii];
             if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life){
@@ -249,8 +263,8 @@ function mainLoop(){
                 break;
             }else{
                 if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life*8 && !playerAI.avoidBullet){
-                    playerAI.movePosx=generateRandomPosition().w;
-                    playerAI.movePosy=generateRandomPosition().h;
+                    playerAI.movePosx=generateRandomPositionFromPosition(playerAI.movePosx);
+                    playerAI.movePosy=generateRandomPositionFromPosition(playerAI.movePosy);
                     playerAI.avoidBullet=true;
                 }else{
                     if(Math.abs(playerAI.movePosx-playerAI.posx)<50 && Math.abs(playerAI.movePosy-playerAI.posy)<50 && playerAI.avoidBullet){
@@ -332,4 +346,9 @@ function generateRandomPosition(){
     var w=offsetWorldX+(Math.round((Math.random()*worldWidth)-offsetWorldX));
     var h=offsetWorldY+(Math.round((Math.random()*worldHeight)-offsetWorldY));
     return {"w":w,"h":h};
+}
+
+function generateRandomPositionFromPosition(pos){
+    var range=800;
+    return (pos+(range-Math.round(Math.random()*range*2)));
 }

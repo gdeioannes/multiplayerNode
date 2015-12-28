@@ -7,8 +7,8 @@ var radius = 10;
 var color=getRandomColor();
 var worldWidth=3000;
 var worldHeight=3000;
-var offsetWorldX=100;
-var offsetWorldY=100;
+var offsetWorldX=0;
+var offsetWorldY=0;
 
 if(id==null){
     id=Math.round(Math.random()*100000000000);
@@ -261,6 +261,16 @@ $(window).mousemove(function(e){
 });
     
 function drawCircle(centerX,centerY,radius,color,alpha){
+    
+    context.save();
+    context.translate(centerX,centerY);
+    context.scale(1, 0.5);
+    context.beginPath();
+    context.arc(0, 0,radius, 0, 2 * Math.PI, false);
+    context.fillStyle = hexToRgbA(color,alpha);
+    context.fill();
+    context.restore();
+    
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
@@ -289,13 +299,27 @@ img.src = 'img/background_game.jpg';
 img2.src = 'img/background_game_offset.jpg';   
 function drawPattern(){
     // create pattern
+    context.save();
+    context.translate(offsetWorldX, offsetWorldY); 
+    var ptrn = context.createPattern(img2, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    context.fillStyle = ptrn;
+    context.fillRect(-worldWidth, -worldHeight, worldWidth*4, worldHeight*4); // context.fillRect(x, y, width, height);
+    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    context.fillStyle = ptrn;
+    context.fillRect(0,0, worldWidth, worldHeight); // context.fillRect(x, y, width, height);
+    context.restore();
+}
+
+/*function drawPattern(){
+    // create pattern
     var ptrn = context.createPattern(img2, 'repeat'); // Create a pattern with this image, and set it to "repeat".
     context.fillStyle = ptrn;
     context.fillRect(0, 0, worldWidth+Math.abs(offsetWorldX), worldHeight+Math.abs(offsetWorldY)); // context.fillRect(x, y, width, height);
     var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
     context.fillStyle = ptrn;
     context.fillRect(offsetWorldX, offsetWorldY, worldWidth, worldHeight); // context.fillRect(x, y, width, height);
-}
+}*/
+
 
 imgShadow = new Image();
 imgShadow.src = 'img/shadow.png';   
