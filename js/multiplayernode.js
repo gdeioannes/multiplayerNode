@@ -351,6 +351,9 @@ function getMousePos(canvas, evt) {
 function setPlayersScores(){
     $("#player-list").html("");
     $("#player-list").append("<li>Points</li>");
+    for(var i=0;i<playersAi.length;i++){
+        $("#player-list").append("<li>"+playersAi[i].name+":"+playersAi[i].points+"</li>");
+    }
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
