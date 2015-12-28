@@ -225,7 +225,7 @@ function mainLoop(){
         var vely=(circlePoint.cpy-playersServer[i].posy);
         playersServer[i].chargeRadius-=1;
         playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,playersServer[i].chargeRadius,velx,vely));
-        console.log("PUSH BULLET");
+        //console.log("PUSH BULLET");
         playersServer[i].shootFlag=false;
  
     }
@@ -247,7 +247,7 @@ function mainLoop(){
                 playersServer[ii].posx2=playersServer[ii].posx;
                 playersServer[ii].posy2=playersServer[ii].posy;
                 playersServer[i].bullets.splice(bulletNum,1);
-                console.log("Kill!!"+playersServer[i].name );
+                //console.log("Kill!!"+playersServer[i].name );
                 
             }
         }
@@ -323,7 +323,7 @@ function calculatePointOfCircunference(x,y,cx,cy,velrad){
     }else{
         mult=-1;
     }
-    console.log("ANGLE:"+angle);
+
     cpx = cx + velrad * Math.cos(angle)*mult;
     cpy = cy + velrad * Math.sin(angle)*mult;
     return {"cpx":cpx,"cpy":cpy};
@@ -336,10 +336,6 @@ function getRandomColor() {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-}
-
-function test(){
-    console.log("TEST");
 }
 
 function generateRandomPosition(){

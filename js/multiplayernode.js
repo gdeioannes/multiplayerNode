@@ -202,7 +202,7 @@ function mainLoop(){
             var movx=((window.innerWidth/2)/(window.innerWidth/2-(playersFromServer[i].posx+offsetWorldX)));
             var movy=((window.innerHeight/2)/(window.innerHeight/2-(playersFromServer[i].posy+offsetWorldY)));
             
-            console.log("MOVX:"+movx+" MOVY:"+movy+" OFFSETX:"+Math.round(offsetWorldX)+" OFFSETY:"+Math.round(offsetWorldY));
+            //console.log("MOVX:"+movx+" MOVY:"+movy+" OFFSETX:"+Math.round(offsetWorldX)+" OFFSETY:"+Math.round(offsetWorldY));
             
             if(offsetWorldX>0){
                 offsetWorldX=0;;
