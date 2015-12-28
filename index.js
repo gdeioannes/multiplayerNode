@@ -151,6 +151,7 @@ function setAiPLayer(a){
         "avoidBulletID":"false",
         "chargeRadius":minRadius,
         "moveCounter":0,
+        "points":Math.round(Math.random()*10),
         "maxMoveCounter":100+Math.random()*200
     }
     playersAi.push(aiPlayer);
