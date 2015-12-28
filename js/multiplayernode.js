@@ -5,8 +5,8 @@ var ligthPointsFromServer=[];
 var aiPlayers=[];
 var radius = 10;
 var color=getRandomColor();
-var worldWidth=8000;
-var worldHeight=8000;
+var worldWidth=2000;
+var worldHeight=2000;
 var offsetWorldX=0;
 var offsetWorldY=0;
 

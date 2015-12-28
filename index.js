@@ -13,8 +13,8 @@ var minRadius=20;
 var debug=false;
 var ligthPoints=[];
 var maxShootRadius=100;
-var worldWidth=8000;
-var worldHeight=8000;
+var worldWidth=2000;
+var worldHeight=2000;
 var offsetWorldX=300;
 var offsetWorldY=300;
 
