@@ -22,16 +22,6 @@ $('#chat-container').slideToggle();
 if($('#u-name').val()==""){
     $('#u-name').val("User"+Math.round(Math.random()*1000));
 }
-
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
     
 ///SEND DATA
 var flagLeft=false;
@@ -188,6 +178,7 @@ function mainLoop(){
     drawPattern();
 
     for(var i=0;i<playersFromServer.length;i++){
+        drawCircleOrbiting(playersFromServer[i]);
         drawEntityPlayer(playersFromServer[i]);
         for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
             var playerBullet=playersFromServer[i].bullets[bulletNum];
@@ -227,21 +218,11 @@ function mainLoop(){
     }
     
     for(var ii=0;ii<ligthPointsFromServer.length;ii++){
+        drawRect(ligthPointsFromServer[ii]);
         drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9,0.8);
         drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65,0.8);
         drawShadow(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
         drawText("Energy",ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
-    }
-    
-    
-    for(var aiNum=0;aiNum<aiPlayers.length;aiNum++){
-        var AIPlayer=aiPlayers[aiNum];
-        drawEntityPlayer(AIPlayer);
-        for(var bulletNum=0;bulletNum<AIPlayer.bullets.length;bulletNum++){
-            var playerAIBullet=AIPlayer.bullets[bulletNum];
-            drawCircleVFX(playerAIBullet.posx+offsetWorldX,playerAIBullet.posy+offsetWorldY,10,AIPlayer.color,1,0.4);
-        }
-        
     }
 
     vfxCounter+=0.1;
@@ -272,6 +253,15 @@ function drawCircle(centerX,centerY,radius,color,alpha){
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
     context.fill(); 
+}
+
+function drawCircleStroke(centerX,centerY,radius,color,alpha){
+        
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.lineWidth = 3;
+    context.strokeStyle = hexToRgbA(color,alpha);
+    context.stroke();
 }
 
 function drawCircleVFX(centerX,centerY,radius,color,alpha,mult){
@@ -306,17 +296,6 @@ function drawPattern(){
     context.fillRect(0,0, worldWidth, worldHeight); // context.fillRect(x, y, width, height);
     context.restore();
 }
-
-/*function drawPattern(){
-    // create pattern
-    var ptrn = context.createPattern(img2, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-    context.fillStyle = ptrn;
-    context.fillRect(0, 0, worldWidth+Math.abs(offsetWorldX), worldHeight+Math.abs(offsetWorldY)); // context.fillRect(x, y, width, height);
-    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-    context.fillStyle = ptrn;
-    context.fillRect(offsetWorldX, offsetWorldY, worldWidth, worldHeight); // context.fillRect(x, y, width, height);
-}*/
-
 
 imgShadow = new Image();
 imgShadow.src = 'img/shadow.png';   
@@ -366,8 +345,37 @@ $(window).resize(function(){
 function drawEntityPlayer(player){
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.8);
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.8);
-    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
-    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.chargeRadius,player.color,alphaCharge);
+    //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
+    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.chargeRadius,player.color,0.2);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
     drawText(player.name,player.posx+offsetWorldX,player.posy+offsetWorldY);
+}
+
+function drawRect(object){
+      var rectWidth=object.radius/8;
+      context.beginPath();
+      context.rect((object.posx+offsetWorldX)-rectWidth/2, object.posy+offsetWorldY,rectWidth,object.radius*2);
+      context.fillStyle = 'white';
+      context.fill();
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function drawCircleOrbiting(player){
+    for(var i=0;i<player.chargeRadius/10;i++){
+        var angle=((+player.chargeRadius+100*i)+vfxCounter)*Math.pow(-1,i);
+        var velrad=25+7*i;
+
+        cpx = player.posx2+offsetWorldX + velrad * Math.cos(angle);
+        cpy = player.posy2+offsetWorldY + velrad * Math.sin(angle);
+        drawCircle(cpx,cpy,4,player.color,0.05*i);
+        drawCircleStroke(player.posx2+offsetWorldX,player.posy2+offsetWorldY,velrad,player.color,0.05*i);
+    }
 }
