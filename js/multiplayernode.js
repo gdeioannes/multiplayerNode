@@ -237,7 +237,10 @@ function mainLoop(){
     for(var aiNum=0;aiNum<aiPlayers.length;aiNum++){
         var AIPlayer=aiPlayers[aiNum];
         drawEntityPlayer(AIPlayer);
-        console.log(AIPlayer.chargeRadius);
+        for(var bulletNum=0;bulletNum<AIPlayer.bullets.length;bulletNum++){
+            var playerAIBullet=AIPlayer.bullets[bulletNum];
+            drawCircleVFX(playerAIBullet.posx+offsetWorldX,playerAIBullet.posy+offsetWorldY,10,AIPlayer.color,1,0.4);
+        }
         
     }
 
@@ -363,7 +366,7 @@ $(window).resize(function(){
 function drawEntityPlayer(player){
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.8);
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.8);
-    //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
+    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
     drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.chargeRadius,player.color,alphaCharge);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
     drawText(player.name,player.posx+offsetWorldX,player.posy+offsetWorldY);

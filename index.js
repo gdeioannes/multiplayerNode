@@ -60,7 +60,7 @@ function createBullet(posx,posy,velx,vely){
         "velx":velx,
         "vely":vely,
         "radius":20,
-        "life":100
+        "life":55
     }
     return (bullet);
 }
@@ -143,21 +143,22 @@ function setAiPLayer(a){
         "movePosx":generateRandomPosition().w,
         "movePosy":generateRandomPosition().h,
         "shootRadius":1,
-        "chargeRadius":minRadius,
         "maxShootRadius":maxShootRadius,
         "bullets":[],
         "shootFlag":false,
         "avoidBulletID":"false",
-        "chargeRadius":minRadius,
-        "moveCounter":0,
+        "chargeRadius":minRadius*2,
         "points":Math.round(Math.random()*10),
-        "maxMoveCounter":100+Math.random()*200
+        "moveCounter":0,
+        "maxMoveCounter":100+Math.random()*200,
+        "shootCounter":0,
+        "maxShootCounter":50+Math.random()*100
     }
     playersAi.push(aiPlayer);
 }
 
 function createAiPlayers(){
-    for(var a=0;a<5;a++){
+    for(var a=0;a<20;a++){
         setAiPLayer(a);
     }
 }
@@ -190,7 +191,8 @@ function mainLoop(){
         //MOVEMENT RANDOM
         playerAI.posx2+=((playerAI.posx-playerAI.posx2)/100)*delta;
         playerAI.posy2+=((playerAI.posy-playerAI.posy2)/100)*delta;
-        playerAI.moveCounter++
+        //playerAI.moveCounter++;
+        playerAI.shootCounter++
         if(playerAI.moveCounter>playerAI.maxMoveCounter){
             playerAI.movePosx=generateRandomPosition().w;
             playerAI.movePosy=generateRandomPosition().h;
@@ -199,6 +201,13 @@ function mainLoop(){
         }
         if(playerAI.avoidBullet){
             playerAI.moveCounter=0;
+        }
+        if(playerAI.shootCounter>playerAI.maxShootCounter){
+            var circlePoint=calculatePointOfCircunference(100,100,playerAI.posx,playerAI.posy,0.8);
+            var velx=(circlePoint.cpx-playerAI.posx);
+            var vely=(circlePoint.cpy-playerAI.posy);
+            playerAI.bullets.push(createBullet(playerAI.posx,playerAI.posy,velx,vely));
+            playerAI.shootCounter=0;
         }
     }
     
@@ -247,7 +256,7 @@ function mainLoop(){
         //AI SCAPE LOGIC
         for(var iii=0;iii<playersAi.length;iii++){
             var playerAI=playersAi[iii];
-            if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life){
+            if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<minRadius){
                 killPlayer(playersServer[i],playerAI,bulletNum);
                 break;
             }else{
@@ -287,16 +296,21 @@ function mainLoop(){
 }
 
 function killPlayer(shootingPlayer,player,bulletNum){
-    shootingPlayer.points++;
-    console.log("SET LIGTH POINT");
-    if(player.chargeRadius<=0){
-    setLigthPointData(player.posx,player.posy);
-    player.posx=generateRandomPosition().w;
-    player.posy=generateRandomPosition().h;
-    player.posx2=player.posx;
-    player.posy2=player.posy;
+    if(player.chargeRadius<=minRadius){
+        console.log("SET LIGTH POINT");
+        setLigthPointData(player.posx,player.posy);
+        player.posx=generateRandomPosition().w;
+        player.posy=generateRandomPosition().h;
+        player.posx2=player.posx;
+        player.posy2=player.posy;
+        if(player.movePosx!=null){
+            player.movePosx=generateRandomPosition().w;
+            player.movePosy=generateRandomPosition().h; 
+        }
+        player.chargeRadius=minRadius;
+        shootingPlayer.points++;
     }else{
-        player.chargeRadius-=2;
+        player.chargeRadius-=10;
     }    
     shootingPlayer.bullets.splice(bulletNum,1);
 }
@@ -351,4 +365,8 @@ function generateRandomPosition(){
 function generateRandomPositionFromPosition(pos){
     var range=800;
     return (pos+(range-Math.round(Math.random()*range*2)));
+}
+
+function shootPlayer(){
+    
 }
