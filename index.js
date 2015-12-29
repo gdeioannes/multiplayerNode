@@ -224,7 +224,6 @@ function mainLoop(){
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
         io.sockets.in('sendAllData').emit("send allDataOfStage", ligthPoints); 
-        
     }
     if(playersAi!=null){
          io.sockets.in('sendAllData').emit("send allDataOfAi", playersAi); 

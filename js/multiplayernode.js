@@ -2,7 +2,6 @@
 var id;
 var playersFromServer=[];
 var ligthPointsFromServer=[];
-var aiPlayers=[];
 var radius = 10;
 var color=getRandomColor();
 var worldWidth=2000;
@@ -124,10 +123,6 @@ function setDataForSending(){
     ligthPointsFromServer=allDataOfStage;
   });
 
-  socket.on('send allDataOfAi', function(allDataOfAiPlayers){
-    aiPlayers=allDataOfAiPlayers;
-  });
-    
 function controlMove(key,state){
     if(key==37){
         flagLeft=state;
@@ -331,10 +326,7 @@ function setPlayersScores(){
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
-    
-    for(var ii=0;ii<aiPlayers.length;ii++){
-        $("#player-list").append("<li>"+aiPlayers[ii].name+":"+aiPlayers[ii].points+"</li>");
-    }
+
 }
 
 $(window).resize(function(){
