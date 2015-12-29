@@ -53,32 +53,31 @@ http.listen(3000, function(){
 //LIGTH POINTS
 createLigthsPoints();
 
-function createBullet(posx,posy,life,velx,vely){
+function createBullet(posx,posy,velx,vely){
     var bullet={
         "posx":posx,
         "posy":posy,
         "velx":velx,
         "vely":vely,
-        "radius":10,
-        "life":life
+        "radius":20,
+        "life":100
     }
     return (bullet);
 }
 
-function setLigthPointData(){
+function setLigthPointData(posx,posy){
     
     var ligthPoint={
-        "posx":generateRandomPosition().w,
-        "posy":generateRandomPosition().h,
+        "posx":posx,
+        "posy":posy,
         "radius":10+Math.round(Math.random()*10)
     }
     ligthPoints.push(ligthPoint);
 }
 
 function createLigthsPoints(){
-    for(var a=0;a<100;a++){
-        setLigthPointData();
-        
+    for(var a=0;a<0;a++){
+        setLigthPointData(generateRandomPosition().w,generateRandomPosition().h); 
     }
 }
 
@@ -143,8 +142,8 @@ function setAiPLayer(a){
         "name":"USer"+(Math.round(Math.random()*999)),
         "movePosx":generateRandomPosition().w,
         "movePosy":generateRandomPosition().h,
-        "shootRadius":0,
-        "chargeRadius":minRadius*2,
+        "shootRadius":1,
+        "chargeRadius":minRadius,
         "maxShootRadius":maxShootRadius,
         "bullets":[],
         "shootFlag":false,
@@ -188,7 +187,7 @@ function mainLoop(){
         playerAI.posx+=((playerAI.movePosx-playerAI.posx)/850)*delta;
         playerAI.posy+=((playerAI.movePosy-playerAI.posy)/850)*delta;
         
-        //MOVEMENT ENERGY BALL
+        //MOVEMENT RANDOM
         playerAI.posx2+=((playerAI.posx-playerAI.posx2)/100)*delta;
         playerAI.posy2+=((playerAI.posy-playerAI.posy2)/100)*delta;
         playerAI.moveCounter++
@@ -207,25 +206,22 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         
         //MOVEMENT CHARACTER 
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/(15*playersServer[i].chargeRadius))*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/(15*playersServer[i].chargeRadius))*delta;
-        
-        
-        
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/1000)*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/1000)*delta;
+
         //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/100)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/100)*delta;
         
-    
     //SHOOT LOGIC
-    if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius && playersServer[i].chargeRadius>minRadius){
-        
+    //if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius && playersServer[i].chargeRadius>minRadius){
+    if(playersServer[i].shootFlag){    
         //playersServer[i].shootRadius+=velShoot;
         var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosx,playersClient[i].mousePosy,playersServer[i].posx,playersServer[i].posy,0.8);
         var velx=(circlePoint.cpx-playersServer[i].posx);
         var vely=(circlePoint.cpy-playersServer[i].posy);
-        playersServer[i].chargeRadius-=1;
-        playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,playersServer[i].chargeRadius,velx,vely));
+        //playersServer[i].chargeRadius-=1;
+        playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
         //console.log("PUSH BULLET");
         playersServer[i].shootFlag=false;
  
@@ -240,16 +236,11 @@ function mainLoop(){
            if(bullet.life<0){
                playersServer[i].bullets.splice(bulletNum,1);
            }
+        
+        //PLAYER HIT
         for(var ii=0;ii<playersServer.length;ii++){
-            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life && ii!=i){
-                playersServer[i].points++;
-                playersServer[ii].posx=generateRandomPosition().w;
-                playersServer[ii].posy=generateRandomPosition().h;
-                playersServer[ii].posx2=playersServer[ii].posx;
-                playersServer[ii].posy2=playersServer[ii].posy;
-                playersServer[i].bullets.splice(bulletNum,1);
-                //console.log("Kill!!"+playersServer[i].name );
-                
+            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<minRadius && ii!=i){
+                killPlayer(playersServer[i],playersServer[ii],bulletNum)
             }
         }
         
@@ -257,10 +248,7 @@ function mainLoop(){
         for(var iii=0;iii<playersAi.length;iii++){
             var playerAI=playersAi[iii];
             if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life){
-                playersServer[i].points++;
-                playersAi.splice(iii,1);
-                playersServer[i].bullets.splice(bulletNum,1);
-                setAiPLayer();
+                killPlayer(playersServer[i],playerAI,bulletNum);
                 break;
             }else{
                 if(lineDistance({"x":playerAI.posx2,"y":playerAI.posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<bullet.life*8 && !playerAI.avoidBullet){
@@ -281,7 +269,7 @@ function mainLoop(){
         if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<playersServer[i].chargeRadius){
             playersServer[i].chargeRadius++;
             ligthPoints.splice(iii,1);
-            setLigthPointData();
+            //setLigthPointData();
         }       
 
     }
@@ -296,6 +284,21 @@ function mainLoop(){
          io.sockets.in('sendAllData').emit("send allDataOfAi", playersAi); 
     }
     then = now;
+}
+
+function killPlayer(shootingPlayer,player,bulletNum){
+    shootingPlayer.points++;
+    console.log("SET LIGTH POINT");
+    if(player.chargeRadius<=0){
+    setLigthPointData(player.posx,player.posy);
+    player.posx=generateRandomPosition().w;
+    player.posy=generateRandomPosition().h;
+    player.posx2=player.posx;
+    player.posy2=player.posy;
+    }else{
+        player.chargeRadius-=2;
+    }    
+    shootingPlayer.bullets.splice(bulletNum,1);
 }
 
 var calcSpeed = function(del, speed) {

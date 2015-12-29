@@ -191,8 +191,7 @@ function mainLoop(){
         drawEntityPlayer(playersFromServer[i]);
         for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
             var playerBullet=playersFromServer[i].bullets[bulletNum];
-            drawCircle(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,playerBullet.life,playersFromServer[i].color,alphaCharge);
-            drawCircle(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,6,playersFromServer[i].color,1);
+            drawCircleVFX(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,10,playersFromServer[i].color,1,0.4);
         }
         if(playersFromServer[i].id==id){
             
@@ -207,43 +206,38 @@ function mainLoop(){
             if(offsetWorldX>0){
                 offsetWorldX=0;;
             }
-            
             if(offsetWorldY>0){
                 offsetWorldY=0;;
             }
-           
             if(offsetWorldX<-worldWidth+window.innerWidth){
                 offsetWorldX=-worldWidth+window.innerWidth;
             }
-            
             if(offsetWorldY<-worldHeight+window.innerHeight){
                 offsetWorldY=-worldHeight+window.innerHeight;
             }
-            
             if(offsetWorldX<=0){
                 offsetWorldX+=offsetVel/movx;
             }
-            
             if(offsetWorldY<=0){
                 offsetWorldY+=offsetVel/movy;
             }
-            
             offsetWorldY+=offsetVel/movy;
         }
         
     }
     
     for(var ii=0;ii<ligthPointsFromServer.length;ii++){
-        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9);
-        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65);
+        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9,0.8);
+        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65,0.8);
         drawShadow(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
         drawText("Energy",ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
     }
     
     
     for(var aiNum=0;aiNum<aiPlayers.length;aiNum++){
-        var aiPlayer=aiPlayers[aiNum];
-        drawEntityPlayer(aiPlayer);
+        var AIPlayer=aiPlayers[aiNum];
+        drawEntityPlayer(AIPlayer);
+        console.log(AIPlayer.chargeRadius);
         
     }
 
@@ -277,8 +271,8 @@ function drawCircle(centerX,centerY,radius,color,alpha){
     context.fill(); 
 }
 
-function drawCircleVFX(centerX,centerY,radius,color,alpha){
-    var multi=0.8+Math.abs(Math.cos(vfxCounter));
+function drawCircleVFX(centerX,centerY,radius,color,alpha,mult){
+    var multi=mult+Math.abs(Math.cos(vfxCounter));
     context.beginPath();
     context.arc(centerX, centerY, radius*multi, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
@@ -367,9 +361,9 @@ $(window).resize(function(){
 });
 
 function drawEntityPlayer(player){
-    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85);
-    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9);
-    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
+    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.8);
+    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.8);
+    //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
     drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.chargeRadius,player.color,alphaCharge);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
     drawText(player.name,player.posx+offsetWorldX,player.posy+offsetWorldY);
