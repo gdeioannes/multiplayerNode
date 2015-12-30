@@ -92,7 +92,6 @@ function setPlayersData(myData,socketID){
             if(!playersServer[i].shootFlag){
                 playersServer[i].shootFlag=myData.shootFlag;
             }
-            playersServer[i].flagStop=myData.flagStop;
             exist=true;
             return;
         }
@@ -138,6 +137,7 @@ function setAIPlayer(){
         "id":Math.round(Math.random()*1000000000000),
         "mousePosx":generateRandomPosition().w,
         "mousePosy":generateRandomPosition().h,
+        "flagStop":false,
     }
     console.log(data.color);
     playersClient.push(data);
@@ -180,17 +180,20 @@ var then = new Date().getTime();
 function mainLoop(){
     now=new Date().getTime();
     delta=now-then;
-
+    
     
     //CHECK PLAYERS STATES
     for(var i=0;i<playersClient.length;i++){
         var player=playersServer[i];
         //MOVEMENT CHARACTER 
         console.log(playersClient[i].flagStop);
+        var speedDivider=750;
         if(!playersClient[i].flagStop){
-            playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
-            playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
+            speedDivider=1100;
         }
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/speedDivider)*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/speedDivider)*delta;
+        
         //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;
