@@ -119,6 +119,7 @@ function setPlayer(myData,socketID,type){
             "name":myData.name,
             "socketID":socketID,
             "shootRadius":0,
+            "flagStop":false,
             "chargeRadius":minRadius*2,
             "maxShootRadius":maxShootRadius,
             "shootFlag":false,
