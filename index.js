@@ -184,9 +184,10 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         var player=playersServer[i];
         //MOVEMENT CHARACTER 
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
-
+        if(!playersClient[i].flagStop){
+            playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
+            playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
+        }
         //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;

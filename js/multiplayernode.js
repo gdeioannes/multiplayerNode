@@ -29,6 +29,7 @@ var flagUp=false;
 var flagDown=false;
 var shootFlag=false;
 var moveFlag=false;
+var flagStop=false;
 var vel=10;
 var posx=0;
 var posy=0;
@@ -53,6 +54,7 @@ var socket = io();
       "flagDown":false,
       "shootFlag":false,
       "moveFlag":false,
+      "flagStop":false,
       "mousePosx":0,
       "mousePosy":0,
       "color":""
@@ -98,6 +100,7 @@ function setDataForSending(){
     dataPlayer.flagLeft=flagLeft;
     dataPlayer.flagUp=flagUp;
     dataPlayer.flagDown=flagDown;
+    dataPlayer.flagStop=flagStop;
     dataPlayer.shootFlag=shootFlag;
     dataPlayer.moveFlag=moveFlag;
     dataPlayer.mousePosx=mousePosx;
@@ -124,17 +127,8 @@ function setDataForSending(){
   });
 
 function controlMove(key,state){
-    if(key==37){
+    if(key==32){
         flagLeft=state;
-    }
-    if(key==39){
-        flagRight=state;
-    }
-    if(key==38){
-        flagUp=state;
-    }
-    if(key==40){
-        flagDown=state;
     }
 }
     
@@ -225,7 +219,18 @@ function mainLoop(){
         vfxCounter=0;
     }
 }
-    
+
+$(window).keydown(function(){
+    var key=e.keyCode;
+    controlMove(key,true);
+});
+
+$(window).keyup(function(){
+    controlMove(key,false);
+});
+
+
+
 $(window).mousemove(function(e){
     pos=getMousePos(canvas,e);
     mousePosx=pos.x;
