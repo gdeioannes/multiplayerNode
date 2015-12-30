@@ -92,6 +92,7 @@ function setPlayersData(myData,socketID){
             if(!playersServer[i].shootFlag){
                 playersServer[i].shootFlag=myData.shootFlag;
             }
+            playersServer[i].flagStop=myData.flagStop;
             exist=true;
             return;
         }
