@@ -201,7 +201,6 @@ function mainLoop(){
                 aiPlayerVars.shootCounter=0;
                 aiPlayerVars.shootCounterMax=50+Math.round(Math.random()*70);
                 var prey=AIatack(playersServer[i]);
-                console.log(prey);
                 var circlePoint=calculatePointOfCircunference(playersServer[prey].posx,playersServer[prey].posy,playersServer[i].posx,playersServer[i].posy,0.8);
                 var velx=(circlePoint.cpx-playersServer[i].posx);
                 var vely=(circlePoint.cpy-playersServer[i].posy);
@@ -357,11 +356,7 @@ function AIatack(shooter){
     for(var playerNum=0;playerNum<playersServer.length;playerNum++){
         var player=playersServer[playerNum];
         if(player.id!=shooter.id){
-            console.log("ID");
-            console.log(shooter.id);
-            console.log(player.id);
                 if(lineDistance(player,shooter)<saveDistance){
-                    console.log(lineDistance(player,shooter));
                     saveDistance=lineDistance(player,shooter);
                     savePlayerNum=playerNum; 
                 }
