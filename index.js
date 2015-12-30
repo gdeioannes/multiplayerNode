@@ -184,6 +184,7 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         var player=playersServer[i];
         //MOVEMENT CHARACTER 
+        console.log(flagStop);
         if(!playersClient[i].flagStop){
             playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
             playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;

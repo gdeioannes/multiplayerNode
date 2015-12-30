@@ -127,9 +127,9 @@ function setDataForSending(){
   });
 
 function controlMove(key,state){
-    console.log(key);
     if(key==32){
-        flagLeft=state;
+        console.log("STOP:"+state);
+        flagStop=state;
     }
 }
     
