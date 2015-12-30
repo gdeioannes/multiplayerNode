@@ -227,6 +227,7 @@ $(window).keydown(function(e){
 });
 
 $(window).keyup(function(e){
+    var key=e.keyCode;
     controlMove(key,false);
 });
 
