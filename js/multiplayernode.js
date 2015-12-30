@@ -127,6 +127,7 @@ function setDataForSending(){
   });
 
 function controlMove(key,state){
+    console.log(key);
     if(key==32){
         flagLeft=state;
     }
@@ -220,12 +221,12 @@ function mainLoop(){
     }
 }
 
-$(window).keydown(function(){
+$(window).keydown(function(e){
     var key=e.keyCode;
     controlMove(key,true);
 });
 
-$(window).keyup(function(){
+$(window).keyup(function(e){
     controlMove(key,false);
 });
 
