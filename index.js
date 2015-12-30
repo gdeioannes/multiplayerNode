@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 var receivedData;
 var playersClient=[];
 var playersServer=[];
-var playersAi=[];
+var AIVars=[];
 var vel=4;
 var velShoot=15;
 var velcharge=2;
@@ -70,13 +70,14 @@ function setLigthPointData(posx,posy){
     var ligthPoint={
         "posx":posx,
         "posy":posy,
-        "radius":10+Math.round(Math.random()*10)
+        "radius":10+Math.round(Math.random()*10),
+        "life":300+Math.round(Math.random()*200)
     }
     ligthPoints.push(ligthPoint);
 }
 
 function createLigthsPoints(){
-    for(var a=0;a<20;a++){
+    for(var a=0;a<10;a++){
         setLigthPointData(generateRandomPosition().w,generateRandomPosition().h); 
     }
 }
@@ -125,9 +126,10 @@ function setPlayer(myData,socketID,type){
             "type":type
         }
     playersServer.push(playerServer);
+    AIVars.push(setAIVars());
 }
 
-function setAIPLayer(){
+function setAIPlayer(){
     var data={
         "name":"USer"+Math.round(Math.random()*999),
         "color":getRandomColor(),
@@ -138,12 +140,23 @@ function setAIPLayer(){
     console.log(data.color);
     playersClient.push(data);
     setPlayer(data,"SOCKET ID","NPC");
+    setAIVars();
+}
+
+function setAIVars(){
+    var aiVar={
+        "shootCounter":0,
+        "shootCounterMax":50+Math.round(Math.random()*100),
+        "moveCounter":0,
+        "moveCounterMax":0
+    }
+    return aiVar;
 }
 
 putAIPlayers();
 function putAIPlayers(){
-    for(var numAI=0;numAI<10;numAI++){
-        setAIPLayer();
+    for(var numAI=0;numAI<20;numAI++){
+        setAIPlayer();
     }
 }
 
@@ -169,15 +182,47 @@ function mainLoop(){
     
     //CHECK PLAYERS STATES
     for(var i=0;i<playersClient.length;i++){
-        
+        var player=playersServer[i];
         //MOVEMENT CHARACTER 
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/1000)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/1000)*delta;
+        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/750)*delta;
+        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/750)*delta;
 
         //MOVEMENT ENERGY BALL
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;
         
+        
+        if(player.type=="NPC"){
+            var aiPlayerVars=AIVars[i];
+            var multx=200;
+            var multy=200;
+            aiPlayerVars.shootCounter++;
+            if(aiPlayerVars.shootCounter>aiPlayerVars.shootCounterMax){
+                aiPlayerVars.shootCounter=0;
+                aiPlayerVars.shootCounterMax=50+Math.round(Math.random()*70);
+                var prey=AIatack(playersServer[i]);
+                console.log(prey);
+                var circlePoint=calculatePointOfCircunference(playersServer[prey].posx,playersServer[prey].posy,playersServer[i].posx,playersServer[i].posy,0.8);
+                var velx=(circlePoint.cpx-playersServer[i].posx);
+                var vely=(circlePoint.cpy-playersServer[i].posy);
+                playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
+                if(playersClient[i].mousePosx<worldWidth/5){
+                    multx*=-1;
+                }
+                if(playersClient[i].mousePosy<worldHeight/5){
+                    multy*=-1;
+                }
+                if(playersClient[i].mousePosx>(worldWidth/5)*4){
+                    multx*=-1;
+                }
+                if(playersClient[i].mousePosy>(worldHeight/5)*4){
+                    multy*=-1;
+                }
+                playersClient[i].mousePosx-=velx*multx;
+                playersClient[i].mousePosy-=vely*multy;
+                
+            }
+        }
     //SHOOT LOGIC
     //if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius && playersServer[i].chargeRadius>minRadius){
     if(playersServer[i].shootFlag){    
@@ -204,7 +249,7 @@ function mainLoop(){
         
         //PLAYER HIT
         for(var ii=0;ii<playersServer.length;ii++){
-            if(lineDistance({"x":playersServer[ii].posx2,"y":playersServer[ii].posy2},{"x":bullet.posx,"y":bullet.posy})-minRadius<minRadius && ii!=i){
+            if(lineDistance(playersServer[ii],bullet)-minRadius<minRadius && ii!=i){
                 killPlayer(playersServer[i],playersServer[ii],bulletNum,playersClient[ii])
             }
         }
@@ -212,7 +257,7 @@ function mainLoop(){
 
     //LIGTH POINTS LOGIC
     for(var iii=0;iii<ligthPoints.length;iii++){
-        if(lineDistance({"x":playersServer[i].posx,"y":playersServer[i].posy},{"x":ligthPoints[iii].posx,"y":ligthPoints[iii].posy})-minRadius<playersServer[i].chargeRadius){
+        if(lineDistance(playersServer[i],ligthPoints[iii])-minRadius<playersServer[i].chargeRadius){
             playersServer[i].chargeRadius++;
             ligthPoints.splice(iii,1);
             //setLigthPointData();
@@ -225,10 +270,16 @@ function mainLoop(){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
         io.sockets.in('sendAllData').emit("send allDataOfStage", ligthPoints); 
     }
-    if(playersAi!=null){
-         io.sockets.in('sendAllData').emit("send allDataOfAi", playersAi); 
-    }
     then = now;
+    
+    for(var numLigthPoint=0;numLigthPoint<ligthPoints.length;numLigthPoint++){
+        var ligthPoint=ligthPoints[numLigthPoint];
+        ligthPoint.life--;
+        if(ligthPoint.life<=0){
+            ligthPoints.splice(numLigthPoint,1);
+            break;
+        }
+    }
 }
 
 function killPlayer(shootingPlayer,player,bulletNum,playerClient){
@@ -257,10 +308,10 @@ function lineDistance( point1, point2 )
   var xs = 0;
   var ys = 0;
  
-  xs = point2.x - point1.x;
+  xs = point2.posx - point1.posx;
   xs = xs * xs;
  
-  ys = point2.y - point1.y;
+  ys = point2.posy - point1.posy;
   ys = ys * ys;
  
   return Math.sqrt( xs + ys );
@@ -298,4 +349,23 @@ function generateRandomPosition(){
 function generateRandomPositionFromPosition(pos){
     var range=800;
     return (pos+(range-Math.round(Math.random()*range*2)));
+}
+
+function AIatack(shooter){
+    var saveDistance=worldWidth*1000;
+    var savePlayerNum=0;
+    for(var playerNum=0;playerNum<playersServer.length;playerNum++){
+        var player=playersServer[playerNum];
+        if(player.id!=shooter.id){
+            console.log("ID");
+            console.log(shooter.id);
+            console.log(player.id);
+                if(lineDistance(player,shooter)<saveDistance){
+                    console.log(lineDistance(player,shooter));
+                    saveDistance=lineDistance(player,shooter);
+                    savePlayerNum=playerNum; 
+                }
+        }
+    }
+    return savePlayerNum;
 }
