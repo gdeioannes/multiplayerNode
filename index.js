@@ -176,7 +176,7 @@ setInterval(mainLoop,30);
 
 var now, delta;
 var then = new Date().getTime();
-
+var speedDivider=750;
 function mainLoop(){
     now=new Date().getTime();
     delta=now-then;
@@ -186,10 +186,10 @@ function mainLoop(){
     for(var i=0;i<playersClient.length;i++){
         var player=playersServer[i];
         //MOVEMENT CHARACTER 
-        console.log(playersClient[i].flagStop);
-        var speedDivider=750;
-        if(!playersClient[i].flagStop){
+        if(playersClient[i].flagStop){
             speedDivider=1100;
+        }else{
+            speedDivider=750;   
         }
         playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/speedDivider)*delta;
         playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/speedDivider)*delta;
