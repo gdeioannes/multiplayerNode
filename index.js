@@ -158,7 +158,7 @@ function setAIVars(){
 
 putAIPlayers();
 function putAIPlayers(){
-    for(var numAI=0;numAI<20;numAI++){
+    for(var numAI=0;numAI<10;numAI++){
         setAIPlayer();
     }
 }
