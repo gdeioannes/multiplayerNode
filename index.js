@@ -17,6 +17,7 @@ var worldWidth=2000;
 var worldHeight=2000;
 var offsetWorldX=300;
 var offsetWorldY=300;
+var shootRadiusMax=100;
 
 process.env.PWD = process.cwd()
 // Then
@@ -117,9 +118,9 @@ function setPlayer(myData,socketID,type){
             "color":myData.color,
             "name":myData.name,
             "socketID":socketID,
-            "shootRadius":0,
+            "shootRadius":100,
             "flagStop":false,
-            "chargeRadius":minRadius*2,
+            "lifeRadius":minRadius*2,
             "maxShootRadius":maxShootRadius,
             "shootFlag":false,
             "points":0,
@@ -189,7 +190,7 @@ function mainLoop(){
         if(playersClient[i].flagStop){
             speedDivider=1100;
         }else{
-            speedDivider=750;   
+            speedDivider=600;   
         }
         playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/speedDivider)*delta;
         playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/speedDivider)*delta;
@@ -198,6 +199,9 @@ function mainLoop(){
         playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
         playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;
         
+        if(playersServer[i].shootRadius<shootRadiusMax){
+            playersServer[i].shootRadius+=shootRadiusMax/500;
+        }
         
         if(player.type=="NPC"){
             var aiPlayerVars=AIVars[i];
@@ -230,17 +234,20 @@ function mainLoop(){
             }
         }
     //SHOOT LOGIC
-    //if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].chargeRadius && playersServer[i].chargeRadius>minRadius){
-    if(playersServer[i].shootFlag){    
+    //if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].lifeRadius && playersServer[i].lifeRadius>minRadius){
+    if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax/8){    
         //playersServer[i].shootRadius+=velShoot;
         var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosx,playersClient[i].mousePosy,playersServer[i].posx,playersServer[i].posy,0.8);
         var velx=(circlePoint.cpx-playersServer[i].posx);
         var vely=(circlePoint.cpy-playersServer[i].posy);
-        //playersServer[i].chargeRadius-=1;
+        //playersServer[i].lifeRadius-=1;
         playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
         //console.log("PUSH BULLET");
         playersServer[i].shootFlag=false;
- 
+        playersServer[i].shootRadius-=(shootRadiusMax*3)/(playersServer[i].shootRadius);
+        if(playersServer[i].shootRadius<0){
+            playersServer[i].shootRadius=0;
+        }
     }
         
     //BULLET LOGIC
@@ -263,8 +270,8 @@ function mainLoop(){
 
     //LIGTH POINTS LOGIC
     for(var iii=0;iii<ligthPoints.length;iii++){
-        if(lineDistance(playersServer[i],ligthPoints[iii])-minRadius<playersServer[i].chargeRadius){
-            playersServer[i].chargeRadius++;
+        if(lineDistance(playersServer[i],ligthPoints[iii])-minRadius<playersServer[i].lifeRadius){
+            playersServer[i].lifeRadius++;
             ligthPoints.splice(iii,1);
             //setLigthPointData();
         }       
@@ -289,7 +296,7 @@ function mainLoop(){
 }
 
 function killPlayer(shootingPlayer,player,bulletNum,playerClient){
-    if(player.chargeRadius<=minRadius){
+    if(player.lifeRadius<=minRadius){
         playerClient.mousePosx=generateRandomPosition().w;
         playerClient.mousePosy=generateRandomPosition().h;
         setLigthPointData(player.posx,player.posy);
@@ -297,10 +304,11 @@ function killPlayer(shootingPlayer,player,bulletNum,playerClient){
         player.posy=playerClient.mousePosy;
         player.posx2=playerClient.mousePosx;
         player.posy2=playerClient.mousePosy;
-        player.chargeRadius=minRadius*2;
+        player.lifeRadius=minRadius*2;
+        player.shootRadius=maxShootRadius;
         shootingPlayer.points++;
     }else{
-        player.chargeRadius-=10;
+        player.lifeRadius-=10;
     }    
     shootingPlayer.bullets.splice(bulletNum,1);
 }

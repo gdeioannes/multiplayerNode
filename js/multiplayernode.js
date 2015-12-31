@@ -8,6 +8,7 @@ var worldWidth=2000;
 var worldHeight=2000;
 var offsetWorldX=0;
 var offsetWorldY=0;
+var shootRadiusRatio=0;
 
 if(id==null){
     id=Math.round(Math.random()*100000000000);
@@ -37,6 +38,7 @@ var chatOverFlag=false;
 var mousePosx=0;
 var mousePosy=0;
 var vfxCounter=0;
+var shootRadiusMax=100;
     
 var socket = io();
 
@@ -165,22 +167,18 @@ setInterval(mainLoop,30);
 
 function mainLoop(){
     context.canvas.width=context.canvas.width;
+    drawFront();
     drawPattern();
-
+    
     for(var i=0;i<playersFromServer.length;i++){
-        drawCircleOrbiting(playersFromServer[i]);
-        drawEntityPlayer(playersFromServer[i]);
-        for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
-            var playerBullet=playersFromServer[i].bullets[bulletNum];
-            drawCircleVFX(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,10,playersFromServer[i].color,1,0.4);
-        }
+        
         if(playersFromServer[i].id==id){
             
             var offset=0.4;
             var offsetVel=10;
                     
-            var movx=((window.innerWidth/2)/(window.innerWidth/2-(playersFromServer[i].posx+offsetWorldX)));
-            var movy=((window.innerHeight/2)/(window.innerHeight/2-(playersFromServer[i].posy+offsetWorldY)));
+            var movx=((window.innerWidth*0.2)/(window.innerWidth/2-(playersFromServer[i].posx+offsetWorldX)));
+            var movy=((window.innerHeight*0.2)/(window.innerHeight/2-(playersFromServer[i].posy+offsetWorldY)));
             
             //console.log("MOVX:"+movx+" MOVY:"+movy+" OFFSETX:"+Math.round(offsetWorldX)+" OFFSETY:"+Math.round(offsetWorldY));
             
@@ -203,7 +201,22 @@ function mainLoop(){
                 offsetWorldY+=offsetVel/movy;
             }
             offsetWorldY+=offsetVel/movy;
+            
+            shootRadiusRatio=((100*playersFromServer[i].shootRadius)/shootRadiusMax)/100;
+            
+            drawCircle(canvas.width/2,canvas.height/2,canvas.height*0.4*shootRadiusRatio,"#FFFFFF",0.05);
+            drawCircleStrokeDot(canvas.width/2,canvas.height/2,canvas.height*0.4,"#FFFFFF",0.05);
+            drawLine(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2);
+            drawCircle(canvas.width/2,canvas.height/2,5,"#FFFFFF",0.5);
         }
+        
+        drawCircleOrbiting(playersFromServer[i]);
+        drawEntityPlayer(playersFromServer[i]);
+        for(var bulletNum=0;bulletNum<playersFromServer[i].bullets.length;bulletNum++){
+            var playerBullet=playersFromServer[i].bullets[bulletNum];
+            drawCircleVFX(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,10,playersFromServer[i].color,1,0.4);
+        }
+        
         
     }
     
@@ -214,11 +227,14 @@ function mainLoop(){
         drawShadow(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
         drawText("Energy",ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
     }
-
+    
     vfxCounter+=0.1;
     if(vfxCounter>1000){
         vfxCounter=0;
     }
+    
+
+
 }
 
 $(window).keydown(function(e){
@@ -240,7 +256,7 @@ $(window).mousemove(function(e){
     socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
 });
     
-function drawCircle(centerX,centerY,radius,color,alpha){
+function drawDoubleCircle(centerX,centerY,radius,color,alpha){
     
     context.save();
     context.translate(centerX,centerY);
@@ -257,8 +273,15 @@ function drawCircle(centerX,centerY,radius,color,alpha){
     context.fill(); 
 }
 
+function drawCircle(centerX,centerY,radius,color,alpha){
+    
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = hexToRgbA(color,alpha);
+    context.fill(); 
+}
+
 function drawCircleStroke(centerX,centerY,radius,color,alpha){
-        
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.lineWidth = 3;
@@ -266,12 +289,24 @@ function drawCircleStroke(centerX,centerY,radius,color,alpha){
     context.stroke();
 }
 
+function drawCircleStrokeDot(centerX,centerY,radius,color,alpha){     
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.lineWidth = 2;
+    context.strokeStyle = hexToRgbA(color,alpha);
+    context.stroke();
+}
+
 function drawCircleVFX(centerX,centerY,radius,color,alpha,mult){
     var multi=mult+Math.abs(Math.cos(vfxCounter));
+    //context.save();
     context.beginPath();
+    //context.globalCompositeOperation = 'destination-out';
     context.arc(centerX, centerY, radius*multi, 0, 2 * Math.PI, false);
+    //context.createRadialGradient(60,60,0,60,60,60);
     context.fillStyle = hexToRgbA(color,alpha);
-    context.fill(); 
+    context.fill();
+    //context.restore();
 }
 
 function drawText(text,px,py){
@@ -319,10 +354,12 @@ function hexToRgbA(hex,alpha){
 }
 
 function getMousePos(canvas, evt) {
+    calculatePointOfCircunferenceForVel;
     var rect = canvas.getBoundingClientRect();
+    var correctPoints=calculatePointOfCircunferenceForVel(evt.clientX,evt.clientY,canvas.width/2,canvas.height/2,lineDistance({"posx":canvas.width/2,"posy":canvas.height/2},{"posx":evt.clientX,"posy":evt.clientY}))
     return {
-      x: (evt.clientX - rect.left)-offsetWorldX,
-      y: (evt.clientY - rect.top)-offsetWorldY
+      x: (correctPoints.cpx - rect.left)-offsetWorldX,
+      y: (correctPoints.cpy - rect.top)-offsetWorldY
     };
 }
     
@@ -345,7 +382,7 @@ function drawEntityPlayer(player){
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.8);
     drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.8);
     //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
-    drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.chargeRadius,player.color,0.2);
+    drawDoubleCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.lifeRadius,player.color,0.2);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
     drawText(player.name,player.posx+offsetWorldX,player.posy+offsetWorldY);
 }
@@ -368,13 +405,72 @@ function getRandomColor() {
 }
 
 function drawCircleOrbiting(player){
-    for(var i=0;i<player.chargeRadius/10;i++){
-        var angle=((+player.chargeRadius+100*i)+vfxCounter)*Math.pow(-1,i);
+    for(var i=0;i<player.lifeRadius/10;i++){
+        var angle=((+player.lifeRadius+100*i)+vfxCounter)*Math.pow(-1,i);
         var velrad=25+7*i;
 
         cpx = player.posx2+offsetWorldX + velrad * Math.cos(angle);
         cpy = player.posy2+offsetWorldY + velrad * Math.sin(angle);
-        drawCircle(cpx,cpy,4,player.color,0.05*i);
+        drawDoubleCircle(cpx,cpy,4,player.color,0.05*i);
         drawCircleStroke(player.posx2+offsetWorldX,player.posy2+offsetWorldY,velrad,player.color,0.05*i);
     }
+}
+
+function drawLine(x,y,x2,y2){
+    context.beginPath();
+    context.strokeStyle="rgba(255,255,255,0.25)";
+    context.lineWidth = 2;
+    context.moveTo(x,y);
+    context.lineTo(x2,y2);
+    context.stroke();
+}
+
+function calculatePointOfCircunferenceForVel(x,y,cx,cy,velrad){
+    var maxVariableRadius=canvas.height*0.4*shootRadiusRatio;
+    
+    var angle=Math.atan((y-cy)/(x-cx));
+    var mult=1;
+    if(x-cx>0){
+        mult=-1;
+    }else{
+        mult=1;
+    }
+
+    cpx = cx + velrad * Math.cos(angle)*mult;
+    cpy = cy + velrad * Math.sin(angle)*mult;
+    if(lineDistance({"posx":x,"posy":y},{"posx":cpx,"posy":cpy})>maxVariableRadius){
+        console.log("MAX"+lineDistance({"posx":x,"posy":y},{"posx":cpx,"posy":cpy}));
+        cpx = cx + maxVariableRadius * Math.cos(angle)*mult*-1;
+        cpy = cy + maxVariableRadius * Math.sin(angle)*mult*-1;
+    }else{
+        cpx = cx + velrad * Math.cos(angle)*mult*-1;
+        cpy = cy + velrad * Math.sin(angle)*mult*-1;
+    }
+    
+    return {"cpx":cpx,"cpy":cpy};
+}
+
+function lineDistance( point1, point2 )
+{
+  var xs = 0;
+  var ys = 0;
+ 
+  xs = point2.posx - point1.posx;
+  xs = xs * xs;
+ 
+  ys = point2.posy - point1.posy;
+  ys = ys * ys;
+ 
+  return Math.sqrt( xs + ys );
+}
+
+function drawFront(){
+    context.fillStyle="#000"
+    context.fillRect(0,0,canvas.width,canvas.height)
+    //context.globalCompositeOperation = "xor";
+    context.beginPath();
+    context.arc(canvas.width/2,canvas.height/2,canvas.height*0.45,0,2*Math.PI);
+
+    context.clip();
+
 }
