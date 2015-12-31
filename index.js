@@ -13,8 +13,8 @@ var minRadius=20;
 var debug=false;
 var ligthPoints=[];
 var maxShootRadius=100;
-var worldWidth=2000;
-var worldHeight=2000;
+var worldWidth=3000;
+var worldHeight=3000;
 var offsetWorldX=300;
 var offsetWorldY=300;
 var shootRadiusMax=100;
@@ -61,7 +61,7 @@ function createBullet(posx,posy,velx,vely){
         "velx":velx,
         "vely":vely,
         "radius":20,
-        "life":55
+        "life":40
     }
     return (bullet);
 }
