@@ -470,7 +470,6 @@ function drawFront(){
     //context.globalCompositeOperation = "xor";
     context.beginPath();
     context.arc(canvas.width/2,canvas.height/2,canvas.height*0.45*shootRadiusRatio,0,2*Math.PI);
-    context.
     context.clip();
 
 }
