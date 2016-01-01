@@ -52,7 +52,6 @@ http.listen(3000, function(){
 
 
 //LIGTH POINTS
-createLigthsPoints();
 
 function createBullet(posx,posy,velx,vely){
     var bullet={
@@ -65,24 +64,6 @@ function createBullet(posx,posy,velx,vely){
     }
     return (bullet);
 }
-
-function setLigthPointData(posx,posy){
-    
-    var ligthPoint={
-        "posx":posx,
-        "posy":posy,
-        "radius":10+Math.round(Math.random()*10),
-        "life":300+Math.round(Math.random()*200)
-    }
-    ligthPoints.push(ligthPoint);
-}
-
-function createLigthsPoints(){
-    for(var a=0;a<10;a++){
-        setLigthPointData(generateRandomPosition().w,generateRandomPosition().h); 
-    }
-}
-
 
 function setPlayersData(myData,socketID){
     var exist=false;
@@ -158,7 +139,7 @@ function setAIVars(){
 
 putAIPlayers();
 function putAIPlayers(){
-    for(var numAI=0;numAI<10;numAI++){
+    for(var numAI=0;numAI<20;numAI++){
         setAIPlayer();
     }
 }
@@ -235,7 +216,7 @@ function mainLoop(){
         }
     //SHOOT LOGIC
     //if(playersServer[i].shootFlag && playersServer[i].shootRadius<playersServer[i].lifeRadius && playersServer[i].lifeRadius>minRadius){
-    if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax/8){    
+    if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22){    
         //playersServer[i].shootRadius+=velShoot;
         var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosx,playersClient[i].mousePosy,playersServer[i].posx,playersServer[i].posy,0.8);
         var velx=(circlePoint.cpx-playersServer[i].posx);
@@ -267,11 +248,14 @@ function mainLoop(){
             }
         }
     }
-
+        
+    if((numClusterOfLigth*numLigthPerCluster)-numLigthPerCluster>ligthPoints.length){
+        circularLigthsSet(numLigthPerCluster,300);
+    }
     //LIGTH POINTS LOGIC
     for(var iii=0;iii<ligthPoints.length;iii++){
         if(lineDistance(playersServer[i],ligthPoints[iii])-minRadius<playersServer[i].lifeRadius){
-            playersServer[i].lifeRadius++;
+            playersServer[i].lifeRadius+=1;
             ligthPoints.splice(iii,1);
             //setLigthPointData();
         }       
@@ -287,10 +271,12 @@ function mainLoop(){
     
     for(var numLigthPoint=0;numLigthPoint<ligthPoints.length;numLigthPoint++){
         var ligthPoint=ligthPoints[numLigthPoint];
-        ligthPoint.life--;
-        if(ligthPoint.life<=0){
-            ligthPoints.splice(numLigthPoint,1);
-            break;
+        if(ligthPoint.life!=-1){
+            ligthPoint.life--;
+            if(ligthPoint.life<=0 ){
+                ligthPoints.splice(numLigthPoint,1);
+                break;
+            }
         }
     }
 }
@@ -299,7 +285,7 @@ function killPlayer(shootingPlayer,player,bulletNum,playerClient){
     if(player.lifeRadius<=minRadius){
         playerClient.mousePosx=generateRandomPosition().w;
         playerClient.mousePosy=generateRandomPosition().h;
-        setLigthPointData(player.posx,player.posy);
+        setLigthPointData(player.posx,player.posy,300+Math.round(Math.random()*200));
         player.posx=playerClient.mousePosx;
         player.posy=playerClient.mousePosy;
         player.posx2=playerClient.mousePosx;
@@ -378,4 +364,47 @@ function AIatack(shooter){
         }
     }
     return savePlayerNum;
+}
+
+var numClusterOfLigth=5;
+var numLigthPerCluster=6;
+var clusterRadius=400;
+for(var k=0;k<numClusterOfLigth;k++){
+    circularLigthsSet(numLigthPerCluster,300);
+}
+
+function circularLigthsSet(rep,velrad){
+   
+    //var cx=offsetWorldX+velrad+Math.round(Math.random()*worldWidth-(offsetWorldX*2)-(velrad*2));
+    //var cy=offsetWorldY+velrad+Math.round(Math.random()*worldHeight-(offsetWorldY*2)-(velrad*2));
+    var cx=(velrad)+(Math.random()*(worldWidth-velrad*1.2));
+    var cy=(velrad)+(Math.random()*(worldHeight-velrad*1.2));
+    
+    for(var repNum=0;repNum<rep;repNum++){
+        var x=offsetWorldX+velrad+Math.round(Math.random()*worldWidth-(offsetWorldX*2)-(velrad*2));
+        var y=offsetWorldY+velrad+Math.round(Math.random()*worldHeight-(offsetWorldY*2)-(velrad*2));
+        var angle=Math.atan((y-cy)/(x-cx));
+        var velRad2=Math.random()*velrad;
+        var mult=1;
+        if(x-cx>0){
+            mult=1;
+        }else{
+            mult=-1;
+        }
+        cpx = cx + velRad2 * Math.cos(angle)*mult;
+        cpy = cy + velRad2 * Math.sin(angle)*mult;
+        console.log(cpx);
+        setLigthPointData(cpx,cpy,-1);
+    }
+}
+
+function setLigthPointData(posx,posy,life){
+    
+    var ligthPoint={
+        "posx":posx,
+        "posy":posy,
+        "radius":10+Math.round(Math.random()*10),
+        "life":life
+    }
+    ligthPoints.push(ligthPoint);
 }
