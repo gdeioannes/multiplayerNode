@@ -139,7 +139,7 @@ function setAIVars(){
 
 putAIPlayers();
 function putAIPlayers(){
-    for(var numAI=0;numAI<10;numAI++){
+    for(var numAI=0;numAI<6;numAI++){
         setAIPlayer();
     }
 }
