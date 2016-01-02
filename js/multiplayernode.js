@@ -314,10 +314,12 @@ $(window).keyup(function(e){
 
 
 $(window).mousemove(function(e){
-    pos=getMousePos(canvas,e);
-    mousePosx=pos.x;
-    mousePosy=pos.y;
-    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+    if(flagStorage){
+        pos=getMousePos(canvas,e);
+        mousePosx=pos.x;
+        mousePosy=pos.y;
+        socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+    }
 });
     
 function drawDoubleCircle(centerX,centerY,radius,color,alpha){
