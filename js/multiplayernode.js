@@ -181,7 +181,7 @@ $("#chat-container").mouseout(function(){
 });     
 
 $(window).click(function(e){
-     if(!chatOverFlag){
+     if(!chatOverFlag && flagStorage){
          pos=getMousePos(canvas,e);
         shootFlag=true;
          socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
