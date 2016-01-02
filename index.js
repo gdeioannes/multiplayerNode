@@ -255,7 +255,7 @@ function mainLoop(){
     //LIGTH POINTS LOGIC
     for(var iii=0;iii<ligthPoints.length;iii++){
         if(lineDistance(playersServer[i],ligthPoints[iii])-minRadius<playersServer[i].lifeRadius){
-            playersServer[i].lifeRadius+=1;
+            playersServer[i].lifeRadius+=3;
             ligthPoints.splice(iii,1);
             //setLigthPointData();
         }       
