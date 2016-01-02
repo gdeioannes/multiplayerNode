@@ -10,6 +10,8 @@ var offsetWorldX=0;
 var offsetWorldY=0;
 var shootRadiusRatio=0;
 
+$("#enter-container").hide();
+
 if(id==null){
     id=Math.round(Math.random()*100000000000);
 }
