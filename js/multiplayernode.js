@@ -9,11 +9,44 @@ var worldHeight=3000;
 var offsetWorldX=0;
 var offsetWorldY=0;
 var shootRadiusRatio=0;
+var flagStorage=false;
+//localStorage.clear();
+var storageData=JSON.parse(localStorage.getItem("agileWars"));
+console.log(storageData);
+//SaveData
+$("#play-container").hide();
 
-$("#enter-container").hide();
+if(storageData!=null){
+    id=storageData.id;
+    $('#u-name').val(storageData.name);
+    $("#player-login-submit").hide();
+    $("#play-container").show();
+}
+
+$("#login-btn").click(function(){
+    var storageData={"id":0,"name":""};
+    storageData.id=Math.round(Math.random()*10000000000000000000);
+    storageData.name=$('#user-name-login').val();
+    localStorage.setItem("agileWars",JSON.stringify(storageData));
+    $('#u-name').val($('#user-name-login').val());
+    $("#player-login-submit").hide();
+    $("#play-container").show();
+});
+
+$("#clear-data-btn").click(function(){
+    localStorage.clear();
+    $("#player-login-submit").show();
+    $("#play-container").hide();
+});
+
+$("#play-btn").click(function(){
+    $("#player-login-container").hide();
+    createPlayer();
+    flagStorage=true;
+});
 
 if(id==null){
-    id=Math.round(Math.random()*100000000000);
+    
 }
 
 $('#messages').scrollTop(1000000000000000000000000000000000000000000000000000000000000000);    
@@ -82,9 +115,11 @@ var socket = io();
     
 //GAME
     
-//CREATE PLAYER    
+//CREATE PLAYER
+function createPlayer(){
 socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
-
+}
+    
 $(window).keydown(function(e){
    var key=e.which;
     controlMove(key,true); 
@@ -173,23 +208,23 @@ function mainLoop(){
         drawFront();
     }
     drawPattern();
-    
-    worldMovement();
-    
-    for(var ii=0;ii<ligthPointsFromServer.length;ii++){
-        drawRect(ligthPointsFromServer[ii]);
-        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9,0.8);
-        drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65,0.8);
-        drawShadow(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
-        drawText("Energy",ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
-    }
-    
-    vfxCounter+=0.1;
-    if(vfxCounter>1000){
-        vfxCounter=0;
-    }
-    
+    if(flagStorage){
+        worldMovement();
 
+        for(var ii=0;ii<ligthPointsFromServer.length;ii++){
+            drawRect(ligthPointsFromServer[ii]);
+            drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius*0.6,"#FFFFFF",0.9,0.8);
+            drawCircleVFX(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY,ligthPointsFromServer[ii].radius,"#FFFFFF",0.65,0.8);
+            drawShadow(ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
+            drawText("Energy",12,ligthPointsFromServer[ii].posx+offsetWorldX,ligthPointsFromServer[ii].posy+offsetWorldY);
+        }
+
+        vfxCounter+=0.1;
+        if(vfxCounter>1000){
+            vfxCounter=0;
+        }
+
+    }
 
 }
 
@@ -257,7 +292,7 @@ function worldMovement(){
             var cpoints=calculatePointOfCircunference(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,canvas.height*0.4);
             drawLine(cpoints.cpx,cpoints.cpy,canvas.width/2,canvas.height/2,0.025);
             drawCircle(cpoints.cpx,cpoints.cpy,20*(1-circleRadarRatio),playersFromServer[i].color,1*(1-circleRadarRatio));
-           
+            drawText(playersFromServer[i].name,12,cpoints.cpx,cpoints.cpy);
             
         }
             
@@ -338,8 +373,7 @@ function drawCircleVFX(centerX,centerY,radius,color,alpha,mult){
     //context.restore();
 }
 
-function drawText(text,px,py){
-    var fontsize=15;
+function drawText(text,fontsize,px,py){
     context.font = fontsize+"px Arial";
     context.fillStyle = "#FFFFFF";
     context.textAlign="center";
@@ -413,7 +447,7 @@ function drawEntityPlayer(player){
     //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
     drawDoubleCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.lifeRadius,player.color,0.2);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
-    drawText(player.name,player.posx+offsetWorldX,player.posy+offsetWorldY);
+    drawText(player.name,12,player.posx+offsetWorldX,player.posy+offsetWorldY);
 }
 
 function drawRect(object){
@@ -508,7 +542,7 @@ function calculatePointOfCircunference(x,y,cx,cy,velrad){
     if(x-cx<0){
         mult=-1;
     }
-    console.log(angle);
+    
     cpx = cx + velrad * Math.cos(angle)*mult;
     cpy = cy + velrad * Math.sin(angle)*mult;
     return {"cpx":cpx,"cpy":cpy};
