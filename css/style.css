@@ -16,6 +16,7 @@ canvas{float: left; position: fixed; width: 100%; height: 100%; background: whit
 #debug li{list-style: none;}
 #debug li label{ margin-right: 20px;}
 #player-login-container{ position: fixed; width: 100%; height: 100%; z-index: 100; background: rgba(0,0,0,0.7);  ; text-align: center; }
+#player-login-container #login-form{ background: none;}
 #player-login-container #enter{margin-top: 20%; background: none !important;}
 #player-login-container #player-data-submit{ background: none;}
 #player-login-container #enter input{margin-top: 20px; opacity: 1; width: 20%; text-align: center; height: 30px; -webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;}

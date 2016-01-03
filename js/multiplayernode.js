@@ -4,15 +4,17 @@ var playersFromServer=[];
 var ligthPointsFromServer=[];
 var radius = 10;
 var color=getRandomColor();
-var worldWidth=3000;
-var worldHeight=3000;
+var worldWidth=0;
+var worldHeight=0;
 var offsetWorldX=0;
 var offsetWorldY=0;
 var shootRadiusRatio=0;
 var flagStorage=false;
-//localStorage.clear();
+var flagHoldDirection=false;
+var frontCircleSize=0;
 var storageData=JSON.parse(localStorage.getItem("agileWars"));
-console.log(storageData);
+
+
 //SaveData
 $("#play-container").hide();
 
@@ -72,6 +74,8 @@ var posy=0;
 var chatOverFlag=false;
 var mousePosx=0;
 var mousePosy=0;
+var mousePosAimx=0;
+var mousePosAimy=0;
 var vfxCounter=0;
 var shootRadiusMax=100;
     
@@ -92,8 +96,11 @@ var socket = io();
       "shootFlag":false,
       "moveFlag":false,
       "flagStop":false,
+      "flagHoldDirection":false,
       "mousePosx":0,
       "mousePosy":0,
+      "mousePosAimx":0,
+      "mousePosAimy":0,
       "color":""
   } 
     
@@ -141,9 +148,12 @@ function setDataForSending(){
     dataPlayer.flagDown=flagDown;
     dataPlayer.flagStop=flagStop;
     dataPlayer.shootFlag=shootFlag;
+    dataPlayer.flagHoldDirection=flagHoldDirection;
     dataPlayer.moveFlag=moveFlag;
     dataPlayer.mousePosx=mousePosx;
     dataPlayer.mousePosy=mousePosy;
+    dataPlayer.mousePosAimx=mousePosAimx;
+    dataPlayer.mousePosAimy=mousePosAimy;
     dataPlayer.color=color;
     dataPlayer.name=$('#u-name').val();
     return dataPlayer;
@@ -162,13 +172,16 @@ function setDataForSending(){
   });
     
   socket.on('send allDataOfStage', function(allDataOfStage){
-    ligthPointsFromServer=allDataOfStage;
+    console.log(allDataOfStage);
+    worldWidth=allDataOfStage.worldWidth;
+    worldHeight=allDataOfStage.worldHeight;
+    ligthPointsFromServer=allDataOfStage.ligthPoints;
   });
 
 function controlMove(key,state){
     if(key==32){
         console.log("STOP:"+state);
-        flagStop=state;
+        flagHoldDirection=state;
     }
 }
     
@@ -180,14 +193,52 @@ $("#chat-container").mouseout(function(){
     chatOverFlag=false;
 });     
 
-$(window).click(function(e){
-     if(!chatOverFlag && flagStorage){
-         pos=getMousePos(canvas,e);
-        shootFlag=true;
-         socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
-         shootFlag=false;
+$(window).mousedown(function(event){ 
+    switch (event.which) {
+        case 1:
+            //LEFT
+            if(!chatOverFlag && flagStorage){
+                 pos=getMousePos(canvas,event);
+                 shootFlag=true;
+                 socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+                 shootFlag=false;
+            }
+            break;
+        case 2:
+            //MIDLE
+            break;
+        case 3:
+            //RIGTH
+            flagHoldDirection=true;
+            console.log("MOUSE RIGTH DOWM");
+            socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+            break;
+        default:
+            alert('You have a strange Mouse!');
     }
- }); 
+});
+
+$(window).mouseup(function(event){ 
+    switch (event.which) {
+        case 1:
+            //LEFT
+            break;
+        case 2:
+            //MIDLE
+            break;
+        case 3:
+            //RIGTH
+            flagHoldDirection=false;
+            console.log("MOUSE RIGTH UP");
+            socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
+            break;
+        default:
+            alert('You have a strange Mouse!');
+    }
+});
+    
+    
+
 
 function setOffSet(){
     var offset=canvas.width;
@@ -200,6 +251,7 @@ var context = canvas.getContext('2d');
 context.canvas.width  = window.innerWidth;
 context.canvas.height = window.innerHeight;
 
+setFrontCircleSize();
 setInterval(mainLoop,30);
 
 function mainLoop(){
@@ -223,9 +275,7 @@ function mainLoop(){
         if(vfxCounter>1000){
             vfxCounter=0;
         }
-
     }
-
 }
 
 function worldMovement(){
@@ -295,9 +345,6 @@ function worldMovement(){
             drawText(playersFromServer[i].name,12,cpoints.cpx,cpoints.cpy);
             
         }
-            
-        
-        
     }
 }
 
@@ -312,12 +359,25 @@ $(window).keyup(function(e){
 });
 
 
-
+var saveMousePosx=0;
+var saveMousePosy=0;
 $(window).mousemove(function(e){
     if(flagStorage){
         pos=getMousePos(canvas,e);
-        mousePosx=pos.x;
-        mousePosy=pos.y;
+        if(flagHoldDirection){
+            mousePosx=saveMousePosx;
+            mousePosy=saveMousePosy;
+            mousePosAimx=pos.x;
+            mousePosAimy=pos.y;
+            
+        }else{
+            mousePosx=pos.x;
+            mousePosy=pos.y;
+            mousePosAimx=pos.x;
+            mousePosAimy=pos.y;
+            saveMousePosx=pos.x;
+            saveMousePosy=pos.y;
+        }
         socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
     }
 });
@@ -342,6 +402,9 @@ function drawDoubleCircle(centerX,centerY,radius,color,alpha){
 function drawCircle(centerX,centerY,radius,color,alpha){
     
     context.beginPath();
+    if(radius<0){
+        radius=0;
+    }
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = hexToRgbA(color,alpha);
     context.fill(); 
@@ -365,14 +428,10 @@ function drawCircleStrokeDot(centerX,centerY,radius,color,alpha){
 
 function drawCircleVFX(centerX,centerY,radius,color,alpha,mult){
     var multi=mult+Math.abs(Math.cos(vfxCounter));
-    //context.save();
     context.beginPath();
-    //context.globalCompositeOperation = 'destination-out';
     context.arc(centerX, centerY, radius*multi, 0, 2 * Math.PI, false);
-    //context.createRadialGradient(60,60,0,60,60,60);
     context.fillStyle = hexToRgbA(color,alpha);
     context.fill();
-    //context.restore();
 }
 
 function drawText(text,fontsize,px,py){
@@ -441,12 +500,20 @@ function setPlayersScores(){
 $(window).resize(function(){
     context.canvas.width  = window.innerWidth;
     context.canvas.height = window.innerHeight;
+    setFrontCircleSize();
 });
 
+function setFrontCircleSize(){
+     if(canvas.width<canvas.height){
+        frontCircleSize=canvas.width;
+    }else{
+        frontCircleSize=canvas.height;
+    }   
+}
+
 function drawEntityPlayer(player){
-    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.8);
-    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.8);
-    //drawCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.shootRadius,player.color,alphaShoot);
+    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius,player.color,0.85,0.5);
+    drawCircleVFX(player.posx+offsetWorldX,player.posy+offsetWorldY,radius*0.7,player.color,0.9,0.5);
     drawDoubleCircle(player.posx2+offsetWorldX,player.posy2+offsetWorldY,player.lifeRadius,player.color,0.2);
     drawShadow(player.posx+offsetWorldX,player.posy+offsetWorldY);
     drawText(player.name,12,player.posx+offsetWorldX,player.posy+offsetWorldY);
@@ -533,7 +600,7 @@ function drawFront(){
     context.fillRect(0,0,canvas.width,canvas.height)
     //context.globalCompositeOperation = "xor";
     context.beginPath();
-    context.arc(canvas.width/2,canvas.height/2,canvas.height*0.45,0,2*Math.PI);
+    context.arc(canvas.width/2,canvas.height/2,frontCircleSize*0.45,0,2*Math.PI);
     context.clip();
 
 }

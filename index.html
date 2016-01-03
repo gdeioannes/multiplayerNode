@@ -6,16 +6,18 @@
     <link rel="stylesheet" href="css/style.css" >
       <meta name="viewport" content=" user-scalable=no" />
   </head>
-  <body>
+  <body oncontextmenu="return false">
       <div id="player-login-container">
         <div id="enter">
         <h1>WELCOME TO AGILE-WARS</h1>
-            <div id="player-login-submit">
-                <div>
-                <input id="user-name-login" type="text" placeholder="ENTER YOUR USER NAME" maxlength ="15">     
+            <form id="login-form">
+                <div id="player-login-submit">
+                    <div>
+                    <input id="user-name-login" type="text" placeholder="ENTER YOUR USER NAME" maxlength ="15">     
+                    </div>
+                    <button id="login-btn" type="submit">SUBMIT</button>
                 </div>
-                <button id="login-btn" type="submit">SUBMIT</button>
-            </div>
+            </form>
             <div id="play-container" style="visbility:hidden;">
                 <button id="play-btn">BEGIN THE BATTLE AGILE SOLDIER</button><br>
                 <button id="clear-data-btn">CLEAR DATA</button>
