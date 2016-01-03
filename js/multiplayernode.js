@@ -311,17 +311,17 @@ function worldMovement(){
             
             shootRadiusRatio=((100*playersFromServer[i].shootRadius)/shootRadiusMax)/100;
             
-            drawCircle(canvas.width/2,canvas.height/2,canvas.height*0.4*shootRadiusRatio,"#FFFFFF",0.03);
-            drawCircleStrokeDot(canvas.width/2,canvas.height/2,canvas.height*0.4,"#FFFFFF",0.05);
+            drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.4*shootRadiusRatio,"#FFFFFF",0.03);
+            drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.4,"#FFFFFF",0.05);
             if(canvas.height*0.2<canvas.height*0.4*shootRadiusRatio){
-                drawCircleStrokeDot(canvas.width/2,canvas.height/2,canvas.height*0.2,"#FFFFFF",0.05);
+                drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.2,"#FFFFFF",0.05);
             }else{
-                drawCircle(canvas.width/2,canvas.height/2,canvas.height*0.2,"#FFCC00",0.3);  
+                drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.2,"#FFCC00",0.3);  
             }
             if(canvas.height*0.1<canvas.height*0.4*shootRadiusRatio){
-                drawCircleStrokeDot(canvas.width/2,canvas.height/2,canvas.height*0.1,"#FFFFFF",0.05);
+                drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.1,"#FFFFFF",0.05);
             }else{
-                drawCircle(canvas.width/2,canvas.height/2,canvas.height*0.1,"#FF0000",0.3);  
+                drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.1,"#FF0000",0.3);  
             }
             
             drawLine(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,0.25);
@@ -339,7 +339,7 @@ function worldMovement(){
             drawEntityPlayer(playersFromServer[i]);    
         }else{
             var circleRadarRatio=(lineDistance(centerPoint,playersFromServer[i])*100/(worldWidth))/100;
-            var cpoints=calculatePointOfCircunference(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,canvas.height*0.4);
+            var cpoints=calculatePointOfCircunference(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,frontCircleSize*0.4);
             drawLine(cpoints.cpx,cpoints.cpy,canvas.width/2,canvas.height/2,0.025);
             drawCircle(cpoints.cpx,cpoints.cpy,20*(1-circleRadarRatio),playersFromServer[i].color,1*(1-circleRadarRatio));
             drawText(playersFromServer[i].name,12,cpoints.cpx,cpoints.cpy);
