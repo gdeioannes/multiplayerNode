@@ -507,7 +507,7 @@ function setCanvasCSSSize(){
     }else{
         if(canvas.width>window.innerWidth && window.innerHeight>window.innerWidth){
             $("#myCanvas").css("height","auto");
-            $("#myCanvas").css("width",gameScreenWidth/window.innerWidth);
+            $("#myCanvas").css("width",canvas.width*(window.innerWidth/canvas.width));
             canvasWindowRatio=1+(1-window.innerWidth/canvas.width);
         }
     }
