@@ -47,9 +47,6 @@ $("#play-btn").click(function(){
     flagStorage=true;
 });
 
-if(id==null){
-    
-}
 
 $('#messages').scrollTop(1000000000000000000000000000000000000000000000000000000000000000);    
 $('#toggle-btn').click(function(){
@@ -158,9 +155,7 @@ function setDataForSending(){
     dataPlayer.name=$('#u-name').val();
     return dataPlayer;
 }
-    
 
-    
   socket.on('receive dataChat', function(receivedDataChat){
     $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
     $('#messages').scrollTop(100000000000000000000000000000000000000000);
@@ -172,7 +167,6 @@ function setDataForSending(){
   });
     
   socket.on('send allDataOfStage', function(allDataOfStage){
-    console.log(allDataOfStage);
     worldWidth=allDataOfStage.worldWidth;
     worldHeight=allDataOfStage.worldHeight;
     ligthPointsFromServer=allDataOfStage.ligthPoints;
@@ -184,14 +178,6 @@ function controlMove(key,state){
         flagHoldDirection=state;
     }
 }
-    
-$("#chat-container").mouseenter(function(){
-    chatOverFlag=true;
-}); 
-
-$("#chat-container").mouseout(function(){
-    chatOverFlag=false;
-});     
 
 $(window).mousedown(function(event){ 
     switch (event.which) {
@@ -236,20 +222,24 @@ $(window).mouseup(function(event){
             alert('You have a strange Mouse!');
     }
 });
-    
-    
 
-
-function setOffSet(){
-    var offset=canvas.width;
-}
 
 var alphaCharge=0.35;
 var alphaShoot=0.85;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-context.canvas.width  = window.innerWidth;
-context.canvas.height = window.innerHeight;
+var gameScreenWidth = 800;
+var gameScreenHeight = 800;
+var canvasWindowRatio=1;
+context.canvas.width  = gameScreenWidth;
+context.canvas.height = gameScreenHeight;
+setCanvasCSSSize();
+
+//$("#myCanvas").css("left",window.innerWidth/2-canvas.width/2);
+//$("#myCanvas").css("top",window.innerHeight/2-canvas.height/2);
+console.log($("#myCanvas").css("width"));
+var screenModWidth=canvas.width;
+var screenModHeight=canvas.height;
 
 setFrontCircleSize();
 setInterval(mainLoop,30);
@@ -286,8 +276,8 @@ function worldMovement(){
             var offset=0.4;
             var offsetVel=10;
                     
-            var movx=((window.innerWidth*0.2)/(window.innerWidth/2-(playersFromServer[i].posx+offsetWorldX)));
-            var movy=((window.innerHeight*0.2)/(window.innerHeight/2-(playersFromServer[i].posy+offsetWorldY)));
+            var movx=((screenModWidth*0.2)/(screenModWidth/2-(playersFromServer[i].posx+offsetWorldX)));
+            var movy=((screenModHeight*0.2)/(screenModHeight/2-(playersFromServer[i].posy+offsetWorldY)));
  
             if(offsetWorldX>0){
                 offsetWorldX=0;;
@@ -295,11 +285,11 @@ function worldMovement(){
             if(offsetWorldY>0){
                 offsetWorldY=0;;
             }
-            if(offsetWorldX<-worldWidth+window.innerWidth){
-                offsetWorldX=-worldWidth+window.innerWidth;
+            if(offsetWorldX<-worldWidth+screenModWidth){
+                offsetWorldX=-worldWidth+screenModWidth;
             }
-            if(offsetWorldY<-worldHeight+window.innerHeight){
-                offsetWorldY=-worldHeight+window.innerHeight;
+            if(offsetWorldY<-worldHeight+screenModHeight){
+                offsetWorldY=-worldHeight+screenModHeight;
             }
             if(offsetWorldX<=0){
                 offsetWorldX+=offsetVel/movx;
@@ -311,21 +301,21 @@ function worldMovement(){
             
             shootRadiusRatio=((100*playersFromServer[i].shootRadius)/shootRadiusMax)/100;
             
-            drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.4*shootRadiusRatio,"#FFFFFF",0.03);
-            drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.4,"#FFFFFF",0.05);
-            if(canvas.height*0.2<canvas.height*0.4*shootRadiusRatio){
-                drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.2,"#FFFFFF",0.05);
+            drawCircle(screenModWidth/2,screenModHeight/2,frontCircleSize*0.4*shootRadiusRatio,"#FFFFFF",0.03);
+            drawCircleStrokeDot(screenModWidth/2,screenModHeight/2,frontCircleSize*0.4,"#FFFFFF",0.05);
+            if(screenModHeight*0.2<screenModHeight*0.4*shootRadiusRatio){
+                drawCircleStrokeDot(screenModWidth/2,screenModHeight/2,frontCircleSize*0.2,"#FFFFFF",0.05);
             }else{
-                drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.2,"#FFCC00",0.3);  
+                drawCircle(screenModWidth/2,screenModHeight/2,frontCircleSize*0.2,"#FFCC00",0.3);  
             }
-            if(canvas.height*0.1<canvas.height*0.4*shootRadiusRatio){
-                drawCircleStrokeDot(canvas.width/2,canvas.height/2,frontCircleSize*0.1,"#FFFFFF",0.05);
+            if(screenModHeight*0.1<screenModHeight*0.4*shootRadiusRatio){
+                drawCircleStrokeDot(screenModWidth/2,screenModHeight/2,frontCircleSize*0.1,"#FFFFFF",0.05);
             }else{
-                drawCircle(canvas.width/2,canvas.height/2,frontCircleSize*0.1,"#FF0000",0.3);  
+                drawCircle(screenModWidth/2,screenModHeight/2,frontCircleSize*0.1,"#FF0000",0.3);  
             }
             
-            drawLine(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,0.25);
-            drawCircle(canvas.width/2,canvas.height/2,5,"#FFFFFF",0.5);
+            drawLine(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,screenModWidth/2,screenModHeight/2,0.25);
+            drawCircle(screenModWidth/2,screenModHeight/2,5,"#FFFFFF",0.5);
         }
         
         
@@ -333,14 +323,14 @@ function worldMovement(){
             var playerBullet=playersFromServer[i].bullets[bulletNum];
             drawCircleVFX(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,10,playersFromServer[i].color,1,0.4);
         }
-        var centerPoint={"posx":canvas.width/2-offsetWorldX,"posy":canvas.height/2-offsetWorldY};
-        if(lineDistance(centerPoint,playersFromServer[i])<canvas.height*0.4){
+        var centerPoint={"posx":screenModWidth/2-offsetWorldX,"posy":screenModHeight/2-offsetWorldY};
+        if(lineDistance(centerPoint,playersFromServer[i])<screenModHeight*0.4){
             drawCircleOrbiting(playersFromServer[i]);
             drawEntityPlayer(playersFromServer[i]);    
         }else{
             var circleRadarRatio=(lineDistance(centerPoint,playersFromServer[i])*100/(worldWidth))/100;
-            var cpoints=calculatePointOfCircunference(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,canvas.width/2,canvas.height/2,frontCircleSize*0.4);
-            drawLine(cpoints.cpx,cpoints.cpy,canvas.width/2,canvas.height/2,0.025);
+            var cpoints=calculatePointOfCircunference(playersFromServer[i].posx+offsetWorldX,playersFromServer[i].posy+offsetWorldY,screenModWidth/2,screenModHeight/2,frontCircleSize*0.4);
+            drawLine(cpoints.cpx,cpoints.cpy,screenModWidth/2,screenModHeight/2,0.025);
             drawCircle(cpoints.cpx,cpoints.cpy,20*(1-circleRadarRatio),playersFromServer[i].color,1*(1-circleRadarRatio));
             drawText(playersFromServer[i].name,12,cpoints.cpx,cpoints.cpy);
             
@@ -479,11 +469,14 @@ function hexToRgbA(hex,alpha){
 
 function getMousePos(canvas, evt) {
     calculatePointOfCircunferenceForVel;
-    var rect = canvas.getBoundingClientRect();
-    var correctPoints=calculatePointOfCircunferenceForVel(evt.clientX,evt.clientY,canvas.width/2,canvas.height/2,lineDistance({"posx":canvas.width/2,"posy":canvas.height/2},{"posx":evt.clientX,"posy":evt.clientY}))
+    var marginLeft=(window.innerWidth/2-canvas.width/2);
+    var marginTop=(window.innerHeight/2-canvas.height/2);
+ correctPoints=calculatePointOfCircunferenceForVel(evt.clientX*canvasWindowRatio,evt.clientY*canvasWindowRatio,screenModWidth/2,screenModHeight/2,lineDistance({"posx":screenModWidth/2,"posy":screenModHeight/2},{"posx":evt.clientX*canvasWindowRatio,"posy":evt.clientY*canvasWindowRatio}));
+    console.log(canvasWindowRatio);
+    console.log(evt.clientX*canvasWindowRatio);
     return {
-      x: (correctPoints.cpx - rect.left)-offsetWorldX,
-      y: (correctPoints.cpy - rect.top)-offsetWorldY
+      x: (correctPoints.cpx)-offsetWorldX,
+      y: (correctPoints.cpy)-offsetWorldY
     };
 }
     
@@ -498,16 +491,36 @@ function setPlayersScores(){
 }
 
 $(window).resize(function(){
-    context.canvas.width  = window.innerWidth;
-    context.canvas.height = window.innerHeight;
+    //$("#myCanvas").css("left",window.innerWidth/2-canvas.width/2);
+    //$("#myCanvas").css("top",window.innerHeight/2-canvas.height/2);
+    
+    setCanvasCSSSize();
     setFrontCircleSize();
 });
 
-function setFrontCircleSize(){
-     if(canvas.width<canvas.height){
-        frontCircleSize=canvas.width;
+function setCanvasCSSSize(){
+    if(canvas.height>window.innerHeight && window.innerHeight<window.innerWidth){
+        $("#myCanvas").css("width","auto");
+        $("#myCanvas").css("height",canvas.height*(window.innerHeight/canvas.height));
+        canvasWindowRatio=1+(1-window.innerHeight/canvas.height);
+        console.log("CSS-HEIGHT:"+$("#myCanvas").css("width"));
+        console.log("RATIO:"+(1+(1-window.innerHeight/canvas.height))); 
     }else{
-        frontCircleSize=canvas.height;
+        if(canvas.width>window.innerWidth && window.innerHeight>window.innerWidth){
+            $("#myCanvas").css("height","auto");
+            $("#myCanvas").css("width",canvas.height*(window.innerWidth/canvas.width));
+            console.log("CSS-WDITH:"+$("#myCanvas").css("width"));
+            console.log("RATIO:"+(1+(1-window.innerWidth/canvas.width)));
+            canvasWindowRatio=1+(1-window.innerWidth/canvas.width);
+        }
+    }
+}
+
+function setFrontCircleSize(){
+     if(screenModWidth<screenModHeight){
+        frontCircleSize=screenModWidth;
+    }else{
+        frontCircleSize=screenModHeight;
     }   
 }
 
@@ -558,7 +571,7 @@ function drawLine(x,y,x2,y2,a){
 }
 
 function calculatePointOfCircunferenceForVel(x,y,cx,cy,velrad){
-    var maxVariableRadius=canvas.height*0.4*shootRadiusRatio;
+    var maxVariableRadius=screenModHeight*0.4*shootRadiusRatio;
     
     var angle=Math.atan((y-cy)/(x-cx));
     var mult=1;
@@ -597,10 +610,10 @@ function lineDistance( point1, point2 )
 
 function drawFront(){
     context.fillStyle="#000"
-    context.fillRect(0,0,canvas.width,canvas.height)
+    context.fillRect(0,0,screenModWidth,screenModHeight)
     //context.globalCompositeOperation = "xor";
     context.beginPath();
-    context.arc(canvas.width/2,canvas.height/2,frontCircleSize*0.45,0,2*Math.PI);
+    context.arc(screenModWidth/2,screenModHeight/2,frontCircleSize*0.45,0,2*Math.PI);
     context.clip();
 
 }
