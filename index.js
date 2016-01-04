@@ -12,6 +12,7 @@ var worldWidth=3000;
 var worldHeight=3000;
 var offsetWorldX=300;
 var offsetWorldY=300;
+var aiNumber=6;
 
 
 process.env.PWD = process.cwd()
@@ -140,7 +141,7 @@ function setAIVars(){
 
 putAIPlayers();
 function putAIPlayers(){
-    for(var numAI=0;numAI<6;numAI++){
+    for(var numAI=0;numAI<aiNumber;numAI++){
         setAIPlayer();
     }
 }
@@ -234,7 +235,7 @@ function mainLoop(){
             var bullet=playersServer[i].bullets[bulletNum];
                bullet.posx+=bullet.velx*delta;
                bullet.posy+=bullet.vely*delta;
-               bullet.life-=4;
+               bullet.life-=3;
                if(bullet.life<0){
                    playersServer[i].bullets.splice(bulletNum,1);
                }

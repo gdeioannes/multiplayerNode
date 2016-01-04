@@ -228,16 +228,19 @@ var alphaCharge=0.35;
 var alphaShoot=0.85;
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var gameScreenWidth = 800;
-var gameScreenHeight = 800;
+var gameScreenWidth = 1000;
+var gameScreenHeight = 1000;
 var canvasWindowRatio=1;
+var canvasCCSWidth=parseInt($("#myCanvas").css("width"));
+var canvasCCSHeight=parseInt($("#myCanvas").css("height"));
+var marginLeft = (window.innerWidth-canvasCCSWidth)/2;
+var marginTop = (window.innerHeight-canvasCCSHeight)/2;
+
 context.canvas.width  = gameScreenWidth;
 context.canvas.height = gameScreenHeight;
+
 setCanvasCSSSize();
 
-//$("#myCanvas").css("left",window.innerWidth/2-canvas.width/2);
-//$("#myCanvas").css("top",window.innerHeight/2-canvas.height/2);
-console.log($("#myCanvas").css("width"));
 var screenModWidth=canvas.width;
 var screenModHeight=canvas.height;
 
@@ -468,15 +471,16 @@ function hexToRgbA(hex,alpha){
 }
 
 function getMousePos(canvas, evt) {
-    calculatePointOfCircunferenceForVel;
-    var marginLeft=(window.innerWidth/2-canvas.width/2);
-    var marginTop=(window.innerHeight/2-canvas.height/2);
- correctPoints=calculatePointOfCircunferenceForVel(evt.clientX*canvasWindowRatio,evt.clientY*canvasWindowRatio,screenModWidth/2,screenModHeight/2,lineDistance({"posx":screenModWidth/2,"posy":screenModHeight/2},{"posx":evt.clientX*canvasWindowRatio,"posy":evt.clientY*canvasWindowRatio}));
-    console.log(canvasWindowRatio);
-    console.log(evt.clientX*canvasWindowRatio);
+    console.log("RATIO:"+(canvasWindowRatio));
+    console.log("MOUSEX:"+(evt.clientX*canvasWindowRatio-marginLeft));
+    console.log("MOUSEY:"+(evt.clientY*canvasWindowRatio-marginTop));
+    var cssCanvasWidth=parseInt($("#myCanvas").css("width"));
+    var cssCanvasHeight=parseInt($("#myCanvas").css("height"));
+    var posxCorrected=(evt.clientX-marginLeft)*(gameScreenWidth/cssCanvasWidth);
+    var posyCorrected=(evt.clientY-marginTop)*(gameScreenHeight/cssCanvasHeight);
     return {
-      x: (correctPoints.cpx)-offsetWorldX,
-      y: (correctPoints.cpy)-offsetWorldY
+      x: posxCorrected-offsetWorldX,
+      y: posyCorrected-offsetWorldY
     };
 }
     
@@ -487,33 +491,36 @@ function setPlayersScores(){
     for(var i=0;i<playersFromServer.length;i++){
         $("#player-list").append("<li>"+playersFromServer[i].name+":"+playersFromServer[i].points+"</li>");
     }
-
 }
 
 $(window).resize(function(){
-    //$("#myCanvas").css("left",window.innerWidth/2-canvas.width/2);
-    //$("#myCanvas").css("top",window.innerHeight/2-canvas.height/2);
-    
     setCanvasCSSSize();
     setFrontCircleSize();
 });
 
 function setCanvasCSSSize(){
+    
     if(canvas.height>window.innerHeight && window.innerHeight<window.innerWidth){
         $("#myCanvas").css("width","auto");
         $("#myCanvas").css("height",canvas.height*(window.innerHeight/canvas.height));
         canvasWindowRatio=1+(1-window.innerHeight/canvas.height);
-        console.log("CSS-HEIGHT:"+$("#myCanvas").css("width"));
-        console.log("RATIO:"+(1+(1-window.innerHeight/canvas.height))); 
     }else{
         if(canvas.width>window.innerWidth && window.innerHeight>window.innerWidth){
             $("#myCanvas").css("height","auto");
-            $("#myCanvas").css("width",canvas.height*(window.innerWidth/canvas.width));
-            console.log("CSS-WDITH:"+$("#myCanvas").css("width"));
-            console.log("RATIO:"+(1+(1-window.innerWidth/canvas.width)));
+            $("#myCanvas").css("width",gameScreenWidth/window.innerWidth);
             canvasWindowRatio=1+(1-window.innerWidth/canvas.width);
         }
     }
+
+    canvasCCSWidth=parseInt($("#myCanvas").css("width"));
+    canvasCCSHeight=parseInt($("#myCanvas").css("height"));
+    marginLeft = (window.innerWidth-canvasCCSWidth)/2;
+    marginTop = (window.innerHeight-canvasCCSHeight)/2;
+    //$("#myCanvas").css("left",marginLeft);
+    //$("#myCanvas").css("top",marginTop);
+    $("#myCanvas").css("left",marginLeft);
+    $("#myCanvas").css("top",marginTop);
+
 }
 
 function setFrontCircleSize(){
