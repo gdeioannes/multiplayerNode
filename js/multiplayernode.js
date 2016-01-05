@@ -355,7 +355,11 @@ $(window).keyup(function(e){
 var saveMousePosx=0;
 var saveMousePosy=0;
 $(window).mousemove(function(e){
-    if(flagStorage){
+   setMoveStates(e);
+});
+
+function setMoveStates(e){
+     if(flagStorage){
         pos=getMousePos(canvas,e);
         if(flagHoldDirection){
             mousePosx=saveMousePosx;
@@ -373,7 +377,7 @@ $(window).mousemove(function(e){
         }
         socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
     }
-});
+}
     
 function drawDoubleCircle(centerX,centerY,radius,color,alpha){
     
@@ -563,8 +567,8 @@ function drawCircleOrbiting(player){
 
         cpx = player.posx2+offsetWorldX + velrad * Math.cos(angle);
         cpy = player.posy2+offsetWorldY + velrad * Math.sin(angle);
-        drawDoubleCircle(cpx,cpy,4,player.color,0.05*i);
-        drawCircleStroke(player.posx2+offsetWorldX,player.posy2+offsetWorldY,velrad,player.color,0.05*i);
+        drawDoubleCircle(cpx,cpy,4,player.color,0.15*i);
+        drawCircleStroke(player.posx2+offsetWorldX,player.posy2+offsetWorldY,velrad,player.color,0.15*i);
     }
 }
 

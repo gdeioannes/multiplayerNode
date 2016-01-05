@@ -123,7 +123,6 @@ function setAIPlayer(){
         "flagStop":false,
         "flagHoldDirection":false
     }
-    console.log(data.color);
     playersClient.push(data);
     setPlayer(data,"SOCKET ID","NPC");
     setAIVars();
@@ -134,7 +133,12 @@ function setAIVars(){
         "shootCounter":0,
         "shootCounterMax":50+Math.round(Math.random()*100),
         "moveCounter":0,
-        "moveCounterMax":0
+        "moveCounterMax":0,
+        "energyCounter":0,
+        "energyCounterMax":0,
+        "energyFlag":false,
+        "shootDistanceNow":200+Math.round(Math.random()*400),
+        "shootInitiative":0.5+Math.random()*5
     }
     return aiVar;
 }
@@ -186,39 +190,13 @@ function mainLoop(){
             playersServer[i].shootRadius+=shootRadiusMax/500;
         }
         
+        //NPC LOGIC
         if(player.type=="NPC"){
-            var aiPlayerVars=AIVars[i];
-            var multx=200;
-            var multy=200;
-            aiPlayerVars.shootCounter++;
-            if(aiPlayerVars.shootCounter>aiPlayerVars.shootCounterMax){
-                aiPlayerVars.shootCounter=0;
-                aiPlayerVars.shootCounterMax=50+Math.round(Math.random()*70);
-                var prey=AIatack(playersServer[i]);
-                var circlePoint=calculatePointOfCircunference(playersServer[prey].posx,playersServer[prey].posy,playersServer[i].posx,playersServer[i].posy,0.8);
-                var velx=(circlePoint.cpx-playersServer[i].posx);
-                var vely=(circlePoint.cpy-playersServer[i].posy);
-                playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
-                if(playersClient[i].mousePosx<worldWidth/5){
-                    multx*=-1;
-                }
-                if(playersClient[i].mousePosy<worldHeight/5){
-                    multy*=-1;
-                }
-                if(playersClient[i].mousePosx>(worldWidth/5)*4){
-                    multx*=-1;
-                }
-                if(playersClient[i].mousePosy>(worldHeight/5)*4){
-                    multy*=-1;
-                }
-                playersClient[i].mousePosx-=velx*multx;
-                playersClient[i].mousePosy-=vely*multy;
-                
-            }
+            NPClogic(i);
         }
+        
         //SHOOT LOGIC
         if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22){    
-            console.log(playersClient[i]);
             var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosAimx,playersClient[i].mousePosAimy,playersServer[i].posx,playersServer[i].posy,0.8);
             var velx=(circlePoint.cpx-playersServer[i].posx)/1.3;
             var vely=(circlePoint.cpy-playersServer[i].posy)/1.3;
@@ -254,6 +232,11 @@ function mainLoop(){
         //LIGTH POINTS LOGIC
         for(var iii=0;iii<worldData.ligthPoints.length;iii++){
             if(lineDistance(playersServer[i],worldData.ligthPoints[iii])-minRadius<playersServer[i].lifeRadius){
+                if(playersServer[i].type=="NPC"){
+                    if(AIVars[i].energyFlag){
+                        AIVars[i].energyFlag=false;
+                    }
+                }
                 playersServer[i].lifeRadius+=2;
                 worldData.ligthPoints.splice(iii,1);
             }       
@@ -277,6 +260,67 @@ function mainLoop(){
                 break;
             }
         }
+    }
+}
+
+function NPClogic(i){
+    var shootNowFlag=false;
+    var aiPlayerVars=AIVars[i];
+    var multx=200;
+    var multy=200;
+    if(!aiPlayerVars.energyFlag){
+        aiPlayerVars.shootCounter++;
+        aiPlayerVars.energyCounter++;
+    }else{
+        aiPlayerVars.energyCounter++;
+    }
+    
+    for(var playerNum=0;playerNum<playersServer.length;playerNum++){
+        if(i!=playerNum){
+            if(lineDistance(playersServer[i],playersServer[playerNum])<aiPlayerVars.shootDistanceNow){
+                if(Math.round(Math.random()*100)<aiPlayerVars.shootInitiative){
+                    aiPlayerVars.shootDistanceNow=200+Math.round(Math.random()*400);
+                    shootNowFlag=true;
+                }
+            }
+        }
+    }
+    
+    if(aiPlayerVars.shootCounter>aiPlayerVars.shootCounterMax || shootNowFlag){
+        shootNowFlag=false;
+        aiPlayerVars.shootCounter=0;
+        aiPlayerVars.shootCounterMax=30+Math.round(Math.random()*50);
+        var prey=AiGetPlayerToShoot(playersServer[i]);
+        var circlePoint=calculatePointOfCircunference(playersServer[prey].posx,playersServer[prey].posy,playersServer[i].posx,playersServer[i].posy,0.8);
+        var velx=(circlePoint.cpx-playersServer[i].posx);
+        var vely=(circlePoint.cpy-playersServer[i].posy);
+        playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
+        if(playersClient[i].mousePosx<worldWidth/5){
+            multx*=-1;
+        }
+        if(playersClient[i].mousePosy<worldHeight/5){
+            multy*=-1;
+        }
+        if(playersClient[i].mousePosx>(worldWidth/5)*4){
+            multx*=-1;
+        }
+        if(playersClient[i].mousePosy>(worldHeight/5)*4){
+            multy*=-1;
+        }
+        playersClient[i].mousePosx-=velx*multx;
+        playersClient[i].mousePosy-=vely*multy;
+    }
+    
+    if(aiPlayerVars.energyCounter>=aiPlayerVars.energyCounterMax){
+        aiPlayerVars.energyFlag=true;
+        aiPlayerVars.energyCounter=0;
+        aiPlayerVars.energyCounterMax=30+Math.round(Math.random()*60);
+        var energyNum=AIGetCloserEnergy(playersServer[i]);
+        var circlePoint=calculatePointOfCircunference(worldData.ligthPoints[energyNum].posx,worldData.ligthPoints[energyNum].posy,playersServer[i].posx,playersServer[i].posy,0.8);
+        var velx=(circlePoint.cpx-playersServer[i].posx);
+        var vely=(circlePoint.cpy-playersServer[i].posy);
+        playersClient[i].mousePosx+=velx*lineDistance(worldData.ligthPoints[energyNum],playersServer[i]);
+        playersClient[i].mousePosy+=vely*lineDistance(worldData.ligthPoints[energyNum],playersServer[i]);
     }
 }
 
@@ -349,7 +393,7 @@ function generateRandomPositionFromPosition(pos){
     return (pos+(range-Math.round(Math.random()*range*2)));
 }
 
-function AIatack(shooter){
+function AiGetPlayerToShoot(shooter){
     var saveDistance=worldWidth*1000;
     var savePlayerNum=0;
     for(var playerNum=0;playerNum<playersServer.length;playerNum++){
@@ -362,6 +406,19 @@ function AIatack(shooter){
         }
     }
     return savePlayerNum;
+}
+
+function AIGetCloserEnergy(aiPlayer){
+    var saveDistance=worldWidth*1000;
+    var saveLigthNum=0;
+    for(var ligthNum=0;ligthNum<worldData.ligthPoints.length;ligthNum++){
+        var light=worldData.ligthPoints[ligthNum];
+        if(lineDistance(light,aiPlayer)<saveDistance){
+            saveDistance=lineDistance(light,aiPlayer);
+            saveLigthNum=ligthNum; 
+        }
+    }
+    return saveLigthNum;
 }
 
 var numClusterOfLigth=5;
@@ -388,7 +445,6 @@ function circularLigthsSet(rep,velrad){
         }
         cpx = cx + velRad2 * Math.cos(angle)*mult;
         cpy = cy + velRad2 * Math.sin(angle)*mult;
-        console.log(cpx);
         setLigthPointData(cpx,cpy,-1);
     }
 }
