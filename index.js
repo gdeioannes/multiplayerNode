@@ -215,7 +215,7 @@ function mainLoop(){
             var bullet=playersServer[i].bullets[bulletNum];
                bullet.posx+=bullet.velx*delta;
                bullet.posy+=bullet.vely*delta;
-               bullet.life-=3;
+               //bullet.life-=3;
                if(bullet.life<0){
                    playersServer[i].bullets.splice(bulletNum,1);
                }
