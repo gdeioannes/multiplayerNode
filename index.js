@@ -8,14 +8,14 @@ var playersServer=[];
 var AIVars=[];
 var minRadius=30;
 var shootRadiusMax=100;
-var worldWidth=30000;
-var worldHeight=30000;
+var worldWidth=3000;
+var worldHeight=3000;
 var offsetWorldX=300;
 var offsetWorldY=300;
-var aiNumber=120;
+var aiNumber=6;
 
-var numClusterOfLigth=5;
-var numLigthPerCluster=6;
+var numClusterOfLigth=6;
+var numLigthPerCluster=8;
 var clusterRadius=400;
 
 process.env.PWD = process.cwd()
