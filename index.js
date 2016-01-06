@@ -8,12 +8,13 @@ var playersServer=[];
 var AIVars=[];
 var minRadius=30;
 var shootRadiusMax=100;
-var worldWidth=3000;
-var worldHeight=3000;
+var worldWidth=30000;
+var worldHeight=30000;
 var offsetWorldX=300;
 var offsetWorldY=300;
 var aiNumber=120;
-var numClusterOfLigth=8;
+
+var numClusterOfLigth=5;
 var numLigthPerCluster=6;
 var clusterRadius=400;
 
@@ -215,7 +216,7 @@ function mainLoop(){
             var bullet=playersServer[i].bullets[bulletNum];
                bullet.posx+=bullet.velx*delta;
                bullet.posy+=bullet.vely*delta;
-               //bullet.life-=3;
+               bullet.life-=3;
                if(bullet.life<0){
                    playersServer[i].bullets.splice(bulletNum,1);
                }
