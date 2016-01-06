@@ -327,7 +327,7 @@ function worldMovement(){
             drawCircleVFX(playerBullet.posx+offsetWorldX,playerBullet.posy+offsetWorldY,10,playersFromServer[i].color,1,0.4);
         }
         var centerPoint={"posx":screenModWidth/2-offsetWorldX,"posy":screenModHeight/2-offsetWorldY};
-        if(lineDistance(centerPoint,playersFromServer[i])<screenModHeight*0.4){
+        if(lineDistance(centerPoint,playersFromServer[i])-playersFromServer[i].lifeRadius<screenModHeight*0.45){
             drawCircleOrbiting(playersFromServer[i]);
             drawEntityPlayer(playersFromServer[i]);    
         }else{
@@ -520,8 +520,7 @@ function setCanvasCSSSize(){
     canvasCCSHeight=parseInt($("#myCanvas").css("height"));
     marginLeft = (window.innerWidth-canvasCCSWidth)/2;
     marginTop = (window.innerHeight-canvasCCSHeight)/2;
-    //$("#myCanvas").css("left",marginLeft);
-    //$("#myCanvas").css("top",marginTop);
+
     $("#myCanvas").css("left",marginLeft);
     $("#myCanvas").css("top",marginTop);
 

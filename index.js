@@ -12,8 +12,10 @@ var worldWidth=3000;
 var worldHeight=3000;
 var offsetWorldX=300;
 var offsetWorldY=300;
-var aiNumber=6;
-
+var aiNumber=40;
+var numClusterOfLigth=8;
+var numLigthPerCluster=6;
+var clusterRadius=400;
 
 process.env.PWD = process.cwd()
 // Then
@@ -237,7 +239,7 @@ function mainLoop(){
                         AIVars[i].energyFlag=false;
                     }
                 }
-                playersServer[i].lifeRadius+=2;
+                playersServer[i].lifeRadius+=20/playersServer[i].lifeRadius;
                 worldData.ligthPoints.splice(iii,1);
             }       
 
@@ -421,9 +423,6 @@ function AIGetCloserEnergy(aiPlayer){
     return saveLigthNum;
 }
 
-var numClusterOfLigth=5;
-var numLigthPerCluster=6;
-var clusterRadius=400;
 for(var k=0;k<numClusterOfLigth;k++){
     circularLigthsSet(numLigthPerCluster,300);
 }
