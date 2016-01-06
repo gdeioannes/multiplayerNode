@@ -110,6 +110,11 @@ function setPlayer(myData,socketID,type){
             "shootFlag":false,
             "points":0,
             "bullets":[],
+            "flagDeath":false,
+            "deathCounter":0,
+            "maxDeathCounter":100,
+            "deathColor":"#888",
+            "activeColor":myData.color,
             "type":type
         }
     playersServer.push(playerServer);
@@ -199,7 +204,7 @@ function mainLoop(){
         }
         
         //SHOOT LOGIC
-        if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22){    
+        if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22 && !playersServer[i].flagDeath){    
             var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosAimx,playersClient[i].mousePosAimy,playersServer[i].posx,playersServer[i].posy,0.8);
             var velx=(circlePoint.cpx-playersServer[i].posx)/1.3;
             var vely=(circlePoint.cpy-playersServer[i].posy)/1.3;
@@ -208,6 +213,16 @@ function mainLoop(){
             playersServer[i].shootRadius-=(shootRadiusMax*3)/(playersServer[i].shootRadius);
             if(playersServer[i].shootRadius<0){
                 playersServer[i].shootRadius=0;
+            }
+        }
+        
+        //DEATH LOGIC
+        if(playersServer[i].flagDeath){
+            playersServer[i].deathCounter++;
+            if(playersServer[i].deathCounter>playersServer[i].maxDeathCounter){
+                playersServer[i].flagDeath=false;
+                playersServer[i].deathCounter=0;
+                playersServer[i].color=playersServer[i].activeColor;
             }
         }
         
@@ -234,13 +249,13 @@ function mainLoop(){
         }
         //LIGTH POINTS LOGIC
         for(var iii=0;iii<worldData.ligthPoints.length;iii++){
-            if(lineDistance(playersServer[i],worldData.ligthPoints[iii])-minRadius<playersServer[i].lifeRadius){
+            if(lineDistance(playersServer[i],worldData.ligthPoints[iii])-minRadius<playersServer[i].lifeRadius && !playersServer[i].flagDeath){
                 if(playersServer[i].type=="NPC"){
                     if(AIVars[i].energyFlag){
                         AIVars[i].energyFlag=false;
                     }
                 }
-                playersServer[i].lifeRadius+=20/playersServer[i].lifeRadius;
+                playersServer[i].lifeRadius+=50/(playersServer[i].lifeRadius/2);
                 worldData.ligthPoints.splice(iii,1);
             }       
 
@@ -328,20 +343,24 @@ function NPClogic(i){
 }
 
 function killPlayer(shootingPlayer,player,bulletNum,playerClient){
-    if(player.lifeRadius<=minRadius){
-        playerClient.mousePosx=generateRandomPosition().w;
-        playerClient.mousePosy=generateRandomPosition().h;
-        setLigthPointData(player.posx,player.posy,300+Math.round(Math.random()*200));
-        player.posx=playerClient.mousePosx;
-        player.posy=playerClient.mousePosy;
-        player.posx2=playerClient.mousePosx;
-        player.posy2=playerClient.mousePosy;
-        player.lifeRadius=minRadius;
-        shootingPlayer.points++;
-    }else{
-        player.lifeRadius-=10;
-    }    
-    shootingPlayer.bullets.splice(bulletNum,1);
+    if(!player.flagDeath){
+        if(player.lifeRadius<=minRadius){
+            playerClient.mousePosx=generateRandomPosition().w;
+            playerClient.mousePosy=generateRandomPosition().h;
+            setLigthPointData(player.posx,player.posy,300+Math.round(Math.random()*200));
+            player.posx=playerClient.mousePosx;
+            player.posy=playerClient.mousePosy;
+            player.posx2=playerClient.mousePosx;
+            player.posy2=playerClient.mousePosy;
+            player.lifeRadius=minRadius;
+            player.flagDeath=true;
+            player.color=player.deathColor;
+            shootingPlayer.points++;
+        }else{
+            player.lifeRadius-=10;
+        }    
+        shootingPlayer.bullets.splice(bulletNum,1);
+    }
 }
 
 var calcSpeed = function(del, speed) {
@@ -401,7 +420,7 @@ function AiGetPlayerToShoot(shooter){
     var savePlayerNum=0;
     for(var playerNum=0;playerNum<playersServer.length;playerNum++){
         var player=playersServer[playerNum];
-        if(player.id!=shooter.id){
+        if(player.id!=shooter.id && !player.flagDeath){
                 if(lineDistance(player,shooter)<saveDistance){
                     saveDistance=lineDistance(player,shooter);
                     savePlayerNum=playerNum; 
