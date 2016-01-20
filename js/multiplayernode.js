@@ -475,13 +475,12 @@ function hexToRgbA(hex,alpha){
 }
 
 function getMousePos(canvas, evt) {
-    console.log("RATIO:"+(canvasWindowRatio));
-    console.log("MOUSEX:"+(evt.clientX*canvasWindowRatio-marginLeft));
-    console.log("MOUSEY:"+(evt.clientY*canvasWindowRatio-marginTop));
     var cssCanvasWidth=parseInt($("#myCanvas").css("width"));
     var cssCanvasHeight=parseInt($("#myCanvas").css("height"));
+    
     var posxCorrected=(evt.clientX-marginLeft)*(gameScreenWidth/cssCanvasWidth);
     var posyCorrected=(evt.clientY-marginTop)*(gameScreenHeight/cssCanvasHeight);
+    
     return {
       x: posxCorrected-offsetWorldX,
       y: posyCorrected-offsetWorldY

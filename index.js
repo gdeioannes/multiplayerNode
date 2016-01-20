@@ -2,6 +2,7 @@ var express= require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var mongojs = require("mongojs");
 var receivedData;
 var playersClient=[];
 var playersServer=[];
@@ -45,7 +46,7 @@ io.on('connection', function(socket){
     socket.join('sendAllData');
 });
 
-http.listen(80, function(){
+http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
@@ -106,7 +107,7 @@ function setPlayer(myData,socketID,type){
             "socketID":socketID,
             "shootRadius":100,
             "flagStop":false,
-            "lifeRadius":minRadius,
+            "lifeRadius":minRadius*2,
             "shootFlag":false,
             "points":0,
             "bullets":[],
@@ -352,7 +353,7 @@ function killPlayer(shootingPlayer,player,bulletNum,playerClient){
             player.posy=playerClient.mousePosy;
             player.posx2=playerClient.mousePosx;
             player.posy2=playerClient.mousePosy;
-            player.lifeRadius=minRadius;
+            player.lifeRadius=minRadius*2;
             player.flagDeath=true;
             player.color=player.deathColor;
             shootingPlayer.points++;
