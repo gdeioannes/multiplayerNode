@@ -19,6 +19,16 @@ var numClusterOfLigth=6;
 var numLigthPerCluster=8;
 var clusterRadius=400;
 
+//sg
+var gameTimeFlag=true;
+var gameTimeOutFlag=false;
+var time=150;
+var timer=0;
+var saveTime=0;
+var timeOutTimer=0;
+var timeOutTime=30;
+var timeStateClient="NOT ASIGN";
+
 process.env.PWD = process.cwd()
 // Then
 app.use(express.static(process.env.PWD + '/'));
@@ -50,12 +60,15 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
+setTime();
+
 var worldData={
     "worldWidth":worldWidth,
     "worldHeight":worldHeight,
     "offsetWorldX":offsetWorldX,
     "offsetWorldY":offsetWorldY,
-    "ligthPoints":[]
+    "ligthPoints":[],
+    "timer":timer
 }
 //LIGTH POINTS
 
@@ -65,8 +78,8 @@ function createBullet(posx,posy,velx,vely){
         "posy":posy,
         "velx":velx,
         "vely":vely,
-        "radius":20,
-        "life":40
+        "radius":40,
+        "life":4000
     }
     return (bullet);
 }
@@ -174,112 +187,148 @@ setInterval(mainLoop,30);
 var now, delta;
 var then = new Date().getTime();
 var speedDivider=750;
+
 function mainLoop(){
     now=new Date().getTime();
-    delta=now-then;
-    
-    //CHECK PLAYERS STATES
-    for(var i=0;i<playersClient.length;i++){
-        var player=playersServer[i];
-        //MOVEMENT CHARACTER 
-        if(playersClient[i].flagStop){
-            speedDivider=1100;
-        }else{
-            speedDivider=600;   
-        }
+    //GAME LOOP
+    if(gameTimeFlag){
         
-        playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/speedDivider)*delta;
-        playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/speedDivider)*delta;
-            
-        //MOVEMENT ENERGY BALL
-        playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
-        playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;
-        
-        if(playersServer[i].shootRadius<shootRadiusMax){
-            playersServer[i].shootRadius+=shootRadiusMax/500;
-        }
-        
-        //NPC LOGIC
-        if(player.type=="NPC"){
-            NPClogic(i);
-        }
-        
-        //SHOOT LOGIC
-        if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22 && !playersServer[i].flagDeath){    
-            var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosAimx,playersClient[i].mousePosAimy,playersServer[i].posx,playersServer[i].posy,0.8);
-            var velx=(circlePoint.cpx-playersServer[i].posx)/1.3;
-            var vely=(circlePoint.cpy-playersServer[i].posy)/1.3;
-            playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
-            playersServer[i].shootFlag=false;
-            playersServer[i].shootRadius-=(shootRadiusMax*3)/(playersServer[i].shootRadius);
-            if(playersServer[i].shootRadius<0){
-                playersServer[i].shootRadius=0;
-            }
-        }
-        
-        //DEATH LOGIC
-        if(playersServer[i].flagDeath){
-            playersServer[i].deathCounter++;
-            if(playersServer[i].deathCounter>playersServer[i].maxDeathCounter){
-                playersServer[i].flagDeath=false;
-                playersServer[i].deathCounter=0;
-                playersServer[i].color=playersServer[i].activeColor;
-            }
-        }
-        
-        //BULLET LOGIC
-        for(var bulletNum=0;bulletNum<playersServer[i].bullets.length;bulletNum++){
-            var bullet=playersServer[i].bullets[bulletNum];
-               bullet.posx+=bullet.velx*delta;
-               bullet.posy+=bullet.vely*delta;
-               bullet.life-=3;
-               if(bullet.life<0){
-                   playersServer[i].bullets.splice(bulletNum,1);
-               }
+        delta=now-then;
 
-            //PLAYER HIT
-            for(var ii=0;ii<playersServer.length;ii++){
-                if(lineDistance(playersServer[ii],bullet)-minRadius<minRadius && ii!=i){
-                    killPlayer(playersServer[i],playersServer[ii],bulletNum,playersClient[ii])
+
+        //CHECK PLAYERS STATES
+        for(var i=0;i<playersClient.length;i++){
+            var player=playersServer[i];
+            //MOVEMENT CHARACTER 
+            if(playersClient[i].flagStop){
+                speedDivider=1100;
+            }else{
+                speedDivider=600;   
+            }
+
+            playersServer[i].posx+=((playersClient[i].mousePosx-playersServer[i].posx)/speedDivider)*delta;
+            playersServer[i].posy+=((playersClient[i].mousePosy-playersServer[i].posy)/speedDivider)*delta;
+
+            //MOVEMENT ENERGY BALL
+            playersServer[i].posx2+=((playersServer[i].posx-playersServer[i].posx2)/70)*delta;
+            playersServer[i].posy2+=((playersServer[i].posy-playersServer[i].posy2)/70)*delta;
+
+            if(playersServer[i].shootRadius<shootRadiusMax){
+                playersServer[i].shootRadius+=shootRadiusMax/500;
+            }
+
+            //NPC LOGIC
+            if(player.type=="NPC"){
+                NPClogic(i);
+            }
+
+            //SHOOT LOGIC
+            if(playersServer[i].shootFlag && playersServer[i].shootRadius>shootRadiusMax*0.22 && !playersServer[i].flagDeath){    
+                var circlePoint=calculatePointOfCircunference(playersClient[i].mousePosAimx,playersClient[i].mousePosAimy,playersServer[i].posx,playersServer[i].posy,0.8);
+                var velx=(circlePoint.cpx-playersServer[i].posx)/1.2;
+                var vely=(circlePoint.cpy-playersServer[i].posy)/1.2;
+                playersServer[i].bullets.push(createBullet(playersServer[i].posx,playersServer[i].posy,velx,vely));
+                playersServer[i].shootFlag=false;
+                playersServer[i].shootRadius-=(shootRadiusMax*3)/(playersServer[i].shootRadius);
+                if(playersServer[i].shootRadius<0){
+                    playersServer[i].shootRadius=0;
                 }
             }
-        }
-        
-        if((numClusterOfLigth*numLigthPerCluster)-numLigthPerCluster>worldData.ligthPoints.length){
-            circularLigthsSet(numLigthPerCluster,300);
-        }
-        //LIGTH POINTS LOGIC
-        for(var iii=0;iii<worldData.ligthPoints.length;iii++){
-            if(lineDistance(playersServer[i],worldData.ligthPoints[iii])-minRadius<playersServer[i].lifeRadius && !playersServer[i].flagDeath){
-                if(playersServer[i].type=="NPC"){
-                    if(AIVars[i].energyFlag){
-                        AIVars[i].energyFlag=false;
+
+            //DEATH LOGIC
+            if(playersServer[i].flagDeath){
+                playersServer[i].deathCounter++;
+                if(playersServer[i].deathCounter>playersServer[i].maxDeathCounter){
+                    playersServer[i].flagDeath=false;
+                    playersServer[i].deathCounter=0;
+                    playersServer[i].color=playersServer[i].activeColor;
+                }
+            }
+
+            //BULLET LOGIC
+            for(var bulletNum=0;bulletNum<playersServer[i].bullets.length;bulletNum++){
+                var bullet=playersServer[i].bullets[bulletNum];
+                   bullet.posx+=bullet.velx*delta;
+                   bullet.posy+=bullet.vely*delta;
+                   bullet.life-=3;
+                   if(bullet.life<0){
+                       playersServer[i].bullets.splice(bulletNum,1);
+                   }
+
+                //PLAYER HIT
+                for(var ii=0;ii<playersServer.length;ii++){
+                    if(lineDistance(playersServer[ii],bullet)-minRadius<minRadius && ii!=i){
+                        killPlayer(playersServer[i],playersServer[ii],bulletNum,playersClient[ii])
                     }
                 }
-                playersServer[i].lifeRadius+=50/(playersServer[i].lifeRadius/2);
-                worldData.ligthPoints.splice(iii,1);
-            }       
+            }
+
+            if((numClusterOfLigth*numLigthPerCluster)-numLigthPerCluster>worldData.ligthPoints.length){
+                circularLigthsSet(numLigthPerCluster,300);
+            }
+            //LIGTH POINTS LOGIC
+            for(var iii=0;iii<worldData.ligthPoints.length;iii++){
+                if(lineDistance(playersServer[i],worldData.ligthPoints[iii])-minRadius<playersServer[i].lifeRadius && !playersServer[i].flagDeath){
+                    if(playersServer[i].type=="NPC"){
+                        if(AIVars[i].energyFlag){
+                            AIVars[i].energyFlag=false;
+                        }
+                    }
+                    playersServer[i].lifeRadius+=50/(playersServer[i].lifeRadius/2);
+                    worldData.ligthPoints.splice(iii,1);
+                }       
+
+            }
 
         }
-        
+
+        for(var numLigthPoint=0;numLigthPoint<worldData.ligthPoints.length;numLigthPoint++){
+            var ligthPoint=worldData.ligthPoints[numLigthPoint];
+            if(ligthPoint.life!=-1){
+                ligthPoint.life--;
+                if(ligthPoint.life<=0 ){
+                    worldData.ligthPoints.splice(numLigthPoint,1);
+                    break;
+                }
+            }
+        }
+    
+        //Timer
+        var date=new Date();
+        //console.log("TIMEGAME"+timer);
+        timer-=delta/1000;
+        timeStateClient="ARENA ENDING IN "+Math.round(timer);
+        if(timer<0){
+            gameTimeFlag=false;
+            gameTimeOutFlag=true;
+            timer=time;
+        }
     }
+    
+    
+    if(gameTimeOutFlag){
+        //console.log("TIMEOUT"+timeOutTimer);
+        timeOutTimer-=delta/1000;
+        timeStateClient="ARENA STARTING IN "+Math.round(timeOutTimer);
+        if(timeOutTimer<0){
+            timeOutTimer=timeOutTime;
+            gameTimeFlag=true;
+            gameTimeOutFlag=false;
+            resetGame();
+        }
+    }
+    worldData.timer=timeStateClient;
     //SEND DATA TO CLIENT
     if(playersServer!=null){
         io.sockets.in('sendAllData').emit("send allDataOfPLayer", playersServer); 
         io.sockets.in('sendAllData').emit("send allDataOfStage", worldData); 
     }
     then = now;
-    
-    for(var numLigthPoint=0;numLigthPoint<worldData.ligthPoints.length;numLigthPoint++){
-        var ligthPoint=worldData.ligthPoints[numLigthPoint];
-        if(ligthPoint.life!=-1){
-            ligthPoint.life--;
-            if(ligthPoint.life<=0 ){
-                worldData.ligthPoints.splice(numLigthPoint,1);
-                break;
-            }
-        }
-    }
+}
+
+function setTime(){
+    timer=time;
+    timeOutTimer=timeOutTime;
 }
 
 function NPClogic(i){
@@ -478,4 +527,18 @@ function setLigthPointData(posx,posy,life){
         "life":life
     }
     worldData.ligthPoints.push(ligthPoint);
+}
+
+function resetGame(){
+    for(i=0;i<playersServer.length;i++){
+        playersServer[i].points=0;
+        playersServer[i].posx=generateRandomPosition().w;
+        playersServer[i].posy=generateRandomPosition().h;
+        playersServer[i].posx2=generateRandomPosition().w;
+        playersServer[i].pos2=generateRandomPosition().h;
+        playersServer[i].bullets=[];
+   
+        
+    }
+    
 }

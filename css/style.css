@@ -20,6 +20,8 @@ canvas{ position: absolute;   background: white; z-index: -1;}
 #player-login-container #enter{margin-top: 20%; background: none !important;}
 #player-login-container #player-data-submit{ background: none;}
 #player-login-container #enter input{margin-top: 20px; opacity: 1; width: 20%; text-align: center; height: 30px; -webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;}
-#login-btn{-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px; height: 30px; width: 20%; margin-top: 20px;}
+#login-btn,#look-btn{-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px; height: 30px; width: 20%; margin-top: 20px;}
 #play-container button{-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px; height: 30px; width: 20%; margin-top: 20px;}
 #clear-data-btn{ margin-top: 50px !important;}
+#timer{ position: absolute; text-align: center; width: 100%; top: 0px;}
+#player-list-container{position: absolute; right: 0px; top: 0px;}
