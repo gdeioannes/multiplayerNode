@@ -1,230 +1,70 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>DOTDOT</title>
     <link href='https://fonts.googleapis.com/css?family=Lato:400italic,100,700,400' rel='stylesheet' type='text/css'>
-    <style>
-        
-        
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font: 13px Helvetica, Arial; background: white; color: white; width:  100%; font-family: 'Lato', sans-serif;}
-    form { background: #000; padding: 3px;  width: 100%; bottom: 0px;}
-    form input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
-    form button { width: 19%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-    #messages { list-style-type: none; margin: 0; padding: 0; background: black; color: white; overflow-y: auto; height: 85%}
-    #messages li { padding: 5px 10px; }
-    label{font-weight: 500;}
-    #chat-container{ position: fixed; background: black; width: 20%; height: 400px; overflow-y: none; opacity: 0.7;}
-    canvas{float: left; position: fixed; width: 100%; height: 100%; background: white; z-index: -1;}
-    #toggle-btn{padding: 5px; width: 20%; font-family: 'Lato', sans-serif;}
-    </style>
+    <link rel="stylesheet" href="css/style.css" >
+      <meta name="viewport" content=" user-scalable=no" />
   </head>
-  <body>
+  <body oncontextmenu="return false">
+      <div id="player-login-container">
+        <div id="enter">
+        <h1>WELCOME TO AGILE-WARS</h1>
+            <form id="login-form">
+                <div id="player-login-submit">
+                    <div>
+                    <input id="user-name-login" type="text" placeholder="ENTER YOUR USER NAME" maxlength ="15">     
+                    </div>
+                    <button id="login-btn" type="submit">SUBMIT</button>
+                    
+                </div>
+            </form>
+            <!--<button id="look-btn" >JUST LOOK</button>-->
+            <div id="play-container" style="visbility:hidden;">
+                <button id="play-btn">BEGIN THE BATTLE AGILE SOLDIER</button><br>
+                <button id="clear-data-btn">CLEAR DATA</button>
+            </div>
+        </div>
+      </div>
       <canvas id="myCanvas"></canvas>
       <button id="toggle-btn">Totggle Chat</button>
       <div id="chat-container">
-        <label>User name: </label><input id="u-name" type="text" placeholder="user name">
+        <label>User name: </label><input id="u-name" type="text" placeholder="user name" maxlength ="15">
         <ul id="messages">
-            <li>USE ARROWS TO MOVE</li>
+            <li>PROTOTYPE WORK IN PROGRESS</li>
+            <li>MOVE THE CIRCLE WITH THE MOUSE</li>
+            <li>SHOOT CLICKING</li>
+            <li>EAT THE LIGTHS TO WIN HP!!!</li>
         </ul>
         <form action="">
-            <input id="m" autocomplete="off"/><button>Send</button>
+            <input id="m" autocomplete="off"/>
+            <button>Send</button>
         </form>
+        <div id="debug">
+            <ul>
+                <!--<li><label>Black-circle</label><input type="checkbox" id="black-circle"></li>-->
+            </ul>    
+        </div>
       </div>
+      <div id="timer"></div>
+      <div id="player-list-container">
+        <lu id="player-list">
+          <li>SCORE BOARD</li>
+          <li>Gabriel De Ioannes Becker: 10 </li>
+        </lu>
+      </div>
+        
   </body>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-
+<script src="js/multiplayernode.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-123288268-1"></script>
 <script>
-/////CHAT
-var id;
-var playersFromServer=[];
-var radius = 30;
-    var color=getRandomColor();
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-if(id==null){
-    id=Math.round(Math.random()*100000000000);
-}
-
-$('#messages').scrollTop(100000000000000000000000000000000000000000);    
-$('#toggle-btn').click(function(){
-$('#chat-container').slideToggle();
-});  
-
-if($('#u-name').val()==""){
-    $('#u-name').val("User"+Math.round(Math.random()*1000));
-}
-
-
-function getRandomColor() {
-    //var letters = '0123456789ABCDEF'.split('');
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-    
-///SEND DATA
-var flagLeft=false;
-var flagRight=false;
-var flagUp=false;
-var flagDown=false;
-var shootFlag=false;
-var vel=10;
-var posx=0;
-var posy=0;
-    
-  var socket = io();
-    
-
-    
-  var dataChat={
-      "name":"",
-      "message":""
-  }
-  
-  var dataPlayer={
-      "id":0,
-      "name":"",
-      "flagRight":false,
-      "flagLeft":false,
-      "flagUp":false,
-      "flagDown":false,
-      "shootFlag":false,
-      "color":""
-  } 
-    
-  $('form').submit(function(){
-    dataChat.name=$('#u-name').val();
-    dataChat.message=$('#m').val();
-    var dataString=JSON.stringify(dataChat);
-    socket.emit('send dataChat',dataChat );
-    $('#m').val('');
-    return false;
-  });
-  
-  socket.on('send dataChat', function(receivedDataChat){
-    $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
-    $('#messages').scrollTop(100000000000000000000000000000000000000000);
-  });
-    
-
-    
-//GAME
-    
-//CREATE PLAYER    
-socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
-
-$(window).keydown(function(e){
-   var key=e.which;
-    controlMove(key,true);
-    
-    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
-});
-    
-$(window).keyup(function(e){
-   var key=e.which;
-    controlMove(key,false)
-    socket.emit('send dataPlayer',JSON.stringify(setDataForSending() ));
-});
-    
-    
-//SEND DATA TO SERVER    
-function setDataForSending(){
-    dataPlayer.id=id;
-    dataPlayer.flagRight=flagRight;
-    dataPlayer.flagLeft=flagLeft;
-    dataPlayer.flagUp=flagUp;
-    dataPlayer.flagDown=flagDown;
-    dataPlayer.shootFlag=shootFlag;
-    dataPlayer.color=color;
-    dataPlayer.name=$('#u-name').val();
-    shootFlag=false;
-    return dataPlayer;
-}
-    
-
-    
-  socket.on('receive dataChat', function(receivedDataChat){
-    $('#messages').append($('<li><label>'+receivedDataChat.name+': </label>'+receivedDataChat.message+'</li>'));
-    $('#messages').scrollTop(100000000000000000000000000000000000000000);
-  });
-    
-  socket.on('send allDataOfPlayer', function(allDataOfPLayer){
-    playersFromServer=allDataOfPLayer;
-  });
-    
-function controlMove(key,state){
-    if(key==37){
-        flagLeft=state;
-    }
-    if(key==39){
-        flagRight=state;
-    }
-    if(key==38){
-        flagUp=state;
-    }
-    if(key==40){
-        flagDown=state;
-    }
-    
-    if(key==32){
-        shootFlag=true;
-    }
-}
-    
-
-var alphaCharge=0.15;
-var alphaShoot=0.7;
-var canvas = document.getElementById('myCanvas');
-var context = canvas.getContext('2d');
-context.canvas.width  = window.innerWidth;
-context.canvas.height = window.innerHeight;
-
-setInterval(mainLoop,30);
-
-function mainLoop(){
-    context.canvas.width=context.canvas.width;
-    for(var i=0;i<playersFromServer.length;i++){
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,radius,playersFromServer[i].color,1);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].shootRadius,playersFromServer[i].color,alphaCharge);
-        drawCircle(playersFromServer[i].posx,playersFromServer[i].posy,playersFromServer[i].chargeRadius,playersFromServer[i].color,alphaCharge);
-        drawText(playersFromServer[i].name,playersFromServer[i].posx,playersFromServer[i].posy)
-    }
-}
-    
-
-    
-function drawCircle(centerX,centerY,radius,color,alpha){
-  context.beginPath();
-    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = hexToRgbA(color,alpha);
-    context.fill(); 
-}
-
-function drawText(text,px,py){
-    var fontsize=15;
-    context.font = fontsize+"px Arial";
-    context.fillStyle = "#000";
-    context.fillText(text,px-text.length-radius/2,py);
-}
-
-function hexToRgbA(hex,alpha){
-    var c;
-    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-        c= hex.substring(1).split('');
-        if(c.length== 3){
-            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
-        }
-        c= '0x'+c.join('');
-        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+alpha+')';
-    }
-    throw new Error('Bad Hex');
-}
-    
-    
+  gtag('config', 'UA-123288268-1');
 </script>
-
 </html>
