@@ -22,11 +22,11 @@ var clusterRadius=400;
 //sg
 var gameTimeFlag=true;
 var gameTimeOutFlag=false;
-var time=150;
+var time=15;
 var timer=0;
 var saveTime=0;
 var timeOutTimer=0;
-var timeOutTime=30;
+var timeOutTime=5;
 var timeStateClient="NOT ASIGN";
 
 process.env.PWD = process.cwd()
@@ -137,7 +137,7 @@ function setPlayer(myData,socketID,type){
 
 function setAIPlayer(){
     var data={
-        "name":"USer"+Math.round(Math.random()*999),
+        "name":"User"+Math.round(Math.random()*999),
         "color":getRandomColor(),
         "id":Math.round(Math.random()*1000000000000),
         "mousePosx":generateRandomPosition().w,
@@ -537,8 +537,25 @@ function resetGame(){
         playersServer[i].posx2=generateRandomPosition().w;
         playersServer[i].pos2=generateRandomPosition().h;
         playersServer[i].bullets=[];
-   
-        
+        playersServer[i].shootRadius=100;
+        playersServer[i].flagStop=false;
+        playersServer[i].lifeRadius=minRadius*2;
+        playersServer[i].shootFlag=false;
+        playersServer[i].points=0;
+        playersServer[i].flagDeath=false;
+        playersServer[i].deathCounter=0;
+        playersServer[i].maxDeathCounter=100;
+    }
+    for(var ii=0;ii<AIVars.length;ii++){
+        AIVars[ii].shootCounter=0;
+        AIVars[ii].shootCounterMax=50+Math.round(Math.random()*100);
+        AIVars[ii].moveCounter=0;
+        AIVars[ii].moveCounterMax=0;
+        AIVars[ii].energyCounter=0;
+        AIVars[ii].energyCounterMax=0;
+        AIVars[ii].energyFlag=false;
+        AIVars[ii].shootDistanceNow=200+Math.round(Math.random()*400);
+        AIVars[ii].shootInitiative=0.5+Math.random()*5;
     }
     
 }
