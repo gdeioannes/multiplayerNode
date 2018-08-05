@@ -22,11 +22,11 @@ var clusterRadius=400;
 //sg
 var gameTimeFlag=true;
 var gameTimeOutFlag=false;
-var time=15;
+var time=100;
 var timer=0;
 var saveTime=0;
 var timeOutTimer=0;
-var timeOutTime=5;
+var timeOutTime=20;
 var timeStateClient="NOT ASIGN";
 
 process.env.PWD = process.cwd()
