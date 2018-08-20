@@ -14,6 +14,15 @@ var flagHoldDirection = false;
 var frontCircleSize = 0;
 var timer;
 var storageData = JSON.parse(localStorage.getItem("agileWars"));
+var tagActiveFlag=true;
+
+$(window).blur(function(){
+    tagActiveFlag=false;
+});
+
+$(window).focus(function(){
+    tagActiveFlag=true;
+});
 
 
 //SaveData
@@ -169,20 +178,26 @@ function setDataForSending() {
 }
 
 socket.on('receive dataChat', function (receivedDataChat) {
-    $('#messages').append($('<li><label>' + receivedDataChat.name + ': </label>' + receivedDataChat.message + '</li>'));
-    $('#messages').scrollTop(100000000000000000000000000000000000000000);
+    if(tagActiveFlag){
+        $('#messages').append($('<li><label>' + receivedDataChat.name + ': </label>' + receivedDataChat.message + '</li>'));
+        $('#messages').scrollTop(100000000000000000000000000000000000000000);
+    }
 });
 
 socket.on('send allDataOfPLayer', function (allDataOfPLayer) {
-    playersFromServer = allDataOfPLayer;
-    setPlayersScores();
+    if(tagActiveFlag){
+        playersFromServer = allDataOfPLayer;
+        setPlayersScores();
+    }
 });
 
 socket.on('send allDataOfStage', function (allDataOfStage) {
-    worldWidth = allDataOfStage.worldWidth;
-    worldHeight = allDataOfStage.worldHeight;
-    ligthPointsFromServer = allDataOfStage.ligthPoints;
-    $("#timer").html(allDataOfStage.timer);
+    if(tagActiveFlag){
+        worldWidth = allDataOfStage.worldWidth;
+        worldHeight = allDataOfStage.worldHeight;
+        ligthPointsFromServer = allDataOfStage.ligthPoints;
+        $("#timer").html(allDataOfStage.timer);
+    }
 });
 
 function controlMove(key, state) {
@@ -261,18 +276,20 @@ setFrontCircleSize();
 setInterval(mainLoop, 30);
 
 function mainLoop() {
-    context.canvas.width = context.canvas.width;
-    if (!$("#black-circle").prop('checked')) {
-        drawFront();
-    }
-    drawPattern();
-    if (flagStorage) {
-        worldMovement();
-        drawLigthPoints();
+    if(tagActiveFlag){
+        context.canvas.width = context.canvas.width;
+        if (!$("#black-circle").prop('checked')) {
+            drawFront();
+        }
+        drawPattern();
+        if (flagStorage) {
+            worldMovement();
+            drawLigthPoints();
 
-        vfxCounter += 0.1;
-        if (vfxCounter > 1000) {
-            vfxCounter = 0;
+            vfxCounter += 0.1;
+            if (vfxCounter > 1000) {
+                vfxCounter = 0;
+            }
         }
     }
 }
@@ -376,7 +393,9 @@ $(window).keyup(function (e) {
 var saveMousePosx = 0;
 var saveMousePosy = 0;
 $(window).mousemove(function (e) {
-    setMoveStates(e);
+    if (flagStorage) {
+        setMoveStates(e);
+    }
 });
 
 function setMoveStates(e) {
